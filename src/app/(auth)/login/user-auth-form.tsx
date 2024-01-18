@@ -1,6 +1,8 @@
 "use client"
 
 import * as React from "react"
+import { useState } from "react"
+import { signIn } from "next-auth/react"
 
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
@@ -11,15 +13,29 @@ import { Label } from "~/components/ui/label"
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>
 
 export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
-  const [isLoading, setIsLoading] = React.useState<boolean>(false)
+  const [loadingProvider, setLoadingProvider] = useState<
+    "google" | "email" | null
+  >(null)
 
-  async function onSubmit(event: React.SyntheticEvent) {
-    event.preventDefault()
-    setIsLoading(true)
+  const signInWithProvider = (provider: "google" | "email") => {
+    setLoadingProvider(provider)
 
-    setTimeout(() => {
-      setIsLoading(false)
-    }, 3000)
+    signIn(provider, {
+      callbackUrl: "/",
+    })
+      .then((data) => {
+        console.log(data)
+      })
+      .catch((err) => {
+        console.error(err)
+      })
+      .finally(() => {
+        setLoadingProvider(null)
+      })
+  }
+
+  const onSubmit = () => {
+    console.log("email")
   }
 
   return (
@@ -37,11 +53,11 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              disabled={isLoading}
+              disabled={loadingProvider === "email"}
             />
           </div>
-          <Button disabled={isLoading}>
-            {isLoading && (
+          <Button disabled={loadingProvider === "email"}>
+            {loadingProvider === "email" && (
               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
             )}
             Sign In with Email
@@ -58,8 +74,15 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           </span>
         </div>
       </div>
-      <Button variant="outline" type="button" disabled={isLoading}>
-        {isLoading ? (
+      <Button
+        variant="outline"
+        type="button"
+        disabled={loadingProvider === "google"}
+        onClick={() => {
+          signInWithProvider("google")
+        }}
+      >
+        {loadingProvider === "google" ? (
           <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
         ) : (
           <Icons.google className="mr-2 h-4 w-4" />

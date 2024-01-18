@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
+import { redirect } from "next/navigation"
+import { getServerAuthSession } from "~/server/auth"
 
 import { cn } from "~/lib/utils"
 import { buttonVariants } from "~/components/ui/button"
@@ -13,12 +14,18 @@ export const metadata: Metadata = {
   description: "Authentication forms built using the components.",
 }
 
-export default function AuthenticationPage() {
+export default async function AuthenticationPage() {
+  const session = await getServerAuthSession()
+
+  if (session?.user) {
+    redirect("/")
+  }
+
   return (
     <>
       <div className="container relative flex min-h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
-          href="/examples/authentication"
+          href="/login"
           className={cn(
             buttonVariants({ variant: "ghost" }),
             "absolute right-4 top-4 md:right-8 md:top-8"
