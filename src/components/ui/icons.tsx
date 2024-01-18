@@ -118,7 +118,7 @@ export const Icons = {
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>
   ),
-  logo: (props: IconProps & { mode: "dark" | "light" }) => (
+  logo: (props: IconProps & { mode?: "dark" | "light" }) => (
     <svg
       width="79"
       height="32"
@@ -279,3 +279,5 @@ export const Icons = {
     </svg>
   ),
 }
+
+export type IconType = keyof typeof Icons
