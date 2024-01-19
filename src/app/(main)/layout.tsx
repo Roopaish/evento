@@ -1,19 +1,14 @@
-import { type ReactNode } from "react"
-import { getServerAuthSession } from "~/server/auth"
+import { Header } from "../../components/header"
 
-import Navbar from "./nav-bar"
-
-export default async function MainLayout({
+export default function RootLayout({
   children,
 }: {
-  children: ReactNode
+  children: React.ReactNode
 }) {
-  const session = await getServerAuthSession()
-
   return (
-    <>
-      <Navbar session={session} />
-      {children}
-    </>
+    <div>
+      <Header />
+      <div className="mt-[60px] bg-background">{children}</div>
+    </div>
   )
 }

@@ -1,37 +1,52 @@
-import "~/styles/globals.css"
-
-import { redirect } from "next/navigation"
-import { getServerAuthSession } from "~/server/auth"
-
-import { Menu } from "./components/menu"
-import Sidebar from "./components/sidebar"
+import { Header } from "../../components/header"
+import Sidebar from "./sidebar"
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerAuthSession()
+  // const session = await getServerAuthSession()
 
-  if (!session?.user) {
-    redirect("/login")
-  }
+  // if (!session?.user) {
+  //   redirect("/login")
+  // }
 
   return (
-    <div className="hidden md:block">
-      <Menu />
-      <div className="border-t">
-        <div className="bg-background">
-          <div className="grid lg:grid-cols-5">
-            <Sidebar
-              className="hidden lg:block"
-              data={[
-                { icon: "google", label: "Dashaboard", path: "/dashboard" },
-                { icon: "paypal", label: "Events", path: "/events" },
-              ]}
-            />
-            <div className="col-span-3 lg:col-span-4 lg:border-l">
-              <div className="h-full px-4 py-6 lg:px-8">{children}</div>
+    <div>
+      <Header />
+      <div className="mt-[60px] bg-background">
+        <div>
+          <Sidebar
+            className="fixed left-0 hidden max-w-[253px] lg:block"
+            data={[
+              {
+                title: "Overview",
+                data: [
+                  {
+                    icon: "layoutGrid",
+                    label: "Dashboard",
+                    path: "/dashboard",
+                  },
+                  { icon: "calendarCheck", label: "Events", path: "/events" },
+                  { icon: "users", label: "Staffs", path: "/staffs" },
+                  { icon: "messagesSquare", label: "Chats", path: "/chats" },
+                ],
+              },
+              {
+                title: "Account",
+                data: [{ icon: "user", label: "Profile", path: "/profile" }],
+              },
+            ]}
+          />
+          <div className="lg:ml-[253px] lg:border-l">
+            <div
+              className="h-full px-4 py-6 lg:px-8"
+              style={{
+                minHeight: "calc(100vh - 60px)",
+              }}
+            >
+              {children}
             </div>
           </div>
         </div>
