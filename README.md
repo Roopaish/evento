@@ -6,8 +6,34 @@
 - `pnpm install`
 - `pnpm prepare`
 - On linux only: `chmod ug+x .husky/*`
-- Copy .env.example to .env and fill the values
+- Copy .env.example to .env and fill the values (See below on database usage)
 - `pnpm dev`
+
+## Database - Postgresql
+
+Two ways to create your own postgresql database
+
+1. Using https://console.clever-cloud.com
+
+- Create your account
+- Go to console
+- Click on things as follows: `Personal Space > Create (dropdown) > an add-on > Select Postgresql > Choose 1st (free) database > Next > Give it a name > Next > Then copy the connection URL and pase it in .env as DATABASE_URL value`
+- Run `pnpm db:push` to sync prisma schema to database
+
+2. Using docker
+
+- Install Docker Engine (Desktop/CLI only)
+- Fill the postgresql values in .env file
+
+```env
+   POSTGRES_PASSWORD="some-password"
+ POSTGRES_USER="admin"
+ POSTGRES_DB="evento"
+```
+
+- Run docker compose: `sudo docker compose up` or `docker-compose up`
+- Update DATABASE_URL: `postgresql://username:password@host:port/db_name`, so for above env file it will be `postgresql://admin:some-password@localhost:5432/evento`
+- Run `pnpm db:push` to sync prisma schema to database
 
 ## How to collaborate
 
@@ -68,3 +94,7 @@ Repeat the process
 - test: `test: Add unit tests for API endpoints`
 
 ## Code snippets
+
+```
+
+```
