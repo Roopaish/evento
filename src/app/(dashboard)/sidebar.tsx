@@ -1,6 +1,7 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
+import { type LucideIcon } from "lucide-react"
 
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
@@ -29,7 +30,7 @@ export default function Sidebar({
             </h2>
             <div className="space-y-1">
               {children.map(({ icon, label, path }) => {
-                const Icon = Icons[icon]
+                const Icon = Icons[icon] as LucideIcon
                 return (
                   <Button
                     variant={pathname === path ? "secondary" : "ghost"}

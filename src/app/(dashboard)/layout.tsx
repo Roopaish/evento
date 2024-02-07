@@ -24,18 +24,18 @@ export default async function RootLayout({
                 title: "Overview",
                 data: [
                   {
-                    icon: "layoutGrid",
+                    icon: "LayoutGrid",
                     label: "Dashboard",
                     path: "/dashboard",
                   },
-                  { icon: "calendarCheck", label: "Events", path: "/events" },
-                  { icon: "users", label: "Staffs", path: "/staffs" },
-                  { icon: "messagesSquare", label: "Chats", path: "/chats" },
+                  { icon: "CalendarCheck", label: "Events", path: "/events" },
+                  { icon: "Users", label: "Staffs", path: "/staffs" },
+                  { icon: "MessagesSquare", label: "Chats", path: "/chats" },
                 ],
               },
               {
                 title: "Account",
-                data: [{ icon: "user", label: "Profile", path: "/profile" }],
+                data: [{ icon: "User", label: "Profile", path: "/profile" }],
               },
             ]}
           />
