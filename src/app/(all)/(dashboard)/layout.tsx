@@ -1,4 +1,5 @@
-import { Header } from "../../components/header"
+import { userSideNavItems } from "~/config/nav"
+
 import Sidebar from "./sidebar"
 
 export default async function RootLayout({
@@ -14,30 +15,11 @@ export default async function RootLayout({
 
   return (
     <div>
-      <Header />
       <div className="mt-[60px] bg-background">
         <div>
           <Sidebar
             className="fixed left-0 hidden max-w-[253px] lg:block"
-            data={[
-              {
-                title: "Overview",
-                data: [
-                  {
-                    icon: "layoutGrid",
-                    label: "Dashboard",
-                    path: "/dashboard",
-                  },
-                  { icon: "calendarCheck", label: "Events", path: "/events" },
-                  { icon: "users", label: "Staffs", path: "/staffs" },
-                  { icon: "messagesSquare", label: "Chats", path: "/chats" },
-                ],
-              },
-              {
-                title: "Account",
-                data: [{ icon: "user", label: "Profile", path: "/profile" }],
-              },
-            ]}
+            data={userSideNavItems}
           />
           <div className="lg:ml-[253px] lg:border-l">
             <div
