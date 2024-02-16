@@ -50,6 +50,7 @@ Table User {
   accounts Account [not null]
   sessions Session [not null]
   posts Post [not null]
+  Event Event [not null]
 }
 
 Table VerificationToken {
@@ -62,10 +63,35 @@ Table VerificationToken {
   }
 }
 
+Table Event {
+  id String [pk]
+  title String [not null]
+  type EventType [not null]
+  date DateTime [not null]
+  address String [not null]
+  lat String
+  lng String
+  capacity Int [not null]
+  description String [not null]
+  instruction String
+  images String[] [not null]
+  user User [not null]
+  userId String [not null]
+}
+
 Enum UserRole {
   ADMIN
   MANAGER
   USER
+}
+
+Enum EventType {
+  WEDDING
+  CONFERENCE
+  SEMINAR
+  WORKSHOP
+  PARTY
+  OTHER
 }
 
 Ref: Post.createdById > User.id
@@ -73,3 +99,5 @@ Ref: Post.createdById > User.id
 Ref: Account.userId > User.id [delete: Cascade]
 
 Ref: Session.userId > User.id [delete: Cascade]
+
+Ref: Event.userId > User.id

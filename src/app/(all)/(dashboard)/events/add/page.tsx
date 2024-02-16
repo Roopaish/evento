@@ -2,9 +2,12 @@
 
 import { useRef } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { EventType } from "@prisma/client"
+import { api } from "~/trpc/react"
 import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { type z } from "zod"
 
+import { eventFormSchema } from "~/lib/validations/event-form-validation"
 import { Button } from "~/components/ui/button"
 import {
   Form,
@@ -26,60 +29,27 @@ import {
 } from "~/components/ui/select"
 import { Textarea } from "~/components/ui/textarea"
 
-enum EventType {
-  WEDDING = "WEDDING",
-  CONFERENCE = "CONFERENCE",
-  SEMINAR = "SEMINAR",
-  WORKSHOP = "WORKSHOP",
-  PARTY = "PARTY",
-  OTHER = "OTHER",
-}
-const MAX_FILE_SIZE = 500000
-const ACCEPTED_IMAGE_TYPES = [
-  "image/jpeg",
-  "image/jpg",
-  "image/png",
-  "image/webp",
-]
-
-const formSchema = z.object({
-  title: z.string().min(4).max(50),
-  type: z.nativeEnum(EventType),
-  date: z.coerce.date(),
-  location: z.object({ address: z.string(), lat: z.string(), lng: z.string() }),
-  capacity: z.coerce.number().min(0),
-  description: z.string().min(80),
-  staffs: z.array(z.string().email()).optional(),
-  instruction: z.string().optional(),
-  images: z
-    .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `Required`)
-    .refine((files) => files.length <= 5, `Maximum of 5 images are allowed.`)
-    .refine(
-      (files) => Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
-      `Each file size should be less than 5 MB.`
-    )
-    .refine(
-      (files) =>
-        Array.from(files).every((file) =>
-          ACCEPTED_IMAGE_TYPES.includes(file.type)
-        ),
-      "Only these types are allowed .jpg, .jpeg, .png and .webp"
-    ),
-})
-
 export default function AddEvent() {
   const ref = useRef<HTMLInputElement | null>(null)
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof eventFormSchema>>({
+    resolver: zodResolver(eventFormSchema),
     defaultValues: {},
   })
 
   const images = form.watch("images")
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
+  const { mutate, isLoading } = api.event.addEvent.useMutation({
+    onSuccess: () => {
+      console.log("Good")
+    },
+    onError: () => {
+      console.log("Bad")
+    },
+  })
+
+  function onSubmit(values: z.infer<typeof eventFormSchema>) {
+    mutate(values)
   }
 
   return (
@@ -132,31 +102,17 @@ export default function AddEvent() {
           control={form.control}
           name="date"
           render={({ field }) => (
-            <div style={{ display: "flex", gap: "10px" }}>
-              <FormItem style={{ flex: "60%" }}>
-                <FormLabel>Event Date</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value as never as string}
-                    type="date"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-
-              <FormItem style={{ flex: "40%" }}>
-                <FormLabel>Starts at</FormLabel>
-                <FormControl>
-                  <Input
-                    {...field}
-                    value={field.value as never as string}
-                    type="time"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            </div>
+            <FormItem style={{ flex: "60%" }}>
+              <FormLabel>Event Date</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  value={field.value as never as string}
+                  type="datetime-local"
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
           )}
         />
 
@@ -306,7 +262,10 @@ export default function AddEvent() {
           }}
         />
 
-        <Button type="submit">Submit</Button>
+        <Button type="submit">
+          {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
+          Submit
+        </Button>
       </form>
     </Form>
   )

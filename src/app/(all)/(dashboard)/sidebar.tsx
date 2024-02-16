@@ -1,11 +1,12 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
+import { type NavItem } from "~/types"
 import { type LucideIcon } from "lucide-react"
 
 import { cn } from "~/lib/utils"
 import { Button } from "~/components/ui/button"
-import { Icons, type IconType } from "~/components/ui/icons"
+import { Icons } from "~/components/ui/icons"
 
 export default function Sidebar({
   className,
@@ -14,7 +15,7 @@ export default function Sidebar({
   className?: string
   data: {
     title: string
-    data: { icon: IconType; label: string; path: string }[]
+    data: NavItem[]
   }[]
 }) {
   const router = useRouter()
@@ -30,7 +31,8 @@ export default function Sidebar({
             </h2>
             <div className="space-y-1">
               {children.map(({ icon, label, path }) => {
-                const Icon = Icons[icon] as LucideIcon
+                const Icon = !!icon ? (Icons[icon] as LucideIcon) : "div"
+
                 return (
                   <Button
                     variant={pathname === path ? "secondary" : "ghost"}
