@@ -74,6 +74,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
+    Event         Event[]
 }
 
 model VerificationToken {
@@ -82,4 +83,30 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+enum EventType {
+    WEDDING
+    CONFERENCE
+    SEMINAR
+    WORKSHOP
+    PARTY
+    OTHER
+}
+
+model Event {
+    id          String    @id @default(uuid())
+    title       String
+    type        EventType
+    date        DateTime
+    address     String
+    lat         String?
+    lng         String?
+    capacity    Int
+    description String
+    instruction String?
+    images      String[]
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
 }

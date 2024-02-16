@@ -1,21 +1,9 @@
-import {
-  CalendarCheck,
-  LayoutGrid,
-  MessagesSquare,
-  Settings,
-  User,
-  Users,
-} from "lucide-react"
+import * as AllIcons from "lucide-react"
 
 type IconProps = React.HTMLAttributes<SVGElement>
 
 export const Icons = {
-  settings: Settings,
-  layoutGrid: LayoutGrid,
-  calendarCheck: CalendarCheck,
-  users: Users,
-  messagesSquare: MessagesSquare,
-  user: User,
+  ...AllIcons,
   google: (props: IconProps) => (
     <svg role="img" viewBox="0 0 24 24" {...props}>
       <path
