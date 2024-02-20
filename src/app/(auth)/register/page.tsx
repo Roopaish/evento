@@ -40,7 +40,7 @@ export default async function AuthenticationPage() {
             <div className="absolute inset-0 bg-black bg-opacity-70"></div>
             <Image
               src="/auth-bg.jpg"
-              alt="Auth background"
+              alt="Auth background image"
               width={800}
               height={800}
               className="h-full w-full object-cover"

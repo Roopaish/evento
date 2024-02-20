@@ -57,3 +57,9 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .px-section {
+    @apply px-4 pt-8 md:px-7 lg:px-10;
+  }
+}
