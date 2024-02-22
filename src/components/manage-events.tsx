@@ -33,9 +33,9 @@ export default function ManageEvents() {
   )
 }
 
-const events: EventCardProps[] = [
+export const events: EventCardProps[] = [
   {
-    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3PFSiWiG7MsMbtSWL06eAIMVcxKmG9pW4qQ&usqp=CAU",
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxlDEI9wVnK0tWfU78UMZ8r88su14Xkk2-bw&usqp=CAU",
     eventDate: "02/02/2024",
     eventName: "Nepal Youth protest",
     eventAddress: "Balkumari Lalitpur",
@@ -63,5 +63,17 @@ const events: EventCardProps[] = [
     eventDate: "02/09/2024",
     eventName: "nepal News Conference",
     eventAddress: "Gwarko ,Imadol,Lalitpur",
+  },
+  {
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3PFSiWiG7MsMbtSWL06eAIMVcxKmG9pW4qQ&usqp=CAU",
+    eventDate: "02/02/2024",
+    eventName: "Nepal Youth protest",
+    eventAddress: "Balkumari Lalitpur",
+  },
+  {
+    img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS3PFSiWiG7MsMbtSWL06eAIMVcxKmG9pW4qQ&usqp=CAU",
+    eventDate: "02/02/2024",
+    eventName: "Nepal Youth protest",
+    eventAddress: "Balkumari Lalitpur",
   },
 ]
