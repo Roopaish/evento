@@ -29,7 +29,9 @@ export function EventCard({
         />
       </figure>
       <div className="mt-4 space-y-3 text-sm">
-        <h3 className="text-lg font-medium leading-none">{eventName}</h3>
+        <h3 className="text-lg font-semibold leading-none text-black">
+          {eventName}
+        </h3>
 
         <p className="text-xs font-normal text-primary">{eventDate}</p>
         <p className="text-xs  font-normal text-muted-foreground">

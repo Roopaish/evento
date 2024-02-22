@@ -43,7 +43,7 @@ export const events: EventCardProps[] = [
   {
     img: "https://localmedia.org/wp-content/uploads/2021/06/events-1.png",
     eventDate: "Monday,July 18, 9.30PM",
-    eventName: "nepal News Conference",
+    eventName: "Nepal News Conference",
     eventAddress: "Gwarko ,Imadol,Lalitpur",
   },
   {
@@ -55,13 +55,13 @@ export const events: EventCardProps[] = [
   {
     img: "https://images.unsplash.com/photo-1682687981603-ae874bf432f2",
     eventDate: "Monday,July 18, 9.30PM",
-    eventName: "nepal News Conference",
+    eventName: "Nepal News Conference",
     eventAddress: "Gwarko ,Imadol,Lalitpur",
   },
   {
     img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ_oF0StLxphzj9x2xykS-Fk7GXGmkCl43RA&usqp=CAU",
     eventDate: "Monday,July 18, 9.30PM",
-    eventName: "nepal News Conference",
+    eventName: "Nepal News Conference",
     eventAddress: "Gwarko ,Imadol,Lalitpur",
   },
   {
