@@ -35,6 +35,7 @@ export const env = createEnv({
     EMAIL_SERVER_USER: z.string(),
     EMAIL_SERVER_PASSWORD: z.string(),
     EMAIL_FROM: z.string(),
+    WS_PORT: z.number(),
   },
 
   /**
@@ -43,7 +44,7 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    // NEXT_PUBLIC_CLIENTVAR: z.string(),
+    NEXT_PUBLIC_WS_URL: z.string(),
   },
 
   /**
@@ -62,6 +63,8 @@ export const env = createEnv({
     EMAIL_SERVER_PASSWORD: process.env.EMAIL_SERVER_PASSWORD,
     EMAIL_SERVER_PORT: Number(process.env.EMAIL_SERVER_PORT),
     EMAIL_SERVER_USER: process.env.EMAIL_SERVER_USER,
+    WS_PORT: Number(process.env.WS_PORT),
+    NEXT_PUBLIC_WS_URL: process.env.NEXT_PUBLIC_WS_URL,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
