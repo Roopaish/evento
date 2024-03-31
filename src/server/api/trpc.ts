@@ -7,12 +7,14 @@
  * need to use are documented accordingly near the end.
  */
 import EventEmitter from "events"
+import { type IncomingMessage } from "http"
 import { initTRPC, TRPCError } from "@trpc/server"
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next"
-import type { CreateWSSContextFnOptions } from "@trpc/server/adapters/ws"
-import { getServerAuthSession } from "~/server/auth"
+import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http"
 import { db } from "~/server/db"
+import { getSession } from "next-auth/react"
 import superjson from "superjson"
+import type ws from "ws"
 import { ZodError } from "zod"
 
 const ee = new EventEmitter()
@@ -32,9 +34,10 @@ export const createTRPCContext = async (
   opts:
     | { headers: Headers }
     | CreateNextContextOptions
-    | CreateWSSContextFnOptions
+    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
 ) => {
-  const session = await getServerAuthSession()
+  // const session = await getServerAuthSession()
+  const session = await getSession(opts as CreateNextContextOptions)
 
   return {
     db,

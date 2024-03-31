@@ -10,6 +10,18 @@ export default function AboutPage() {
     onData(n) {
       setNumber(n)
     },
+    onError(err) {
+      console.log({ err })
+    },
+  })
+
+  api.event.sayHi.useSubscription(undefined, {
+    onData(data) {
+      console.log({ data })
+    },
+    onError(err) {
+      console.log({ err })
+    },
   })
 
   return (

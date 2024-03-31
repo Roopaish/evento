@@ -20,6 +20,12 @@ export const eventRouter = createTRPCRouter({
       })
     }),
 
+  sayHi: publicProcedure.subscription(() => {
+    return observable<string>((emit) => {
+      emit.next("hello")
+    })
+  }),
+
   randomNumber: publicProcedure.subscription(() => {
     return observable<number>((emit) => {
       const int = setInterval(() => {
