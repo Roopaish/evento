@@ -1,4 +1,4 @@
-# Rental
+# Evento
 
 ## How to run
 
