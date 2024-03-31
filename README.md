@@ -8,7 +8,9 @@
 - On linux only: `chmod ug+x .husky/*`
 - Copy .env.example to .env and fill the values (See below on database usage)
   - For the Email part, replace `noreply@example.com` with your email, and replace password with your app password which can be generated from your `Manage Google Account > Security > 2 Factor Authentication > App Passwords`
-- `pnpm dev` to run the server
+- `pnpm dev:next` to run the next.js server
+- `pnpm dev:wss` to run the websocket server
+- `pnpm dev` to run both at once
 
 ## Database - Postgresql
 
