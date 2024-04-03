@@ -15,14 +15,14 @@ export default function AboutPage() {
     },
   })
 
-  api.event.sayHi.useSubscription(undefined, {
-    onData(data) {
-      console.log({ data })
-    },
-    onError(err) {
-      console.log({ err })
-    },
-  })
+  // api.event.sayHi.useSubscription(undefined, {
+  //   onData(data) {
+  //     console.log({ data })
+  //   },
+  //   onError(err) {
+  //     console.log({ err })
+  //   },
+  // })
 
   return (
     <div>

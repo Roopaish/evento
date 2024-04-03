@@ -51,6 +51,8 @@ Table User {
   sessions Session [not null]
   posts Post [not null]
   Event Event [not null]
+  ChatGroup ChatGroup [not null]
+  chatMessage ChatMessage [not null]
 }
 
 Table VerificationToken {
@@ -79,6 +81,25 @@ Table Event {
   userId String [not null]
 }
 
+Table ChatGroup {
+  id String [pk]
+  name String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  user User [not null]
+  userId String [not null]
+  chatMessage ChatMessage [not null]
+}
+
+Table ChatMessage {
+  id String [pk]
+  message String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  user User [not null]
+  chatGroup ChatGroup [not null]
+  createdById String [not null]
+  chatGroupId String [not null]
+}
+
 Enum UserRole {
   ADMIN
   MANAGER
@@ -101,3 +122,9 @@ Ref: Account.userId > User.id [delete: Cascade]
 Ref: Session.userId > User.id [delete: Cascade]
 
 Ref: Event.userId > User.id
+
+Ref: ChatGroup.userId > User.id
+
+Ref: ChatMessage.createdById > User.id
+
+Ref: ChatMessage.chatGroupId > ChatGroup.id
