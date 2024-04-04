@@ -6,18 +6,19 @@
  * TL;DR - This is where all the tRPC server stuff is created and plugged in. The pieces you will
  * need to use are documented accordingly near the end.
  */
-import EventEmitter from "events"
 import { type IncomingMessage } from "http"
 import { initTRPC, TRPCError } from "@trpc/server"
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next"
 import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http"
 import { db } from "~/server/db"
-import { getSession } from "next-auth/react"
+import { type Session } from "next-auth"
 import superjson from "superjson"
 import type ws from "ws"
 import { ZodError } from "zod"
 
-const ee = new EventEmitter()
+import { getServerAuthSession } from "../auth"
+import { ee } from "../ws-dev-server"
+
 /**
  * 1. CONTEXT
  *
@@ -34,15 +35,28 @@ export const createTRPCContext = async (
   opts:
     | { headers: Headers }
     | CreateNextContextOptions
-    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
+    | (NodeHTTPCreateContextFnOptions<IncomingMessage, ws> & {
+        session?: Session | null
+      })
 ) => {
-  // const session = await getServerAuthSession()
-  const session = await getSession(opts as CreateNextContextOptions)
+  // const session = (
+  //   opts as NodeHTTPCreateContextFnOptions<IncomingMessage, ws> & {
+  //     session?: Session | null
+  //   }
+  // )?.session
+  //   ? (
+  //       opts as NodeHTTPCreateContextFnOptions<IncomingMessage, ws> & {
+  //         session?: Session | null
+  //       }
+  //     )?.session
+  //   : await getServerAuthSession()
+  // const session = await getSession(opts as CreateNextContextOptions)
+  const session = await getServerAuthSession()
 
   return {
     db,
-    session,
     ...opts,
+    session,
     ee,
   }
 }

@@ -1,8 +1,12 @@
+import EventEmitter from "events"
 import { applyWSSHandler } from "@trpc/server/adapters/ws"
+import { getSession } from "next-auth/react"
 import { WebSocketServer } from "ws"
 
 import { appRouter } from "./api/root"
-import { createTRPCContext } from "./api/trpc"
+import { db } from "./db"
+
+export const ee = new EventEmitter()
 
 const wss = new WebSocketServer({
   port: 3001,
@@ -10,7 +14,20 @@ const wss = new WebSocketServer({
 const handler = applyWSSHandler({
   wss,
   router: appRouter,
-  createContext: createTRPCContext,
+  createContext: async ({ req, res, ...rest }) => {
+    let session = null
+
+    try {
+      session = await getSession({ req })
+    } catch (e) {
+      console.log(e)
+    }
+
+    return { ...rest, req, res, session, ee, db }
+  },
+  onError: () => {
+    console.log("error")
+  },
 })
 
 wss.on("connection", (ws) => {
