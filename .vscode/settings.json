@@ -1,8 +1,4 @@
 {
-  "files.exclude": {
-    "**/.next": false,
-    "**/node_modules": false
-  },
   "tailwindCSS.experimental.classRegex": [
     ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cn\\(([^)]*)\\)"]

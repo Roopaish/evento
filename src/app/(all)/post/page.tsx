@@ -10,6 +10,20 @@ import { Input } from "~/components/ui/input"
 export default function TestPage() {
   const [value, setValue] = useState("")
   const [post, setPost] = useState<Post | null>(null)
+  const [num, setNumber] = useState<number>()
+  const [privateNum, setPrivateNumber] = useState<number>()
+
+  api.post.randomNumber.useSubscription(undefined, {
+    onData(n) {
+      setNumber(n)
+    },
+  })
+
+  api.post.randomPrivateNumber.useSubscription(undefined, {
+    onData(n) {
+      setPrivateNumber(n)
+    },
+  })
 
   const { mutate } = api.post.create.useMutation({
     onSuccess(data) {
@@ -55,7 +69,14 @@ export default function TestPage() {
       </div>
       <div>Latest Post: {JSON.stringify(post)} </div>
       <div>Hello Data: {JSON.stringify(data)}</div>
-      <div>Secret message: {JSON.stringify(secret)}</div>
+      <div>
+        Secret message: {secret ? JSON.stringify(secret) : "Login to see"}
+      </div>
+      <div>Random Number from websocket: {num}</div>
+      <div>
+        Protected Random Number from websocket:{" "}
+        {privateNum ? privateNum : "Login to see"}
+      </div>
     </div>
   )
 }

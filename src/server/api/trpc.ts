@@ -11,13 +11,11 @@ import { initTRPC, TRPCError } from "@trpc/server"
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next"
 import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http"
 import { db } from "~/server/db"
-import { type Session } from "next-auth"
 import superjson from "superjson"
 import type ws from "ws"
 import { ZodError } from "zod"
 
 import { getServerAuthSession } from "../auth"
-import { ee } from "../ws-dev-server"
 
 /**
  * 1. CONTEXT
@@ -35,29 +33,14 @@ export const createTRPCContext = async (
   opts:
     | { headers: Headers }
     | CreateNextContextOptions
-    | (NodeHTTPCreateContextFnOptions<IncomingMessage, ws> & {
-        session?: Session | null
-      })
+    | NodeHTTPCreateContextFnOptions<IncomingMessage, ws>
 ) => {
-  // const session = (
-  //   opts as NodeHTTPCreateContextFnOptions<IncomingMessage, ws> & {
-  //     session?: Session | null
-  //   }
-  // )?.session
-  //   ? (
-  //       opts as NodeHTTPCreateContextFnOptions<IncomingMessage, ws> & {
-  //         session?: Session | null
-  //       }
-  //     )?.session
-  //   : await getServerAuthSession()
-  // const session = await getSession(opts as CreateNextContextOptions)
   const session = await getServerAuthSession()
 
   return {
     db,
     ...opts,
     session,
-    ee,
   }
 }
 
