@@ -6,14 +6,15 @@
     "target": "ES2019",
     "lib": ["ES2019", "DOM"],
     "isolatedModules": false,
-    "noEmit": false,
-    "esModuleInterop": true
+    "noEmit": false
   },
   "include": [
+    ".eslintrc.cjs",
     "next-env.d.ts",
-    "next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js"
+    "**/*.cjs",
+    "**/*.js",
+    ".next/types/**/*.ts"
   ]
 }
