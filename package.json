@@ -1,5 +1,5 @@
 {
-  "name": "rental",
+  "name": "evento",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -48,6 +48,7 @@
     "next-auth": "^4.24.5",
     "next-themes": "^0.2.1",
     "nodemailer": "^6.9.9",
+    "npm-run-all": "^4.1.5",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-hook-form": "^7.50.1",
