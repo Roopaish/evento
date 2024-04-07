@@ -64,17 +64,23 @@ enum UserRole {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String            @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?           @unique
+    password      String?
     emailVerified DateTime?
     image         String?
-    role          UserRole  @default(USER)
+    role          UserRole          @default(USER)
+    isAdmin       Boolean           @default(false)
     phoneNumber   String[]
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
     Event         Event[]
+    boards        BoardMembership[]
+    ownedBoards   Board[]
+    cards         CardAssignees[]
+    comments      Comment[]
 }
 
 model VerificationToken {
@@ -109,4 +115,127 @@ model Event {
 
     user   User   @relation(fields: [userId], references: [id])
     userId String
+}
+
+// kanban-board schema
+model Board {
+    id            String            @id @default(cuid())
+    ownerId       String
+    owner         User              @relation(fields: [ownerId], references: [id])
+    name          String
+    columns       Column[]
+    background    String? // background image or color of a board
+    description   String?
+    members       BoardMembership[]
+    memberInvites BoardInvite[]
+    isPinned      Boolean           @default(false)
+    createdAt     DateTime          @default(now())
+    updateAt      DateTime          @updatedAt
+    labels        Label[]
+}
+
+enum BoardRole {
+    ADMIN
+    MANAGER
+    CONTRIBUTOR
+}
+
+model BoardMembership {
+    id      String @id @default(cuid())
+    role    BoardRole @default(CONTRIBUTOR)
+    boardId String
+    board   Board  @relation(fields: [boardId], references: [id], onDelete: Cascade)
+    userId  String
+    user    User   @relation(fields: [userId], references: [id])
+}
+
+
+model BoardInvite {
+    id        String   @id @default(cuid())
+    boardId   String
+    board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+    email     String
+    isPending Boolean  @default(true)
+    expireAt  DateTime
+    createdAt DateTime @default(now())
+}
+
+model Column {
+    id          String   @id @default(cuid())
+    columnIndex Int
+    title       String
+    boardId     String
+    board       Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+    cards       Card[]
+    createdAt   DateTime @default(now())
+    updateAt    DateTime @updatedAt
+}
+
+model Card {
+    id          String          @id @default(cuid())
+    title       String
+    description String
+    cover       String?
+    columnId    String
+    rowIndex    Int
+    comments    Comment[]
+    assignees   CardAssignees[]
+    labels      CardLabels[]
+    attachments Attachment[]
+    column      Column          @relation(fields: [columnId], references: [id], onDelete: Cascade)
+    createdAt   DateTime        @default(now())
+    updateAt    DateTime        @updatedAt
+}
+
+model Label {
+    id      String       @id @default(cuid())
+    name    String
+    color   String
+    cards   CardLabels[]
+    boardId String
+    board   Board        @relation(fields: [boardId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+    id          String       @id @default(cuid())
+    content     String
+    authorId    String
+    cardId      String
+    attachments Attachment[]
+    card        Card         @relation(fields: [cardId], references: [id])
+    author      User         @relation(fields: [authorId], references: [id])
+    createdAt   DateTime     @default(now())
+    updateAt    DateTime     @updatedAt
+}
+
+enum AttachmentType {
+    File
+    Link
+}
+
+model Attachment {
+    id        String         @id @default(cuid())
+    path      String
+    title     String?
+    type      AttachmentType
+    commentId String?
+    comment   Comment?       @relation(fields: [commentId], references: [id])
+    cardId    String?
+    card      Card?          @relation(fields: [cardId], references: [id])
+}
+
+model CardLabels {
+    id      String @id @default(cuid())
+    cardId  String
+    card    Card   @relation(fields: [cardId], references: [id])
+    labelId String
+    label   Label  @relation(fields: [labelId], references: [id])
+}
+
+model CardAssignees {
+    id     String @id @default(cuid())
+    cardId String
+    card   Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+    userId String
+    user   User   @relation(fields: [userId], references: [id])
 }
