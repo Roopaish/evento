@@ -46,10 +46,12 @@ export function UserNav({ session }: { session: Session | null }) {
   if (!session?.user) {
     return (
       <div className="flex gap-2 align-middle">
-        <Button variant="secondary" onClick={() => router.push("/login")}>
-          Login
-        </Button>
-        <Button onClick={() => router.push("/register")}>Register</Button>
+        <Link href="/login">
+          <Button variant="secondary">Login</Button>
+        </Link>
+        <Link href="/register">
+          <Button>Register</Button>
+        </Link>
       </div>
     )
   }

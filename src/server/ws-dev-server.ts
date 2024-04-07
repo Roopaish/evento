@@ -1,16 +1,31 @@
 import { applyWSSHandler } from "@trpc/server/adapters/ws"
+import { getSession } from "next-auth/react"
 import { WebSocketServer } from "ws"
 
 import { appRouter } from "./api/root"
-import { createTRPCContext } from "./api/trpc"
 
 const wss = new WebSocketServer({
-  port: 3001,
+  port: Number(process.env.WS_PORT ?? "3001"),
 })
+
 const handler = applyWSSHandler({
   wss,
   router: appRouter,
-  createContext: createTRPCContext,
+  // @ts-expect-error No need to pass db
+  createContext: async ({ req, res, ...rest }) => {
+    let session = null
+
+    try {
+      session = await getSession({ req })
+    } catch (e) {
+      // console.log(e)
+    }
+
+    return { ...rest, req, res, session }
+  },
+  onError: () => {
+    console.log("error")
+  },
 })
 
 wss.on("connection", (ws) => {
