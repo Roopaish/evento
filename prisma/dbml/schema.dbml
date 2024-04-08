@@ -43,14 +43,20 @@ Table User {
   id String [pk]
   name String
   email String [unique]
+  password String
   emailVerified DateTime
   image String
   role UserRole [not null, default: 'USER']
+  isAdmin Boolean [not null, default: false]
   phoneNumber String[] [not null]
   accounts Account [not null]
   sessions Session [not null]
   posts Post [not null]
   Event Event [not null]
+  boards BoardMembership [not null]
+  ownedBoards Board [not null]
+  cards CardAssignees [not null]
+  comments Comment [not null]
 }
 
 Table VerificationToken {
@@ -79,6 +85,116 @@ Table Event {
   userId String [not null]
 }
 
+Table Board {
+  id String [pk]
+  ownerId String [not null]
+  owner User [not null]
+  name String [not null]
+  columns Column [not null]
+  background String
+  description String
+  members BoardMembership [not null]
+  memberInvites BoardInvite [not null]
+  isPinned Boolean [not null, default: false]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+  labels Label [not null]
+}
+
+Table BoardMembership {
+  id String [pk]
+  role BoardRole [not null, default: 'CONTRIBUTOR']
+  boardId String [not null]
+  board Board [not null]
+  userId String [not null]
+  user User [not null]
+}
+
+Table BoardInvite {
+  id String [pk]
+  boardId String [not null]
+  board Board [not null]
+  email String [not null]
+  isPending Boolean [not null, default: true]
+  expireAt DateTime [not null]
+  createdAt DateTime [default: `now()`, not null]
+}
+
+Table Column {
+  id String [pk]
+  columnIndex Int [not null]
+  title String [not null]
+  boardId String [not null]
+  board Board [not null]
+  cards Card [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table Card {
+  id String [pk]
+  title String [not null]
+  description String [not null]
+  cover String
+  columnId String [not null]
+  rowIndex Int [not null]
+  comments Comment [not null]
+  assignees CardAssignees [not null]
+  labels CardLabels [not null]
+  attachments Attachment [not null]
+  column Column [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table Label {
+  id String [pk]
+  name String [not null]
+  color String [not null]
+  cards CardLabels [not null]
+  boardId String [not null]
+  board Board [not null]
+}
+
+Table Comment {
+  id String [pk]
+  content String [not null]
+  authorId String [not null]
+  cardId String [not null]
+  attachments Attachment [not null]
+  card Card [not null]
+  author User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updateAt DateTime [not null]
+}
+
+Table Attachment {
+  id String [pk]
+  path String [not null]
+  title String
+  type AttachmentType [not null]
+  commentId String
+  comment Comment
+  cardId String
+  card Card
+}
+
+Table CardLabels {
+  id String [pk]
+  cardId String [not null]
+  card Card [not null]
+  labelId String [not null]
+  label Label [not null]
+}
+
+Table CardAssignees {
+  id String [pk]
+  cardId String [not null]
+  card Card [not null]
+  userId String [not null]
+  user User [not null]
+}
+
 Enum UserRole {
   ADMIN
   MANAGER
@@ -94,6 +210,17 @@ Enum EventType {
   OTHER
 }
 
+Enum BoardRole {
+  ADMIN
+  MANAGER
+  CONTRIBUTOR
+}
+
+Enum AttachmentType {
+  File
+  Link
+}
+
 Ref: Post.createdById > User.id
 
 Ref: Account.userId > User.id [delete: Cascade]
@@ -101,3 +228,33 @@ Ref: Account.userId > User.id [delete: Cascade]
 Ref: Session.userId > User.id [delete: Cascade]
 
 Ref: Event.userId > User.id
+
+Ref: Board.ownerId > User.id
+
+Ref: BoardMembership.boardId > Board.id [delete: Cascade]
+
+Ref: BoardMembership.userId > User.id
+
+Ref: BoardInvite.boardId > Board.id [delete: Cascade]
+
+Ref: Column.boardId > Board.id [delete: Cascade]
+
+Ref: Card.columnId > Column.id [delete: Cascade]
+
+Ref: Label.boardId > Board.id [delete: Cascade]
+
+Ref: Comment.cardId > Card.id
+
+Ref: Comment.authorId > User.id
+
+Ref: Attachment.commentId > Comment.id
+
+Ref: Attachment.cardId > Card.id
+
+Ref: CardLabels.cardId > Card.id
+
+Ref: CardLabels.labelId > Label.id
+
+Ref: CardAssignees.cardId > Card.id [delete: Cascade]
+
+Ref: CardAssignees.userId > User.id
