@@ -2,6 +2,7 @@ import Link from "next/link"
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa"
 
 import { Button } from "./ui/button"
+import { Icons } from "./ui/icons"
 
 export default function Footer() {
   return (
@@ -9,12 +10,12 @@ export default function Footer() {
       <div className="bg-blue-900 py-5 text-white">
         <div>
           <div className="px-auto container mx-auto  flex flex-col items-center justify-center gap-4 ">
-            <Link href="/">
-              <h2 className="mr-2 flex text-3xl font-bold">Evento</h2>
+            <Link href={"/"} className="mr-11">
+              <Icons.logo mode="dark"></Icons.logo>
             </Link>
             <div className="mb-4 flex">
               <input
-                className="mr-4 rounded-md bg-slate-200 p-2 focus:outline-none"
+                className="mr-4 rounded-md bg-slate-200 p-2 text-black focus:outline-none"
                 placeholder="Enter Your Email"
               ></input>
               <Button>Subscribe</Button>
