@@ -7,28 +7,16 @@ import { api } from "~/trpc/react"
 import { Button } from "~/components/ui/button"
 import { Input } from "~/components/ui/input"
 
+import TestSubscription from "./test-subscription"
+
 export default function TestPage() {
   const [value, setValue] = useState("")
   const [post, setPost] = useState<Post | null>(null)
-  const [num, setNumber] = useState<number>()
-  const [privateNum, setPrivateNumber] = useState<number>()
-
-  api.post.randomNumber.useSubscription(undefined, {
-    onData(n) {
-      setNumber(n)
-    },
-  })
-
-  api.post.randomPrivateNumber.useSubscription(undefined, {
-    onData(n) {
-      setPrivateNumber(n)
-    },
-  })
 
   const { mutate } = api.post.create.useMutation({
-    onSuccess(data) {
-      console.log({ data })
-    },
+    // onSuccess(data) {
+    //   console.log({ data })
+    // },
     onError(error) {
       console.log({ error })
     },
@@ -49,7 +37,7 @@ export default function TestPage() {
 
   const { data: secret } = api.post.getSecretMessage.useQuery()
   return (
-    <div>
+    <div className="container mt-20">
       <div>
         <Input
           value={value}
@@ -72,11 +60,8 @@ export default function TestPage() {
       <div>
         Secret message: {secret ? JSON.stringify(secret) : "Login to see"}
       </div>
-      <div>Random Number from websocket: {num}</div>
-      <div>
-        Protected Random Number from websocket:{" "}
-        {privateNum ? privateNum : "Login to see"}
-      </div>
+
+      <TestSubscription />
     </div>
   )
 }
