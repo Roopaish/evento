@@ -31,6 +31,7 @@ export default function Footer() {
           <div className=" m-4 flex justify-between gap-8 p-4">
             <p>&copy; 2024 All Rights Reserved</p>
             <div className="flex items-center">
+              <p className="mr-2 font-bold">Follow Us :</p>
               <FaFacebook size={20} className="mr-2" />
               <FaInstagram size={20} className="mr-2" />
               <FaTwitter size={20} className="mr-2" />
