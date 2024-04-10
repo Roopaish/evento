@@ -2,6 +2,7 @@ import "~/styles/globals.css"
 
 import { getServerAuthSession } from "~/server/auth"
 
+import Footer from "~/components/footer"
 import { MainNav } from "~/components/main-nav"
 import { UserNav } from "~/components/user-nav"
 
@@ -24,6 +25,7 @@ export default async function RootLayout({
         </div>
       </header>
       <div className="mt-[60px] bg-background pb-10">{children}</div>
+      <Footer />
     </>
   )
 }
