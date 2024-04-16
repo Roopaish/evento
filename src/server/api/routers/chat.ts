@@ -1,13 +1,13 @@
-import { EventEmitter } from "events"
 import { type ChatGroup } from "@prisma/client"
 import { observable } from "@trpc/server/observable"
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "~/server/api/trpc"
+import { ee } from "~/trpc/shared"
 
 import { chatGroupSchema } from "~/lib/validations/chatGroupSchema"
-
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
-
-// create a global event emitter (could be replaced by redis, etc)
-const ee = new EventEmitter()
 
 export const chatRouter = createTRPCRouter({
   onAdd: publicProcedure.subscription(() => {
