@@ -33,6 +33,20 @@ export function TRPCReactProvider(props: {
             process.env.NODE_ENV === "development" ||
             (op.direction === "down" && op.result instanceof Error),
         }),
+        // unstable_httpBatchStreamLink({
+        //   url: getUrl(),
+        //   headers() {
+        //     return {
+        //       cookie: props.cookies,
+        //       "x-trpc-source": "react",
+        //     }
+        //   },
+        // }),
+        wsLink({
+          client: createWSClient({
+            url: env.NEXT_PUBLIC_WS_URL,
+          }),
+        }),
         splitLink({
           condition: (op) => op.type === "subscription",
           false: unstable_httpBatchStreamLink({

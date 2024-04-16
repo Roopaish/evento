@@ -47,6 +47,63 @@ export const postRouter = createTRPCRouter({
     })
   }),
 
+  setMsg: publicProcedure
+    .input(
+      z.object({
+        msg: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      try {
+        ee.emit("msg-p", input.msg)
+        console.log(input.msg)
+      } catch (e) {
+        console.log({ error: e })
+      }
+    }),
+
+  getMsg: publicProcedure.subscription(() => {
+    return observable<string>((emit) => {
+      const onMsg = (msg: string) => {
+        console.log("on-msg")
+        emit.next(msg)
+      }
+
+      console.log("getMessage")
+      ee.on("msg-p", onMsg)
+      console.log("getMessage passedon")
+
+      return () => {
+        console.log("off")
+        ee.off("msg-p", onMsg)
+      }
+    })
+  }),
+
+  setProtectedMsg: protectedProcedure
+    .input(
+      z.object({
+        msg: z.string(),
+      })
+    )
+    .mutation(({ ctx, input }) => {
+      ee.emit("msg", input.msg)
+    }),
+
+  getProtectedMsg: protectedProcedure.subscription(() => {
+    return observable<string>((emit) => {
+      const onMsg = (msg: string) => {
+        emit.next(msg)
+      }
+
+      ee.on("msg", onMsg)
+
+      return () => {
+        ee.off("msg", onMsg)
+      }
+    })
+  }),
+
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!"
   }),
