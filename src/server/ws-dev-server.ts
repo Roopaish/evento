@@ -3,6 +3,7 @@ import { getSession } from "next-auth/react"
 import { WebSocketServer } from "ws"
 
 import { appRouter } from "./api/root"
+import { db } from "./db"
 
 const wss = new WebSocketServer({
   port: Number(process.env.WS_PORT ?? "3001"),
@@ -11,7 +12,6 @@ const wss = new WebSocketServer({
 const handler = applyWSSHandler({
   wss,
   router: appRouter,
-  // @ts-expect-error No need to pass db
   createContext: async ({ req, res, ...rest }) => {
     let session = null
 
@@ -21,7 +21,7 @@ const handler = applyWSSHandler({
       // console.log(e)
     }
 
-    return { ...rest, req, res, session }
+    return { ...rest, req, res, session, db: db }
   },
   onError: () => {
     console.log("error")
