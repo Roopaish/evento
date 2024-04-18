@@ -13,7 +13,7 @@ export default function TestPage() {
   const [value, setValue] = useState("")
   const [post, setPost] = useState<Post | null>(null)
 
-  const { mutate } = api.post.create.useMutation({
+  const { mutate, isLoading } = api.post.create.useMutation({
     // onSuccess(data) {
     //   console.log({ data })
     // },
@@ -52,6 +52,7 @@ export default function TestPage() {
             })
           }}
         >
+          {isLoading && "Loading..."}
           Create post
         </Button>
       </div>
