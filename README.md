@@ -6,24 +6,16 @@
 - `pnpm install`
 - `pnpm prepare`
 - On linux only: `chmod ug+x .husky/*`
-- Copy .env.example to .env and fill the values (See below on database usage)
+- Copy .env.example to .env and fill the values (See below on database setup)
   - For the Email part, replace `noreply@example.com` with your email, and replace password with your app password which can be generated from your `Manage Google Account > Security > 2 Factor Authentication > App Passwords`
 - `pnpm dev:next` to run the next.js server
 - `pnpm dev:wss` to run the websocket server
 - `pnpm dev` to run both at once
 
 ## Database - Postgresql
+Ways to create prostgres database to work on
 
-Two ways to create your own postgresql database
-
-1. Using https://console.clever-cloud.com
-
-- Create your account
-- Go to console
-- Click on things as follows: `Personal Space > Create (dropdown) > an add-on > Select Postgresql > Choose 1st (free) database > Next > Give it a name > Next > Then copy the connection URL and pase it in .env as DATABASE_URL value`
-- Run `pnpm db:push` to sync prisma schema to database
-
-2. Using docker
+1. Using docker
 
 - Install Docker Engine (Desktop/CLI only)
 - Fill the postgresql values in .env file
