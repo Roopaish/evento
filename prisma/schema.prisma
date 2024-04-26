@@ -107,7 +107,7 @@ model Event {
     capacity    Int
     description String
     instruction String?
-    images      String[]
+    // images      String[]
 
     user   User   @relation(fields: [userId], references: [id])
     userId String

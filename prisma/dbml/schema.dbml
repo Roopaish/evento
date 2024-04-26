@@ -76,7 +76,6 @@ Table Event {
   capacity Int [not null]
   description String [not null]
   instruction String
-  images String[] [not null]
   user User [not null]
   userId String [not null]
 }
