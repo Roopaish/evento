@@ -1,21 +1,24 @@
 import { type IconType } from "~/components/ui/icons"
 
-export type NavItem = {
+export interface NavItem {
   icon?: IconType
   label: string
   path: string
 }
 
-export type SiteConfig = {
+export interface SiteConfig {
   name: string
   description: string
   url: string
   ogImage: string
 }
 
-export type SideNavItem = { title: string; data: NavItem[] }
+export interface SideNavItem {
+  title: string
+  data: NavItem[]
+}
 
-type APIResponse<T> = {
+interface APIResponse<T> {
   data: T
   success: boolean
   message: string
