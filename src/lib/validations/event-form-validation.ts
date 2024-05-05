@@ -22,20 +22,20 @@ export const eventFormSchema = z.object({
   description: z.string().min(80),
   staffs: z.array(z.string().email()).optional(),
   instruction: z.string().optional(),
-  images: z
-    .custom<FileList>((val) => val instanceof FileList, "Required")
-    .refine((files) => files.length > 0, `Required`)
-    .refine((files) => files.length <= 5, `Maximum of 5 images are allowed.`)
-    .refine(
-      (files) => Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
-      `Each file size should be less than 5 MB.`
-    )
-    .refine(
-      (files) =>
-        Array.from(files).every((file) =>
-          ACCEPTED_IMAGE_TYPES.includes(file.type)
-        ),
-      "Only these types are allowed .jpg, .jpeg, .png and .webp"
-    )
-    .optional(),
+  // images: z
+  //   .custom<FileList>((val) => val instanceof FileList, "Required")
+  //   .refine((files) => files.length > 0, `Required`)
+  //   .refine((files) => files.length <= 5, `Maximum of 5 images are allowed.`)
+  //   .refine(
+  //     (files) => Array.from(files).every((file) => file.size <= MAX_FILE_SIZE),
+  //     `Each file size should be less than 5 MB.`
+  //   )
+  //   .refine(
+  //     (files) =>
+  //       Array.from(files).every((file) =>
+  //         ACCEPTED_IMAGE_TYPES.includes(file.type)
+  //       ),
+  //     "Only these types are allowed .jpg, .jpeg, .png and .webp"
+  //   )
+  //   .optional(),
 })

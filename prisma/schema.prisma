@@ -64,17 +64,19 @@ enum UserRole {
 }
 
 model User {
-    id            String    @id @default(cuid())
+    id            String        @id @default(cuid())
     name          String?
-    email         String?   @unique
+    email         String?       @unique
     emailVerified DateTime?
     image         String?
-    role          UserRole  @default(USER)
+    role          UserRole      @default(USER)
     phoneNumber   String[]
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
     Event         Event[]
+    ChatGroup     ChatGroup[]
+    chatMessage   ChatMessage[]
 }
 
 model VerificationToken {
@@ -105,8 +107,27 @@ model Event {
     capacity    Int
     description String
     instruction String?
-    images      String[]
+    // images      String[]
 
     user   User   @relation(fields: [userId], references: [id])
     userId String
+}
+
+model ChatGroup {
+    id          String        @id @default(cuid())
+    name        String
+    createdAt   DateTime      @default(now())
+    user        User          @relation(fields: [userId], references: [id])
+    userId      String
+    chatMessage ChatMessage[]
+}
+
+model ChatMessage {
+    id          String    @id @default(cuid())
+    message     String
+    createdAt   DateTime  @default(now())
+    user        User      @relation(fields: [createdById], references: [id])
+    chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id])
+    createdById String
+    chatGroupId String
 }

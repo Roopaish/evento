@@ -37,11 +37,13 @@ export default function AddEvent() {
     defaultValues: {},
   })
 
-  const images = form.watch("images")
-
+  // const images = form.watch("images")
+  const setChatGroup = api.chat.create.useMutation()
   const { mutate, isLoading } = api.event.addEvent.useMutation({
-    onSuccess: () => {
-      console.log("Good")
+    onSuccess: (data) => {
+      setChatGroup.mutate({
+        name: data.title,
+      })
     },
     onError: () => {
       console.log("Bad")
@@ -171,14 +173,13 @@ export default function AddEvent() {
           )}
         />
 
-        <FormField
+        {/* <FormField
           control={form.control}
           name="images"
           render={({ field: { onChange }, ...field }) => {
             return (
               <FormItem>
                 <FormLabel> Event Images</FormLabel>
-                {/* File Upload */}
                 <FormControl>
                   <div className="mt-2 flex flex-wrap gap-2">
                     {images &&
@@ -209,7 +210,7 @@ export default function AddEvent() {
                           >
                             <Icons.Trash className="h-4 w-4" />
                           </Button>
-                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                        
                           <img
                             width={160}
                             height={160}
@@ -261,6 +262,7 @@ export default function AddEvent() {
             )
           }}
         />
+        */}
 
         <Button type="submit">
           {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
