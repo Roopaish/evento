@@ -1,32 +1,14 @@
-"use client"
+import { getServerAuthSession } from "~/server/auth"
+import { db } from "~/server/db"
 
-import { api } from "~/trpc/react"
+import ChatGroup from "./_components/chatGroup"
 
-export default function Chats() {
-  const group = api.chat.find.useQuery()
-
+export default async function Chats() {
+  const group = await db.chatGroup.findMany()
+  const session = await getServerAuthSession()
   return (
-    <div className="container mt-20">
-      <div>
-        {/* <Input
-          value={value}
-          onChange={(e) => {
-            setValue(e.target?.value)
-          }}
-        />
-        <Button
-          onClick={() => {
-            createGroup.mutate({
-              name: value,
-            })
-          }}
-        >
-          Create Group
-        </Button> */}
-      </div>
-      <div>
-        {group?.data?.map((chat) => <h1 key={chat.id}>{chat.name}</h1>)}
-      </div>
-    </div>
+    <>
+      <ChatGroup session={session} group={group} />
+    </>
   )
 }
