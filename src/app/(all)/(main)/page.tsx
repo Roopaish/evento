@@ -2,6 +2,7 @@
 
 import Image from "next/image"
 
+import { events } from "~/config/dummy-data"
 import { Button } from "~/components/ui/button"
 import {
   Carousel,
@@ -19,7 +20,6 @@ import {
   SelectValue,
 } from "~/components/ui/select"
 import { EventCard } from "~/components/event-card"
-import { events } from "~/components/manage-events"
 
 export default async function Home() {
   // const session = await getServerAuthSession()

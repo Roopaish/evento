@@ -3,7 +3,6 @@
 import { useState } from "react"
 import { api } from "~/trpc/react"
 
-import { Icons } from "~/components/ui/icons"
 import { Input } from "~/components/ui/input"
 
 export default function TestSubscription() {

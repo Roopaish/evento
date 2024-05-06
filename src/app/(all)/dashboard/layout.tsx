@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation"
+import { getServerAuthSession } from "~/server/auth"
+
 import { userSideNavItems } from "~/config/nav"
 
 import Sidebar from "./sidebar"
@@ -7,11 +10,11 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const session = await getServerAuthSession()
+  const session = await getServerAuthSession()
 
-  // if (!session?.user) {
-  //   redirect("/login")
-  // }
+  if (!session?.user) {
+    redirect("/login")
+  }
 
   return (
     <div>

@@ -2,9 +2,9 @@ import Image from "next/image"
 
 import { cn } from "~/lib/utils"
 
-export type EventCardProps = {
-  img: string
-  eventDate: string
+export interface EventCardProps {
+  img?: string
+  eventDate?: string
   eventName: string
   eventAddress: string
 }
@@ -20,7 +20,7 @@ export function EventCard({
     <div className={cn("w-full rounded-[5px] bg-white p-5 shadow", className)}>
       <figure className="w-full overflow-hidden rounded-md ">
         <Image
-          src={img}
+          src={img ?? "/logo.png"}
           alt={eventName}
           height={350}
           width={350}

@@ -20,14 +20,14 @@ export const userSideNavItems: SideNavItem[] = [
         label: "Dashboard",
         path: "/dashboard",
       },
-      { icon: "CalendarCheck", label: "Events", path: "/events" },
-      { icon: "Users", label: "Staffs", path: "/staffs" },
-      { icon: "MessagesSquare", label: "Chats", path: "/chats" },
+      { icon: "CalendarCheck", label: "Events", path: "/dashboard/events" },
+      { icon: "Users", label: "Staffs", path: "/dashboard/staffs" },
+      { icon: "MessagesSquare", label: "Chats", path: "/dashboard/chats" },
     ],
   },
   {
     title: "Account",
-    data: [{ icon: "User", label: "Profile", path: "/profile" }],
+    data: [{ icon: "User", label: "Profile", path: "/dashboard/profile" }],
   },
 ]
 

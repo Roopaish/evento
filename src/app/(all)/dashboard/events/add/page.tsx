@@ -1,10 +1,11 @@
 "use client"
 
-import { useRef } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EventType } from "@prisma/client"
 import { api } from "~/trpc/react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import { type z } from "zod"
 
 import { eventFormSchema } from "~/lib/validations/event-form-validation"
@@ -19,7 +20,6 @@ import {
 } from "~/components/ui/form"
 import { Icons } from "~/components/ui/icons"
 import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -30,7 +30,7 @@ import {
 import { Textarea } from "~/components/ui/textarea"
 
 export default function AddEvent() {
-  const ref = useRef<HTMLInputElement | null>(null)
+  const router = useRouter()
 
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
@@ -44,9 +44,11 @@ export default function AddEvent() {
       setChatGroup.mutate({
         name: data.title,
       })
+      toast.success("Event has been created")
+      router.push("/dashboard/events")
     },
-    onError: () => {
-      console.log("Bad")
+    onError: (e) => {
+      toast.error(e.message ?? "Something went wrong")
     },
   })
 
