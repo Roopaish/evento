@@ -1,7 +1,7 @@
 import { getServerAuthSession } from "~/server/auth"
 import { db } from "~/server/db"
 
-import ChatGroup from "./_components/chatGroup"
+import ChatGroup from "~/components/chat/chat-group"
 
 export default async function Chats() {
   const groups = await db.chatGroup.findMany()
