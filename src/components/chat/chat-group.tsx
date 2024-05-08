@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import { type ChatMessage } from "@prisma/client"
 import { api } from "~/trpc/react"
 import { type Session } from "next-auth"
 
@@ -27,10 +28,17 @@ export default function ChatGroup({
   //  const[messages,setMessages]=useState<ChatMessage[] | undefined>(undefined)
 
   //const [latestMessage,setLatestMessage]=useState<ChatMessage>()
+  const [msg, setMsg] = useState<ChatMessage>()
+
   const allMessages = api.chat.findAllMessage.useQuery({ id }).data
-  //const [message, setMessage] = useState<ChatMessage>()
   const sendMessage = api.chat.sendMessage.useMutation()
 
+  api.chat.getLatestMsg.useSubscription(undefined, {
+    onData(data) {
+      allMessages?.push(data)
+      setMsg(data)
+    },
+  })
   function setMessage() {
     if (id == "") {
       return
@@ -55,8 +63,8 @@ export default function ChatGroup({
   const messageRef = useRef<null | HTMLDivElement>(null)
 
   useEffect(() => {
-    messageRef.current?.scrollIntoView()
-  }, [allMessages])
+    messageRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" })
+  }, [allMessages, msg])
 
   return (
     <div className="flex h-screen justify-start">
@@ -108,10 +116,9 @@ export default function ChatGroup({
                   </div>
                 </div>
               )}
+              <div ref={messageRef}></div>
             </>
           ))}
-
-          <div ref={messageRef}></div>
         </div>
 
         <div className="flex items-center justify-center gap-3 p-5">
