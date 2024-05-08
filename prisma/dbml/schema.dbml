@@ -53,6 +53,7 @@ Table User {
   Event Event [not null]
   ChatGroup ChatGroup [not null]
   chatMessage ChatMessage [not null]
+  Asset Asset [not null]
 }
 
 Table VerificationToken {
@@ -76,27 +77,46 @@ Table Event {
   capacity Int [not null]
   description String [not null]
   instruction String
+  assets Asset [not null]
   user User [not null]
   userId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Table ChatGroup {
   id String [pk]
   name String [not null]
-  createdAt DateTime [default: `now()`, not null]
   user User [not null]
   userId String [not null]
   chatMessage ChatMessage [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Table ChatMessage {
   id String [pk]
   message String [not null]
-  createdAt DateTime [default: `now()`, not null]
   user User [not null]
   chatGroup ChatGroup [not null]
   createdById String [not null]
   chatGroupId String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Asset {
+  fileId String [pk]
+  name String [not null]
+  url String [unique, not null]
+  thumbnailUrl String [unique, not null]
+  size Float [not null]
+  user User [not null]
+  userId String [not null]
+  event Event
+  eventId String
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Enum UserRole {
@@ -127,3 +147,7 @@ Ref: ChatGroup.userId > User.id
 Ref: ChatMessage.createdById > User.id
 
 Ref: ChatMessage.chatGroupId > ChatGroup.id
+
+Ref: Asset.userId > User.id
+
+Ref: Asset.eventId > Event.id

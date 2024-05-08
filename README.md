@@ -6,13 +6,15 @@
 - `pnpm install`
 - `pnpm prepare`
 - On linux only: `chmod ug+x .husky/*`
-- Copy .env.example to .env and fill the values (See below on database setup)
+- Copy .env.example to .env and fill the values
   - For the Email part, replace `noreply@example.com` with your email, and replace password with your app password which can be generated from your `Manage Google Account > Security > 2 Factor Authentication > App Passwords`
-- `pnpm dev:next` to run the next.js server
-- `pnpm dev:wss` to run the websocket server
-- `pnpm dev` to run both at once
+  - [Database](#database---postgresql)
+- `pnpm main:next` to run the next.js server
+- `pnpm main:wss` to run the websocket server
+- `pnpm main` to run both at once
 
 ## Database - Postgresql
+
 Ways to create prostgres database to work on
 
 1. Using docker
@@ -21,34 +23,35 @@ Ways to create prostgres database to work on
 - Fill the postgresql values in .env file
 
 ```env
-   POSTGRES_PASSWORD="some-password"
+ POSTGRES_PASSWORD="some-password"
  POSTGRES_USER="admin"
  POSTGRES_DB="evento"
 ```
 
-- Run docker compose: `sudo docker compose up` or `docker-compose up`
+- Run docker compose: `sudo docker compose up -d` or `docker-compose up -d`
 - Update DATABASE_URL: `postgresql://username:password@host:port/db_name`, so for above env file it will be `postgresql://admin:some-password@localhost:5432/evento`
 - Run `pnpm db:push` to sync prisma schema to database
 
 ## How to collaborate
 
-- Clone this repo using ssh or https
-- Create a new branch from `dev`: `git checkout -b new-branch`, this creates a `new-branch` and also switches the branch from `dev` to `new-branch`
-- Commit and push the branch and its changes to the repo
+1.
 
-- Make a PR from `your-branch` to `dev`
+- Clone this repo using ssh or https
+- Create a new branch from `main`: `git checkout -b new-branch`, this creates a `new-branch` and also switches the branch from `main` to `new-branch`
+
+2.
+
+- Make changes then Commit `git commit -m prefix:Something` and push the branch `git push` (pushing for first time?: `git push -u origin new-branch`)
+- Make a PR from `your-branch` to `main`
 - If there is no issue, merge it
 - If there is issue solve it by discussing with your peer or if you know the impact of changes, do it yourself
-- After that check if it deploys correctly, if it does then make another PR from `dev` to `main`, and repeat above 2 process else fix it
 
-// Before starting again
+// Before starting again 3.
 
 - Save and Commit all the changes in your current branch
-- Switch to `dev`: `git checkout dev` -> `git pull`
-- Switch to `your-branch`: `git checkout your-branch`
-- Merge recent changes from dev to `your-branch`: `git merge main`
-
-Repeat the process
+- Pull main branch `git pull origin main`
+- Merge recent changes from main to `your-branch`: `git merge main`
+- Repeat 2
 
 ## The Stack
 

@@ -3,5 +3,5 @@
     ["clsx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"],
     ["cn\\(([^)]*)\\)"]
   ],
-  "cSpell.words": ["Evento"]
+  "cSpell.words": ["Evento", "signup"]
 }
