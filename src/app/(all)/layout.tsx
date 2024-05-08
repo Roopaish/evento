@@ -2,9 +2,9 @@ import "~/styles/globals.css"
 
 import { getServerAuthSession } from "~/server/auth"
 
-import Footer from "~/components/footer"
-import { MainNav } from "~/components/main-nav"
-import { UserNav } from "~/components/user-nav"
+import Footer from "~/components/layout/footer"
+import { MainNav } from "~/components/layout/main-nav"
+import { UserNav } from "~/components/layout/user-nav"
 
 export default async function RootLayout({
   children,

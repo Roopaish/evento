@@ -3,7 +3,7 @@ import { getServerAuthSession } from "~/server/auth"
 
 import { userSideNavItems } from "~/config/nav"
 
-import Sidebar from "./sidebar"
+import Sidebar from "../../../components/layout/sidebar"
 
 export default async function RootLayout({
   children,

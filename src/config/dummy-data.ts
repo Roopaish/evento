@@ -1,4 +1,4 @@
-import { type EventCardProps } from "~/components/event-card"
+import { type EventCardProps } from "~/components/event/event-card"
 
 export const events: EventCardProps[] = [
   {

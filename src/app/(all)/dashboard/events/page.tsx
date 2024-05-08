@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { Button } from "~/components/ui/button"
 import { Icons } from "~/components/ui/icons"
 import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs"
-import ManageEvents from "~/components/manage-events"
+import ManageEvents from "~/components/event/manage-events"
 
 export default function Events() {
   const router = useRouter()

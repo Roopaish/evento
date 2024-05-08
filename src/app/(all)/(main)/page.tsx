@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select"
-import { EventCard } from "~/components/event-card"
+import { EventCard } from "~/components/event/event-card"
 
 export default async function Home() {
   // const session = await getServerAuthSession()

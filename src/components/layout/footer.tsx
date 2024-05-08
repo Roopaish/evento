@@ -1,8 +1,8 @@
 import Link from "next/link"
 import { FaFacebook, FaInstagram, FaTwitter } from "react-icons/fa"
 
-import { Button } from "./ui/button"
-import { Icons } from "./ui/icons"
+import { Button } from "../ui/button"
+import { Icons } from "../ui/icons"
 
 export default function Footer() {
   return (

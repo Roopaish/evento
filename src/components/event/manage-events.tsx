@@ -4,7 +4,7 @@ import { api } from "~/trpc/react"
 
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
 import { Separator } from "~/components/ui/separator"
-import { EventCard } from "~/components/event-card"
+import { EventCard } from "~/components/event/event-card"
 
 export default function ManageEvents() {
   const { data } = api.event.getMyEvents.useInfiniteQuery({
