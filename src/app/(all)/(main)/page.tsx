@@ -158,15 +158,8 @@ export default async function Home() {
       <section className="px-section">
         <div className="mx-auto max-w-7xl">
           <div className="grid grid-cols-1 gap-4 p-4 md:grid-cols-2 lg:grid-cols-3">
-            {events.map(({ img, eventDate, eventName, eventAddress }) => (
-              <EventCard
-                key={eventName}
-                img={img}
-                eventDate={eventDate}
-                eventName={eventName}
-                eventAddress={eventAddress}
-                className="w-full"
-              />
+            {events.map((event) => (
+              <EventCard key={event.id} {...event} className="w-full" />
             ))}
           </div>
         </div>

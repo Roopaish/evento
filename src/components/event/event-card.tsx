@@ -2,26 +2,25 @@ import Image from "next/image"
 
 import { cn } from "~/lib/utils"
 
-export interface EventCardProps {
-  img?: string
-  eventDate?: string
-  eventName: string
-  eventAddress: string
+export interface EventProps {
+  id: string
+  title: string
+  date: Date
+  address: string
 }
 
 export function EventCard({
-  img,
-  eventDate,
-  eventName,
-  eventAddress,
+  title,
+  address,
   className,
-}: EventCardProps & { className?: string }) {
+  date,
+}: EventProps & { className?: string }) {
   return (
     <div className={cn("w-full rounded-[5px] bg-white p-5 shadow", className)}>
       <figure className="w-full overflow-hidden rounded-md ">
         <Image
-          src={img ?? "/logo.png"}
-          alt={eventName}
+          src={"/logo.png"}
+          alt={title}
           height={350}
           width={350}
           className="h-64 w-full object-cover"
@@ -30,13 +29,13 @@ export function EventCard({
       </figure>
       <div className="mt-4 space-y-3 text-sm">
         <h3 className="text-lg font-semibold leading-none text-black">
-          {eventName}
+          {title}
         </h3>
 
-        <p className="text-xs font-normal text-primary">{eventDate}</p>
-        <p className="text-xs  font-normal text-muted-foreground">
-          {eventAddress}
+        <p className="text-xs font-normal text-primary">
+          {JSON.stringify(date)}
         </p>
+        <p className="text-xs  font-normal text-muted-foreground">{address}</p>
       </div>
     </div>
   )

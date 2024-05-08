@@ -28,14 +28,7 @@ export default function ManageEvents() {
         <div className="flex w-max space-x-4 p-4">
           {data?.pages?.map((p) =>
             p.data.map((event) => (
-              <EventCard
-                key={event.id}
-                img={event.assets[0]?.thumbnailUrl}
-                // eventDate={p.data}
-                eventName={event.title}
-                eventAddress={event.address}
-                className="w-64"
-              />
+              <EventCard key={event.id} {...event} className="w-64" />
             ))
           )}
           {}
