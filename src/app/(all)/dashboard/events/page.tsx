@@ -22,7 +22,7 @@ export default function Events() {
         </Tabs>
         <Button
           onClick={() => {
-            router.push("/events/add")
+            router.push("/dashboard/events/add")
           }}
         >
           <Icons.PlusCircleIcon className="mr-2 h-4 w-4" />

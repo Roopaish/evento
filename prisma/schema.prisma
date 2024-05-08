@@ -77,6 +77,7 @@ model User {
     Event         Event[]
     ChatGroup     ChatGroup[]
     chatMessage   ChatMessage[]
+    Asset         Asset[]
 }
 
 model VerificationToken {
@@ -107,27 +108,51 @@ model Event {
     capacity    Int
     description String
     instruction String?
-    // images      String[]
+    assets      Asset[]
 
     user   User   @relation(fields: [userId], references: [id])
     userId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([title, address])
 }
 
 model ChatGroup {
     id          String        @id @default(cuid())
     name        String
-    createdAt   DateTime      @default(now())
     user        User          @relation(fields: [userId], references: [id])
     userId      String
     chatMessage ChatMessage[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model ChatMessage {
     id          String    @id @default(cuid())
     message     String
-    createdAt   DateTime  @default(now())
     user        User      @relation(fields: [createdById], references: [id])
     chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id])
     createdById String
     chatGroupId String
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Asset {
+    fileId       String  @id
+    name         String
+    url          String  @unique
+    thumbnailUrl String  @unique
+    size         Float
+    user         User    @relation(fields: [userId], references: [id])
+    userId       String
+    event        Event?  @relation(fields: [eventId], references: [id])
+    eventId      String?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
