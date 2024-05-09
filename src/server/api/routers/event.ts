@@ -1,4 +1,5 @@
 import { TRPCError } from "@trpc/server"
+import * as z from "zod"
 
 import { eventFormSchema } from "~/lib/validations/event-form-validation"
 import { PaginatedInput } from "~/lib/validations/pagination"
@@ -60,5 +61,23 @@ export const eventRouter = createTRPCRouter({
           cause: e,
         })
       }
+    }),
+
+  getMyEvent: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const event = await ctx.db.event.findFirst({
+        where: {
+          id: input.id,
+          userId: ctx.session.user.id,
+        },
+      })
+      if (!event) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Event not found",
+        })
+      }
+      return event
     }),
 })

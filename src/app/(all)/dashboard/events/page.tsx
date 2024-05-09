@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "~/components/ui/button"
 import { Icons } from "~/components/ui/icons"
-import { Tabs, TabsList, TabsTrigger } from "~/components/ui/tabs"
 import ManageEvents from "~/components/event/manage-events"
 
 export default function Events() {
@@ -13,19 +12,20 @@ export default function Events() {
   return (
     <>
       <div className="my-6 flex justify-between">
-        <Tabs defaultValue="ongoing" className="w-[400px] ">
+        {/* <Tabs defaultValue="ongoing" className="w-[400px] ">
           <TabsList>
             <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
             <TabsTrigger value="upcoming">Upcoming</TabsTrigger>
             <TabsTrigger value="past">Past</TabsTrigger>
           </TabsList>
-        </Tabs>
+        </Tabs> */}
         <Button
           onClick={() => {
             router.push("/dashboard/events/add")
           }}
+          size="lg"
         >
-          <Icons.PlusCircleIcon className="mr-2 h-4 w-4" />
+          <Icons.Plus />
           Add Event
         </Button>
       </div>
