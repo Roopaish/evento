@@ -131,15 +131,15 @@ model ChatGroup {
 }
 
 model ChatMessage {
-    id          String    @id @default(cuid())
-    message     String
-    user        User      @relation(fields: [createdById], references: [id])
-    chatGroup   ChatGroup @relation(fields: [chatGroupId], references: [id])
-    createdById String
-    chatGroupId String
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    id            String    @id @default(cuid())
+    message       String
+    user          User      @relation(fields: [createdById], references: [id])
+    chatGroup     ChatGroup @relation(fields: [chatGroupId], references: [id])
+    createdById   String
+    chatGroupId   String
+    createdByName String
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
 }
 
 model Asset {

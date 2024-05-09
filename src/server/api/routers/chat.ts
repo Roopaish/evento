@@ -35,6 +35,7 @@ export const chatRouter = createTRPCRouter({
         data: {
           message: input.message,
           createdById: ctx.session.user.id,
+          createdByName: ctx.session.user.name!,
           chatGroupId: input.id,
         },
       })
