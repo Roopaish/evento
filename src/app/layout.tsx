@@ -1,13 +1,13 @@
 import "~/styles/globals.css"
 
-import { Inter } from "next/font/google"
+import localFont from "next/font/local"
 import { cookies } from "next/headers"
 import { TRPCReactProvider } from "~/trpc/react"
 
 import { Toaster } from "~/components/ui/sonner"
 
-const inter = Inter({
-  subsets: ["latin"],
+const inter = localFont({
+  src: "../fonts/Inter-VariableFont_slnt-wght.ttf",
   variable: "--font-sans",
 })
 
