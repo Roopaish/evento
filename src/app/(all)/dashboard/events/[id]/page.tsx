@@ -1,5 +1,7 @@
 import { api } from "~/trpc/server"
 
+import InviteMembersButton from "~/components/event/invite-members"
+
 export default async function EventDetails({
   params,
 }: {
@@ -11,6 +13,7 @@ export default async function EventDetails({
 
   return (
     <div>
+      <InviteMembersButton />
       EventDetails
       {JSON.stringify(data)}
     </div>

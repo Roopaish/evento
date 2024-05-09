@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation"
 
 import { Button } from "~/components/ui/button"
 import { Icons } from "~/components/ui/icons"
-import ManageEvents from "~/components/event/manage-events"
+import MyEvents from "~/components/event/my-events"
 
 export default function Events() {
   const router = useRouter()
@@ -29,7 +29,7 @@ export default function Events() {
           Add Event
         </Button>
       </div>
-      <ManageEvents />
+      <MyEvents />
     </>
   )
 }
