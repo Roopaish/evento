@@ -1,11 +1,7 @@
 import { revalidatePath } from "next/cache"
 import { type ChatMessage } from "@prisma/client"
 import { observable } from "@trpc/server/observable"
-import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
-} from "~/server/api/trpc"
+import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { ee } from "~/trpc/shared"
 import { z } from "zod"
 

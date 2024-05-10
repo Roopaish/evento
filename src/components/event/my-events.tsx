@@ -1,12 +1,16 @@
 "use client"
 
+import { useRouter } from "next/navigation"
 import { api } from "~/trpc/react"
 
 import { ScrollArea, ScrollBar } from "~/components/ui/scroll-area"
 import { Separator } from "~/components/ui/separator"
 import { EventCard } from "~/components/event/event-card"
 
-export default function ManageEvents() {
+import { Text } from "../ui/text"
+
+export default function MyEvents() {
+  const router = useRouter()
   const { data } = api.event.getMyEvents.useInfiniteQuery({
     limit: 10,
     orderBy: "asc",
@@ -17,10 +21,8 @@ export default function ManageEvents() {
     <>
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <h2 className=" text-lg font-medium tracking-tight">Events</h2>
-          <p className="text-sm font-normal text-muted-foreground  ">
-            Events you have organized.
-          </p>
+          <Text variant={"h6"}>My Events</Text>
+          <Text>Events you have organized.</Text>
         </div>
       </div>
       <Separator className="my-4" />
@@ -28,14 +30,20 @@ export default function ManageEvents() {
         <div className="flex w-max space-x-4 p-4">
           {data?.pages?.map((p) =>
             p.data.map((event) => (
-              <EventCard
+              <div
                 key={event.id}
-                img={event.assets[0]?.thumbnailUrl}
-                // eventDate={p.data}
-                eventName={event.title}
-                eventAddress={event.address}
-                className="w-64"
-              />
+                onClick={() => router.push(`/dashboard/events/${event.id}`)}
+                className="cursor-pointer"
+              >
+                <EventCard
+                  key={event.id}
+                  img={event.assets[0]?.thumbnailUrl}
+                  // eventDate={p.data}
+                  eventName={event.title}
+                  eventAddress={event.address}
+                  className="w-64"
+                />
+              </div>
             ))
           )}
           {}

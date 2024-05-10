@@ -1,5 +1,5 @@
-import ManageEvents from "~/components/event/manage-events"
+import MyEvents from "~/components/event/my-events"
 
 export default function Dashboard() {
-  return <ManageEvents />
+  return <MyEvents />
 }
