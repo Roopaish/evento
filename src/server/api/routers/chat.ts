@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache"
 import { type ChatMessage } from "@prisma/client"
 import { observable } from "@trpc/server/observable"
 import {
@@ -20,6 +21,7 @@ export const chatRouter = createTRPCRouter({
       })
       // Emit event when a post is created so that event in getLatest function is triggered
       // ee.emit(Events.LATEST_POST, group)
+      revalidatePath("/dashboard/chats")
       return group
     }),
 
