@@ -5,6 +5,14 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
 import { ee } from "~/trpc/shared"
 import { z } from "zod"
 
+interface ChatMessageProps extends ChatMessage {
+  user: {
+    id: string
+    name: string | null
+    image: string | null
+  }
+}
+
 export const chatRouter = createTRPCRouter({
   create: protectedProcedure
     .input(z.object({ name: z.string() }))
@@ -21,11 +29,6 @@ export const chatRouter = createTRPCRouter({
       return group
     }),
 
-  find: protectedProcedure.query(async ({ ctx }) => {
-    const data = await ctx.db.chatGroup.findMany()
-    return data
-  }),
-
   sendMessage: protectedProcedure
     .input(z.object({ message: z.string(), id: z.string() }))
     .mutation(async ({ ctx, input }) => {
@@ -36,14 +39,30 @@ export const chatRouter = createTRPCRouter({
           createdByName: ctx.session.user.name!,
           chatGroupId: input.id,
         },
+        select: {
+          id: true,
+          message: true,
+          user: {
+            select: {
+              name: true,
+              id: true,
+              image: true,
+            },
+          },
+          createdAt: true,
+          createdById: true,
+          createdByName: true,
+          chatGroupId: true,
+        },
       })
+
       ee.emit("send-message", message)
       return message
     }),
 
   getLatestMsg: protectedProcedure.subscription(() => {
-    return observable<ChatMessage>((emit) => {
-      const onMsg = (message: ChatMessage) => {
+    return observable<ChatMessageProps>((emit) => {
+      const onMsg = (message: ChatMessageProps) => {
         console.log("on-msg")
         emit.next(message)
       }
@@ -61,7 +80,56 @@ export const chatRouter = createTRPCRouter({
         where: {
           chatGroupId: input.id,
         },
+        select: {
+          id: true,
+          message: true,
+          user: {
+            select: {
+              name: true,
+              id: true,
+              image: true,
+            },
+          },
+          createdAt: true,
+          createdById: true,
+        },
+        orderBy: {
+          createdAt: "asc",
+        },
       })
       return chatMessage
     }),
+
+  allGroups: protectedProcedure.query(async ({ ctx }) => {
+    const groups = await ctx.db.chatGroup.findMany({
+      select: {
+        id: true,
+        name: true,
+        createdAt: true,
+        userId: true,
+        user: {
+          select: {
+            name: true,
+            image: true,
+          },
+        },
+        chatMessage: {
+          select: {
+            id: true,
+            message: true,
+            user: {
+              select: {
+                name: true,
+              },
+            },
+          },
+          orderBy: {
+            id: "desc",
+          },
+        },
+      },
+    })
+
+    return groups
+  }),
 })

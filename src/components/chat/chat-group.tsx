@@ -5,37 +5,20 @@ import { useRouter } from "next/navigation"
 import { type ChatMessage } from "@prisma/client"
 import { api } from "~/trpc/react"
 import { type Session } from "next-auth"
-import { bool } from "sharp"
-import { boolean } from "zod"
 
 import { Textarea } from "~/components/ui/textarea"
 
 import { Icons } from "../ui/icons"
 
-interface ChatGroupProps {
-  id: string
-  name: string
-  createdAt: Date
-  userId: string
+interface ChatMessageProps extends ChatMessage {
   user: {
+    id: string
     name: string | null
     image: string | null
   }
-  chatMessage: {
-    message: string
-    user: {
-      name: string | null
-    }
-  }[]
 }
 
-export default function ChatGroup({
-  groups,
-  session,
-}: {
-  groups: ChatGroupProps[] | undefined
-  session: Session | null
-}) {
+export default function ChatGroup({ session }: { session: Session | null }) {
   const [id, setId] = useState("")
   const [name, setName] = useState("")
 
@@ -44,7 +27,9 @@ export default function ChatGroup({
   //  const[messages,setMessages]=useState<ChatMessage[] | undefined>(undefined)
 
   //const [latestMessage,setLatestMessage]=useState<ChatMessage>()
-  const [msg, setMsg] = useState<ChatMessage>()
+  const [msg, setMsg] = useState<ChatMessageProps>()
+
+  const groups = api.chat.allGroups.useQuery().data
 
   const allMessages = api.chat.findAllMessage.useQuery({
     id,
@@ -87,6 +72,18 @@ export default function ChatGroup({
     messageRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" })
   }, [allMessages, msg])
 
+  function timeFormatter(date: Date) {
+    const time = date.toLocaleTimeString()
+    const displayTime = time.slice(0, 4) + time.slice(7, 10)
+    return displayTime
+  }
+
+  function dateFormatter(date: Date) {
+    const d = date.toLocaleDateString()
+    const displayDate = d.slice(0, 4)
+    return displayDate
+  }
+
   return (
     <>
       {groups?.length === 0 ? (
@@ -95,7 +92,7 @@ export default function ChatGroup({
         </div>
       ) : (
         <div className="flex h-screen justify-start">
-          <div className="flex w-72 flex-col justify-start gap-3 border-r-2 border-gray-300 p-5">
+          <div className="flex w-72 flex-col justify-start gap-3 overflow-x-hidden overflow-y-scroll border-r-2 border-gray-300 p-5">
             {groups?.map((group) => (
               <div
                 onClick={() => getMessage(group.id, group.name)}
@@ -110,9 +107,13 @@ export default function ChatGroup({
                     <>
                       <div className="flex gap-2 overflow-hidden text-sm">
                         <div>{`${
-                          group.chatMessage[0]?.user.name?.split(" ")[0] ?? ""
+                          session?.user.name ===
+                          group?.chatMessage[0]?.user.name
+                            ? "you"
+                            : group.chatMessage[0]?.user.name?.split(" ")[0] ??
+                              ""
                         }:`}</div>
-                        <div className="text-sm">
+                        <div className="text-sm text-[#dc2626]">
                           {group.chatMessage[0]?.message}
                         </div>
                       </div>
@@ -121,8 +122,14 @@ export default function ChatGroup({
                     <>
                       {id != group.id && group.id === msg?.chatGroupId ? (
                         <>
-                          <div>{`${msg?.createdByName.split(" ")[0]}:`}</div>
-                          <div>{msg?.message}</div>
+                          <div>{`${
+                            session?.user.name === msg.createdByName
+                              ? "you"
+                              : msg?.createdByName.split(" ")[0]
+                          }:`}</div>
+                          <div className="text-sm text-[#dc2626]">
+                            {msg?.message}
+                          </div>
                         </>
                       ) : (
                         <>
@@ -130,11 +137,14 @@ export default function ChatGroup({
                             <>
                               <div className="flex gap-2 overflow-hidden text-sm">
                                 <div>{`${
-                                  group.chatMessage[0]?.user.name?.split(
-                                    " "
-                                  )[0] ?? ""
+                                  session?.user.name ===
+                                  group.chatMessage[0]?.user.name
+                                    ? "you"
+                                    : group.chatMessage[0]?.user.name?.split(
+                                        " "
+                                      )[0] ?? ""
                                 }:`}</div>
-                                <div className="text-sm">
+                                <div className="text-sm text-[#dc2626]">
                                   {group.chatMessage[0]?.message}
                                 </div>
                               </div>
@@ -153,8 +163,8 @@ export default function ChatGroup({
             ""
           ) : (
             <div className="relative flex flex-auto flex-col justify-start">
-              <div className="flex items-center justify-between border-b-2 border-gray-200 p-6">
-                <div>Avatar</div>
+              <div className="flex items-center justify-between border-b-2 border-gray-200 p-4">
+                <div> Avatars</div>
                 <div>{name}</div>
                 <div>
                   <Icons.threeDots />
@@ -168,8 +178,14 @@ export default function ChatGroup({
                 {allMessages?.map((message) => (
                   <>
                     {message.createdById === session?.user.id ? (
-                      <div className="flex flex-wrap items-start justify-end gap-2.5">
+                      <div className="flex flex-wrap items-start justify-end gap-2">
                         <div className="flex max-w-60 flex-col flex-wrap gap-1">
+                          <div className="flex items-center justify-end">
+                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                              {timeFormatter(message.createdAt)}
+                            </span>
+                          </div>
+
                           <div className="leading-1.5 flex rounded-e-xl rounded-es-xl border-blue-200 bg-blue-100 p-4">
                             <p className="text-sm font-normal text-gray-900 dark:text-white">
                               {" "}
@@ -178,25 +194,25 @@ export default function ChatGroup({
                           </div>
                           <div className="flex items-center justify-end">
                             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                              {message.createdAt.toLocaleTimeString()}
+                              {dateFormatter(message.createdAt)}
                             </span>
                           </div>
                         </div>
                       </div>
                     ) : (
-                      <div className="flex flex-wrap items-start gap-2.5">
+                      <div className="flex flex-wrap items-start gap-2">
                         <img
                           className="h-8 w-8 rounded-full"
-                          src={session?.user.image ?? ""}
-                          alt="Jese image"
+                          src={message.user.image!}
+                          alt="user image"
                         />
                         <div className="flex max-w-60 flex-col flex-wrap gap-1">
                           <div className="flex items-center space-x-2 rtl:space-x-reverse">
                             <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                              {session?.user.name?.split(" ")[0]}
+                              {message.user.name}
                             </span>
                             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
-                              {message.createdAt.toLocaleTimeString()}
+                              {timeFormatter(message.createdAt)}
                             </span>
                           </div>
                           <div className="leading-1.5 rounded-es-x flex rounded-e-xl border-gray-200 bg-gray-100 p-4">
@@ -204,6 +220,11 @@ export default function ChatGroup({
                               {" "}
                               {message.message}
                             </p>
+                          </div>
+                          <div className="flex items-center justify-start">
+                            <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
+                              {dateFormatter(message.createdAt)}
+                            </span>
                           </div>
                         </div>
                       </div>
@@ -215,7 +236,6 @@ export default function ChatGroup({
 
               <div className="flex items-center justify-center gap-3 p-5">
                 <Textarea
-                  className="hover:border-collapse"
                   value={value}
                   onChange={(e) => {
                     setValue(e.target.value)

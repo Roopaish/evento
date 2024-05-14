@@ -193,7 +193,7 @@ export const Icons = {
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="blue"
+      fill="rgb(220,38,38)"
       className="h-8 w-8"
       {...props}
     >
@@ -203,7 +203,7 @@ export const Icons = {
   threeDots: (props: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      fill="none"
+      fill="rgb(220,38,38)"
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
