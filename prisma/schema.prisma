@@ -78,6 +78,7 @@ model User {
     ChatGroup     ChatGroup[]
     chatMessage   ChatMessage[]
     Asset         Asset[]
+    boards        Board[]
 }
 
 model VerificationToken {
@@ -155,4 +156,54 @@ model Asset {
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+}
+
+// kanban-board schema
+model Board {
+    id        Int      @id @default(autoincrement())
+    name      String   @db.VarChar(255)
+    userId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    user      User     @relation(fields: [userId], references: [id])
+    columns    Column[]
+}
+
+model Column {
+    id        Int      @id @default(autoincrement())
+    name      String   @db.VarChar(255)
+    boardId   Int
+    board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+    tasks      Task[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([name, boardId])
+}
+
+model Task {
+    id          Int       @id @default(autoincrement())
+    title       String    @db.VarChar(255)
+    description String?
+    statusName  String
+    boardId     Int
+    order       Int       @default(autoincrement())
+    subTasks     SubTask[]
+    status      Column    @relation(fields: [statusName, boardId], references: [name, boardId], onDelete: Cascade)
+    createdAt   DateTime  @default(now())
+    updatedAt   DateTime  @updatedAt
+
+    @@unique([title, boardId])
+}
+
+model SubTask {
+    id          Int      @id @default(autoincrement())
+    title       String
+    isCompleted Boolean  @default(false)
+    taskId      Int
+    mainTask    Task     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    @@unique([title, taskId])
 }
