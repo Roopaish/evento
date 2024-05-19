@@ -50,7 +50,7 @@ Table VerificationToken {
 }
 
 Table Asset {
-  id Int [pk, increment]
+  id Int [pk]
   name String [not null]
   url String [unique, not null]
   thumbnailUrl String [unique, not null]
@@ -59,6 +59,10 @@ Table Asset {
   userId String [not null]
   event Event
   eventId Int
+  eventManager Event
+  managerEventId Int [unique]
+  jobApplication JobApplication
+  jobApplicationId Int [unique]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -74,11 +78,15 @@ Table User {
   accounts Account [not null]
   sessions Session [not null]
   posts Post [not null]
-  chatGroup ChatGroup [not null]
   chatMessage ChatMessage [not null]
   assets Asset [not null]
   createdEvents Event [not null]
   joinedEvents Event [not null]
+  sentInvitations Invitation [not null]
+  jobApplications JobApplication [not null]
+  seenMessages ChatMessage [not null]
+  assignedTasks Task [not null]
+  createdTasks Task [not null]
 }
 
 Table Event {
@@ -92,14 +100,21 @@ Table Event {
   capacity Int [not null]
   description String [not null]
   instruction String
-  assets Asset [not null]
   price Float
+  managerName String
+  managerPhone String
+  managerEmail String
+  managerImage Asset
+  assets Asset [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
   createdBy User [not null]
   createdById String [not null]
   participants User [not null]
   jobPositions JobPosition [not null]
+  ChatGroup ChatGroup [not null]
+  invitations Invitation [not null]
+  tasks Task [not null]
 }
 
 Table JobPosition {
@@ -110,14 +125,29 @@ Table JobPosition {
   salary Float
   event Event [not null]
   eventId Int [not null]
+  jobApplications JobApplication [not null]
+}
+
+Table JobApplication {
+  id Int [pk, increment]
+  message String [not null]
+  status Status [not null, default: 'PENDING']
+  user User [not null]
+  userId String [not null]
+  jobPosition JobPosition [not null]
+  jobPositionId Int [not null]
+  cv Asset
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
 }
 
 Table ChatGroup {
   id Int [pk, increment]
-  name String [not null]
-  user User [not null]
-  userId String [not null]
-  chatMessage ChatMessage [not null]
+  messages ChatMessage [not null]
+  latestMessage ChatMessage
+  latestMessageId Int [unique]
+  event Event [not null]
+  eventId Int [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -125,11 +155,40 @@ Table ChatGroup {
 Table ChatMessage {
   id Int [pk, increment]
   message String [not null]
-  user User [not null]
   chatGroup ChatGroup [not null]
-  createdById String [not null]
   chatGroupId Int [not null]
-  createdByName String [not null]
+  latestMessageChatGroup ChatGroup
+  user User [not null]
+  userid String [not null]
+  seenBy User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Invitation {
+  id Int [pk, increment]
+  email String [not null]
+  uniqueToken String [not null]
+  status Status [not null, default: 'PENDING']
+  sender User [not null]
+  senderId String [not null]
+  event Event [not null]
+  eventId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table Task {
+  id Int [pk, increment]
+  title String [not null]
+  description String
+  status TaskStatus [not null, default: 'PENDING']
+  dueDate DateTime
+  assignedTo User [not null]
+  createdBy User [not null]
+  createdById String [not null]
+  event Event
+  eventId Int
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -149,6 +208,18 @@ Enum EventType {
   OTHER
 }
 
+Enum Status {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+Enum TaskStatus {
+  PENDING
+  COMPLETED
+  IN_PROGRESS
+}
+
 Ref: Post.createdById > User.id
 
 Ref: Account.userId > User.id [delete: Cascade]
@@ -157,14 +228,32 @@ Ref: Session.userId > User.id [delete: Cascade]
 
 Ref: Asset.userId > User.id
 
-Ref: Asset.eventId > Event.id
+Ref: Asset.eventId - Event.id
+
+Ref: Asset.managerEventId - Event.id
+
+Ref: Asset.jobApplicationId - JobApplication.id
 
 Ref: Event.createdById > User.id
 
 Ref: JobPosition.eventId > Event.id
 
-Ref: ChatGroup.userId > User.id
+Ref: JobApplication.userId > User.id
 
-Ref: ChatMessage.createdById > User.id
+Ref: JobApplication.jobPositionId > JobPosition.id
+
+Ref: ChatGroup.latestMessageId - ChatMessage.id
+
+Ref: ChatGroup.eventId > Event.id
 
 Ref: ChatMessage.chatGroupId > ChatGroup.id
+
+Ref: ChatMessage.userid > User.id
+
+Ref: Invitation.senderId > User.id
+
+Ref: Invitation.eventId > Event.id
+
+Ref: Task.createdById > User.id
+
+Ref: Task.eventId > Event.id

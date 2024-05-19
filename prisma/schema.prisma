@@ -77,10 +77,18 @@ model Asset {
     url          String @unique
     thumbnailUrl String @unique
     size         Float
-    user         User   @relation(fields: [userId], references: [id])
-    userId       String
-    event        Event? @relation("EventAssets", fields: [eventId], references: [id])
-    eventId      Int?
+
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    event   Event? @relation("EventAssets", fields: [eventId], references: [id])
+    eventId Int?
+
+    eventManager   Event? @relation("ManagerImage", fields: [managerEventId], references: [id])
+    managerEventId Int?   @unique
+
+    jobApplication   JobApplication? @relation("JobApplication", fields: [jobApplicationId], references: [id])
+    jobApplicationId Int?            @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -97,12 +105,19 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    chatGroup     ChatGroup[]
     chatMessage   ChatMessage[]
     assets        Asset[]
 
     createdEvents Event[] @relation("CreatedEvents")
     joinedEvents  Event[] @relation("JoinedEvents")
+
+    sentInvitations Invitation[]     @relation("Sender")
+    jobApplications JobApplication[]
+
+    seenMessages ChatMessage[] @relation("SeenBy")
+
+    assignedTasks Task[] @relation("AssignedTo")
+    createdTasks  Task[] @relation("CreatedBy")
 }
 
 enum EventType {
@@ -129,6 +144,7 @@ model Event {
     managerName  String?
     managerPhone String?
     managerEmail String?
+    managerImage Asset?    @relation("ManagerImage")
 
     assets    Asset[]  @relation("EventAssets")
     createdAt DateTime @default(now())
@@ -139,6 +155,10 @@ model Event {
 
     participants User[]        @relation("JoinedEvents")
     jobPositions JobPosition[]
+    ChatGroup    ChatGroup[]
+
+    invitations Invitation[]
+    tasks       Task[]
 
     @@index([title, address])
 }
@@ -152,27 +172,98 @@ model JobPosition {
 
     event   Event @relation(fields: [eventId], references: [id])
     eventId Int
+
+    jobApplications JobApplication[]
+}
+
+model JobApplication {
+    id            Int         @id @default(autoincrement())
+    message       String
+    status        Status      @default(PENDING)
+    user          User        @relation(fields: [userId], references: [id])
+    userId        String
+    jobPosition   JobPosition @relation(fields: [jobPositionId], references: [id])
+    jobPositionId Int
+    cv            Asset?      @relation("JobApplication")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model ChatGroup {
-    id          Int           @id @default(autoincrement())
-    name        String
-    user        User          @relation(fields: [userId], references: [id])
-    userId      String
-    chatMessage ChatMessage[]
+    id       Int           @id @default(autoincrement())
+    messages ChatMessage[] @relation("ChatGroupMessages")
+
+    latestMessage   ChatMessage? @relation("LatestMessage", fields: [latestMessageId], references: [id])
+    latestMessageId Int?         @unique
+
+    event   Event @relation(fields: [eventId], references: [id])
+    eventId Int
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
 
 model ChatMessage {
-    id            Int       @id @default(autoincrement())
-    message       String
-    user          User      @relation(fields: [createdById], references: [id])
-    chatGroup     ChatGroup @relation(fields: [chatGroupId], references: [id])
-    createdById   String
-    chatGroupId   Int
-    createdByName String
-    createdAt     DateTime  @default(now())
-    updatedAt     DateTime  @updatedAt
+    id      Int    @id @default(autoincrement())
+    message String
+
+    chatGroup              ChatGroup  @relation("ChatGroupMessages", fields: [chatGroupId], references: [id])
+    chatGroupId            Int
+    latestMessageChatGroup ChatGroup? @relation("LatestMessage")
+
+    user   User   @relation(fields: [userid], references: [id])
+    userid String
+
+    seenBy User[] @relation("SeenBy")
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum Status {
+    PENDING
+    ACCEPTED
+    REJECTED
+}
+
+model Invitation {
+    id          Int    @id @default(autoincrement())
+    email       String
+    uniqueToken String
+
+    status Status @default(PENDING)
+
+    sender   User   @relation("Sender", fields: [senderId], references: [id])
+    senderId String
+    event    Event  @relation(fields: [eventId], references: [id])
+    eventId  Int
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+enum TaskStatus {
+    PENDING
+    COMPLETED
+    IN_PROGRESS
+}
+
+model Task {
+    id          Int        @id @default(autoincrement())
+    title       String
+    description String?
+    status      TaskStatus @default(PENDING)
+    dueDate     DateTime?
+
+    assignedTo User[] @relation("AssignedTo")
+
+    createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
+    createdById String
+
+    event   Event? @relation(fields: [eventId], references: [id])
+    eventId Int?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
