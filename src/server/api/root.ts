@@ -1,5 +1,5 @@
 import { postRouter } from "~/server/api/routers/post"
-import { createTRPCRouter } from "~/server/api/trpc"
+import { createTRPCRouter, publicProcedure } from "~/server/api/trpc"
 
 import { chatRouter } from "./routers/chat"
 import { eventRouter } from "./routers/event"
@@ -10,6 +10,8 @@ import { eventRouter } from "./routers/event"
  * All routers added in /api/routers should be manually added here.
  */
 export const appRouter = createTRPCRouter({
+  healthcheck: publicProcedure.query(() => "server is running!"),
+
   post: postRouter,
   event: eventRouter,
   chat: chatRouter,
