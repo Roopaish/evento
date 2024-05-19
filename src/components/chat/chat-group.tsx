@@ -84,6 +84,12 @@ export default function ChatGroup({ session }: { session: Session | null }) {
     return displayDate
   }
 
+  function formatUsername(name: string | null | undefined) {
+    if (name == undefined) return ""
+    if (name == null) return ""
+    return name.split(" ")[0] + ":"
+  }
+
   return (
     <>
       {groups?.length === 0 ? (
@@ -92,11 +98,11 @@ export default function ChatGroup({ session }: { session: Session | null }) {
         </div>
       ) : (
         <div className="flex h-screen justify-start">
-          <div className="flex w-72 flex-col justify-start gap-3 overflow-x-hidden overflow-y-scroll border-r-2 border-gray-300 p-5">
+          <div className="flex w-80 flex-col justify-start gap-3 overflow-x-hidden overflow-y-scroll border-r-2 border-gray-300 p-5">
             {groups?.map((group) => (
               <div
                 onClick={() => getMessage(group.id, group.name)}
-                className={`flex h-20 min-w-64 cursor-pointer flex-col justify-start gap-1 rounded-xl bg-clip-border p-4 shadow-sm ${
+                className={`flex min-h-20 min-w-64 cursor-pointer flex-col justify-start gap-1 rounded-xl bg-clip-border p-4 shadow-sm ${
                   id === group.id ? "bg-gray-300" : null
                 }`}
               >
@@ -110,9 +116,8 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                           session?.user.name ===
                           group?.chatMessage[0]?.user.name
                             ? "you"
-                            : group.chatMessage[0]?.user.name?.split(" ")[0] ??
-                              ""
-                        }:`}</div>
+                            : formatUsername(group.chatMessage[0]?.user.name)
+                        }`}</div>
                         <div className="text-sm text-[#dc2626]">
                           {group.chatMessage[0]?.message}
                         </div>
@@ -125,8 +130,8 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                           <div>{`${
                             session?.user.name === msg.createdByName
                               ? "you"
-                              : msg?.createdByName.split(" ")[0]
-                          }:`}</div>
+                              : formatUsername(msg?.createdByName)
+                          }`}</div>
                           <div className="text-sm text-[#dc2626]">
                             {msg?.message}
                           </div>
@@ -140,10 +145,10 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                                   session?.user.name ===
                                   group.chatMessage[0]?.user.name
                                     ? "you"
-                                    : group.chatMessage[0]?.user.name?.split(
-                                        " "
-                                      )[0] ?? ""
-                                }:`}</div>
+                                    : formatUsername(
+                                        group.chatMessage[0]?.user.name
+                                      )
+                                }`}</div>
                                 <div className="text-sm text-[#dc2626]">
                                   {group.chatMessage[0]?.message}
                                 </div>

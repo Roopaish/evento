@@ -63,7 +63,6 @@ export const chatRouter = createTRPCRouter({
   getLatestMsg: protectedProcedure.subscription(() => {
     return observable<ChatMessageProps>((emit) => {
       const onMsg = (message: ChatMessageProps) => {
-        console.log("on-msg")
         emit.next(message)
       }
       ee.on("send-message", onMsg)
