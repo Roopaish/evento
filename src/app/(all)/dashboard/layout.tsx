@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation"
-import { getServerAuthSession } from "~/server/auth"
+import { getServerAuthSession } from "@/server/auth"
 
-import { userSideNavItems } from "~/config/nav"
+import { userSideNavItems } from "@/config/nav"
 
 import Sidebar from "../../../components/layout/sidebar"
 

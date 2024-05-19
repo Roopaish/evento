@@ -1,8 +1,8 @@
 import { revalidatePath } from "next/cache"
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc"
+import { ee } from "@/trpc/shared"
 import { type ChatMessage } from "@prisma/client"
 import { observable } from "@trpc/server/observable"
-import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc"
-import { ee } from "~/trpc/shared"
 import { z } from "zod"
 
 interface ChatMessageProps extends ChatMessage {
@@ -30,7 +30,7 @@ export const chatRouter = createTRPCRouter({
     }),
 
   sendMessage: protectedProcedure
-    .input(z.object({ message: z.string(), id: z.string() }))
+    .input(z.object({ message: z.string(), id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const message = await ctx.db.chatMessage.create({
         data: {
@@ -73,7 +73,7 @@ export const chatRouter = createTRPCRouter({
   }),
 
   findAllMessage: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const chatMessage = await ctx.db.chatMessage.findMany({
         where: {

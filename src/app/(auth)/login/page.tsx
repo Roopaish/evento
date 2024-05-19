@@ -2,12 +2,12 @@ import { type Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { getServerAuthSession } from "~/server/auth"
+import { getServerAuthSession } from "@/server/auth"
 
-import { miniSiteContent, siteConfig } from "~/config/site"
-import { Icons } from "~/components/ui/icons"
+import { miniSiteContent, siteConfig } from "@/config/site"
+import { Icons } from "@/components/ui/icons"
 
-import { UserAuthForm } from "../user-auth-form"
+import { UserAuthForm } from "../../../components/auth/user-auth-form"
 
 export const metadata: Metadata = {
   title: "Login / Get Started",

@@ -1,12 +1,12 @@
-import { type Post } from "@prisma/client"
-import { observable } from "@trpc/server/observable"
-import { Events } from "~/constants/events"
+import { Events } from "@/constants/events"
 import {
   createTRPCRouter,
   protectedProcedure,
   publicProcedure,
-} from "~/server/api/trpc"
-import { ee } from "~/trpc/shared"
+} from "@/server/api/trpc"
+import { ee } from "@/trpc/shared"
+import { type Post } from "@prisma/client"
+import { observable } from "@trpc/server/observable"
 import { z } from "zod"
 
 export const postRouter = createTRPCRouter({

@@ -1,15 +1,15 @@
 "use client"
 
 import { useRouter } from "next/navigation"
+import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { EventType } from "@prisma/client"
-import { api } from "~/trpc/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
-import { eventFormSchema } from "~/lib/validations/event-form-validation"
-import { Button } from "~/components/ui/button"
+import { eventFormSchema } from "@/lib/validations/event-form-validation"
+import { Button } from "@/components/ui/button"
 import {
   Form,
   FormControl,
@@ -17,17 +17,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "~/components/ui/form"
-import { Icons } from "~/components/ui/icons"
-import { Input } from "~/components/ui/input"
+} from "@/components/ui/form"
+import { Icons } from "@/components/ui/icons"
+import { Input } from "@/components/ui/input"
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "~/components/ui/select"
-import { Textarea } from "~/components/ui/textarea"
+} from "@/components/ui/select"
+import { Textarea } from "@/components/ui/textarea"
 
 export default function AddEvent() {
   const router = useRouter()

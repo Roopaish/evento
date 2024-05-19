@@ -1,14 +1,14 @@
-import { type NavItem, type SideNavItem } from "~/types"
+import { type NavItem, type SideNavItem } from "@/types"
 
 export const mainNavItems: NavItem[] = [
-  // {
-  //   title: "Contact us",
-  //   path: "/contact",
-  // },
-  // {
-  //   title: "FAQ",
-  //   path: "/faq",
-  // },
+  {
+    label: "Contact us",
+    path: "/contact",
+  },
+  {
+    label: "FAQ",
+    path: "/faq",
+  },
 ]
 
 export const userSideNavItems: SideNavItem[] = [

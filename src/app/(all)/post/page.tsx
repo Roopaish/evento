@@ -1,11 +1,11 @@
 "use client"
 
 import { useState } from "react"
+import { api } from "@/trpc/react"
 import { type Post } from "@prisma/client"
-import { api } from "~/trpc/react"
 
-import { Button } from "~/components/ui/button"
-import { Input } from "~/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 
 import TestSubscription from "./test-subscription"
 

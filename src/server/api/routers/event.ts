@@ -1,8 +1,8 @@
 import { TRPCError } from "@trpc/server"
 import * as z from "zod"
 
-import { eventFormSchema } from "~/lib/validations/event-form-validation"
-import { PaginatedInput } from "~/lib/validations/pagination"
+import { eventFormSchema } from "@/lib/validations/event-form-validation"
+import { PaginatedInput } from "@/lib/validations/pagination"
 
 import { createTRPCRouter, protectedProcedure } from "../trpc"
 
@@ -10,13 +10,13 @@ export const eventRouter = createTRPCRouter({
   addEvent: protectedProcedure
     .input(eventFormSchema)
     .mutation(({ input, ctx }) => {
-      const { staffs, location, ...rest } = input
+      const { location, ...rest } = input
 
       const event = ctx.db.event.create({
         data: {
           ...rest,
           address: location.address,
-          userId: ctx.session.user.id,
+          createdById: ctx.session.user.id,
         },
       })
       return event
@@ -40,11 +40,11 @@ export const eventRouter = createTRPCRouter({
             assets: true,
           },
           where: {
-            userId: ctx.session.user.id,
+            createdById: ctx.session.user.id,
           },
         })
 
-        let nextCursor: string | undefined = undefined
+        let nextCursor: number | undefined = undefined
         if (data.length > limit) {
           const nextItem = data.pop()
           nextCursor = nextItem?.id
@@ -64,12 +64,12 @@ export const eventRouter = createTRPCRouter({
     }),
 
   getMyEvent: protectedProcedure
-    .input(z.object({ id: z.string() }))
+    .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
       const event = await ctx.db.event.findFirst({
         where: {
           id: input.id,
-          userId: ctx.session.user.id,
+          createdById: ctx.session.user.id,
         },
       })
       if (!event) {

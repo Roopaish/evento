@@ -9,11 +9,11 @@ import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import * as z from "zod"
 
-import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
-import { Icons } from "~/components/ui/icons"
-import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/ui/icons"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 type UserAuthFormProps = React.HTMLAttributes<HTMLDivElement>
 const authFormSchema = z.object({

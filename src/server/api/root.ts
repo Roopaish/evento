@@ -1,5 +1,5 @@
-import { postRouter } from "~/server/api/routers/post"
-import { createTRPCRouter } from "~/server/api/trpc"
+import { postRouter } from "@/server/api/routers/post"
+import { createTRPCRouter } from "@/server/api/trpc"
 
 import { chatRouter } from "./routers/chat"
 import { eventRouter } from "./routers/event"

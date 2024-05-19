@@ -1,4 +1,4 @@
-import { type IconType } from "~/components/ui/icons"
+import { type IconType } from "@/components/ui/icons"
 
 export interface NavItem {
   icon?: IconType

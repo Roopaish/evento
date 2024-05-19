@@ -57,10 +57,33 @@ model Session {
     user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
 enum UserRole {
     ADMIN
     MANAGER
     USER
+}
+
+model Asset {
+    id           Int    @id
+    name         String
+    url          String @unique
+    thumbnailUrl String @unique
+    size         Float
+    user         User   @relation(fields: [userId], references: [id])
+    userId       String
+    event        Event? @relation("EventAssets", fields: [eventId], references: [id])
+    eventId      Int?
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }
 
 model User {
@@ -74,18 +97,12 @@ model User {
     accounts      Account[]
     sessions      Session[]
     posts         Post[]
-    Event         Event[]
-    ChatGroup     ChatGroup[]
+    chatGroup     ChatGroup[]
     chatMessage   ChatMessage[]
-    Asset         Asset[]
-}
+    assets        Asset[]
 
-model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
-
-    @@unique([identifier, token])
+    createdEvents Event[] @relation("CreatedEvents")
+    joinedEvents  Event[] @relation("JoinedEvents")
 }
 
 enum EventType {
@@ -98,29 +115,47 @@ enum EventType {
 }
 
 model Event {
-    id          String    @id @default(uuid())
-    title       String
-    type        EventType
-    date        DateTime
-    address     String
-    lat         String?
-    lng         String?
-    capacity    Int
-    description String
-    instruction String?
-    assets      Asset[]
+    id           Int       @id @default(autoincrement())
+    title        String
+    type         EventType
+    date         DateTime
+    address      String
+    lat          String?
+    lng          String?
+    capacity     Int
+    description  String
+    instruction  String?
+    price        Float?
+    managerName  String?
+    managerPhone String?
+    managerEmail String?
 
-    user   User   @relation(fields: [userId], references: [id])
-    userId String
-
+    assets    Asset[]  @relation("EventAssets")
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
+
+    createdBy   User   @relation("CreatedEvents", fields: [createdById], references: [id])
+    createdById String
+
+    participants User[]        @relation("JoinedEvents")
+    jobPositions JobPosition[]
 
     @@index([title, address])
 }
 
+model JobPosition {
+    id            Int     @id @default(autoincrement())
+    title         String
+    description   String?
+    noOfEmployees Int
+    salary        Float?
+
+    event   Event @relation(fields: [eventId], references: [id])
+    eventId Int
+}
+
 model ChatGroup {
-    id          String        @id @default(cuid())
+    id          Int           @id @default(autoincrement())
     name        String
     user        User          @relation(fields: [userId], references: [id])
     userId      String
@@ -131,28 +166,13 @@ model ChatGroup {
 }
 
 model ChatMessage {
-    id            String    @id @default(cuid())
+    id            Int       @id @default(autoincrement())
     message       String
     user          User      @relation(fields: [createdById], references: [id])
     chatGroup     ChatGroup @relation(fields: [chatGroupId], references: [id])
     createdById   String
-    chatGroupId   String
+    chatGroupId   Int
     createdByName String
     createdAt     DateTime  @default(now())
     updatedAt     DateTime  @updatedAt
-}
-
-model Asset {
-    fileId       String  @id
-    name         String
-    url          String  @unique
-    thumbnailUrl String  @unique
-    size         Float
-    user         User    @relation(fields: [userId], references: [id])
-    userId       String
-    event        Event?  @relation(fields: [eventId], references: [id])
-    eventId      String?
-
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
 }

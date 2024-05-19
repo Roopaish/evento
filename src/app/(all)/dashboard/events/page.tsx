@@ -2,9 +2,9 @@
 
 import { useRouter } from "next/navigation"
 
-import { Button } from "~/components/ui/button"
-import { Icons } from "~/components/ui/icons"
-import MyEvents from "~/components/event/my-events"
+import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/ui/icons"
+import MyEvents from "@/components/event/my-events"
 
 export default function Events() {
   const router = useRouter()

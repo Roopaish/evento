@@ -1,10 +1,10 @@
-import "~/styles/globals.css"
+import "@/styles/globals.css"
 
 import localFont from "next/font/local"
 import { cookies } from "next/headers"
-import { TRPCReactProvider } from "~/trpc/react"
+import { TRPCReactProvider } from "@/trpc/react"
 
-import { Toaster } from "~/components/ui/sonner"
+import { Toaster } from "@/components/ui/sonner"
 
 const inter = localFont({
   src: "../fonts/Inter-VariableFont_slnt-wght.ttf",

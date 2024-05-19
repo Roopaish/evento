@@ -1,12 +1,12 @@
 "use client"
 
 import { usePathname, useRouter } from "next/navigation"
-import { type NavItem } from "~/types"
+import { type NavItem } from "@/types"
 import { type LucideIcon } from "lucide-react"
 
-import { cn } from "~/lib/utils"
-import { Button } from "~/components/ui/button"
-import { Icons } from "~/components/ui/icons"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Icons } from "@/components/ui/icons"
 
 export default function Sidebar({
   className,

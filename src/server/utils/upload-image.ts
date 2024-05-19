@@ -1,7 +1,7 @@
 import ImageKit from "imagekit"
 import sharp from "sharp"
 
-import { env } from "~/env"
+import { env } from "@/env"
 
 const imageKit = new ImageKit({
   publicKey: env.IMAGEKIT_PUBLIC_KEY,

@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
+import { api } from "@/trpc/react"
 import { type ChatMessage } from "@prisma/client"
-import { api } from "~/trpc/react"
 import { type Session } from "next-auth"
 
-import { Textarea } from "~/components/ui/textarea"
+import { Textarea } from "@/components/ui/textarea"
 
 import { Icons } from "../ui/icons"
 
@@ -19,7 +19,7 @@ interface ChatMessageProps extends ChatMessage {
 }
 
 export default function ChatGroup({ session }: { session: Session | null }) {
-  const [id, setId] = useState("")
+  const [id, setId] = useState<number>(1)
   const [name, setName] = useState("")
 
   const [value, setValue] = useState("")
@@ -46,7 +46,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
     },
   })
   function setMessage() {
-    if (id == "") {
+    if (!id) {
       return
     }
 
@@ -61,7 +61,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
     setValue("")
   }
 
-  function getMessage(id: string, name: string) {
+  function getMessage(id: number, name: string) {
     setId(id)
     setName(name)
   }
@@ -109,7 +109,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                 <div className="font-semibold">{group.name}</div>
 
                 <div className="flex gap-2 overflow-hidden text-sm">
-                  {id === "" ? (
+                  {!id ? (
                     <>
                       <div className="flex gap-2 overflow-hidden text-sm">
                         <div>{`${
@@ -164,7 +164,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
             ))}
           </div>
 
-          {id === "" ? (
+          {!id ? (
             ""
           ) : (
             <div className="relative flex flex-auto flex-col justify-start">
@@ -256,7 +256,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                   <Icons.send />
                 </label>
                 <input
-                  disabled={id == ""}
+                  disabled={!id}
                   onClick={setMessage}
                   id="send-button"
                   type="button"

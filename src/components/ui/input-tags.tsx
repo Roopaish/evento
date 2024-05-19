@@ -4,9 +4,9 @@ import { forwardRef, useState, type Dispatch, type SetStateAction } from "react"
 import { XIcon } from "lucide-react"
 import { toast } from "sonner"
 
-import { Badge } from "~/components/ui/badge"
-import { Button } from "~/components/ui/button"
-import { Input, type InputProps } from "~/components/ui/input"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Input, type InputProps } from "@/components/ui/input"
 
 type InputTagsProps = InputProps & {
   value: string[]

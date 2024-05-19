@@ -8,10 +8,10 @@ import { type Session } from "next-auth"
 import { signOut } from "next-auth/react"
 import { toast } from "sonner"
 
-import { dashboardRoutes, profileDropdownItems } from "~/config/nav"
-import { cn, getInitials } from "~/lib/utils"
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar"
-import { Button } from "~/components/ui/button"
+import { dashboardRoutes, profileDropdownItems } from "@/config/nav"
+import { cn, getInitials } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,10 +20,10 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "~/components/ui/dropdown-menu"
-import { Icons } from "~/components/ui/icons"
+} from "@/components/ui/dropdown-menu"
+import { Icons } from "@/components/ui/icons"
 
-export function UserNav({ session }: { session: Session | null }) {
+export default function UserNav({ session }: { session: Session | null }) {
   const router = useRouter()
   const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)

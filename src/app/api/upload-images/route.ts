@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from "next/server"
-import { authOptions } from "~/server/auth"
-import { db } from "~/server/db"
-import { uploadImages } from "~/server/utils/upload-image"
+import { authOptions } from "@/server/auth"
+import { db } from "@/server/db"
+import { uploadImages } from "@/server/utils/upload-image"
 import { getServerSession } from "next-auth"
 
 export async function POST(request: NextRequest) {

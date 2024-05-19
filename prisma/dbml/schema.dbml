@@ -39,6 +39,30 @@ Table Session {
   user User [not null]
 }
 
+Table VerificationToken {
+  identifier String [not null]
+  token String [unique, not null]
+  expires DateTime [not null]
+
+  indexes {
+    (identifier, token) [unique]
+  }
+}
+
+Table Asset {
+  id Int [pk, increment]
+  name String [not null]
+  url String [unique, not null]
+  thumbnailUrl String [unique, not null]
+  size Float [not null]
+  user User [not null]
+  userId String [not null]
+  event Event
+  eventId Int
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
 Table User {
   id String [pk]
   name String
@@ -50,24 +74,15 @@ Table User {
   accounts Account [not null]
   sessions Session [not null]
   posts Post [not null]
-  Event Event [not null]
-  ChatGroup ChatGroup [not null]
+  chatGroup ChatGroup [not null]
   chatMessage ChatMessage [not null]
-  Asset Asset [not null]
-}
-
-Table VerificationToken {
-  identifier String [not null]
-  token String [unique, not null]
-  expires DateTime [not null]
-
-  indexes {
-    (identifier, token) [unique]
-  }
+  assets Asset [not null]
+  createdEvents Event [not null]
+  joinedEvents Event [not null]
 }
 
 Table Event {
-  id String [pk]
+  id Int [pk, increment]
   title String [not null]
   type EventType [not null]
   date DateTime [not null]
@@ -78,14 +93,27 @@ Table Event {
   description String [not null]
   instruction String
   assets Asset [not null]
-  user User [not null]
-  userId String [not null]
+  price Float
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
+  createdBy User [not null]
+  createdById String [not null]
+  participants User [not null]
+  jobPositions JobPosition [not null]
+}
+
+Table JobPosition {
+  id Int [pk, increment]
+  title String [not null]
+  description String
+  noOfEmployees Int [not null]
+  salary Float
+  event Event [not null]
+  eventId Int [not null]
 }
 
 Table ChatGroup {
-  id String [pk]
+  id Int [pk, increment]
   name String [not null]
   user User [not null]
   userId String [not null]
@@ -95,27 +123,13 @@ Table ChatGroup {
 }
 
 Table ChatMessage {
-  id String [pk]
+  id Int [pk, increment]
   message String [not null]
   user User [not null]
   chatGroup ChatGroup [not null]
   createdById String [not null]
-  chatGroupId String [not null]
+  chatGroupId Int [not null]
   createdByName String [not null]
-  createdAt DateTime [default: `now()`, not null]
-  updatedAt DateTime [not null]
-}
-
-Table Asset {
-  fileId String [pk]
-  name String [not null]
-  url String [unique, not null]
-  thumbnailUrl String [unique, not null]
-  size Float [not null]
-  user User [not null]
-  userId String [not null]
-  event Event
-  eventId String
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -141,14 +155,16 @@ Ref: Account.userId > User.id [delete: Cascade]
 
 Ref: Session.userId > User.id [delete: Cascade]
 
-Ref: Event.userId > User.id
+Ref: Asset.userId > User.id
+
+Ref: Asset.eventId > Event.id
+
+Ref: Event.createdById > User.id
+
+Ref: JobPosition.eventId > Event.id
 
 Ref: ChatGroup.userId > User.id
 
 Ref: ChatMessage.createdById > User.id
 
 Ref: ChatMessage.chatGroupId > ChatGroup.id
-
-Ref: Asset.userId > User.id
-
-Ref: Asset.eventId > Event.id

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { type AppRouter } from "@/server/api/root"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import {
   createWSClient,
@@ -10,9 +11,8 @@ import {
   wsLink,
 } from "@trpc/client"
 import { createTRPCReact } from "@trpc/react-query"
-import { type AppRouter } from "~/server/api/root"
 
-import { env } from "~/env"
+import { env } from "@/env"
 
 import { getUrl, transformer } from "./shared"
 

@@ -1,6 +1,6 @@
+import { db } from "@/server/db"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { type UserRole } from "@prisma/client"
-import { db } from "~/server/db"
 import {
   getServerSession,
   type DefaultSession,
@@ -9,7 +9,7 @@ import {
 import EmailProvider from "next-auth/providers/email"
 import GoogleProvider from "next-auth/providers/google"
 
-import { env } from "~/env"
+import { env } from "@/env"
 
 import { sendVerificationRequest } from "./email"
 

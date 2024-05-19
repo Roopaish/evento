@@ -7,10 +7,10 @@
  * need to use are documented accordingly near the end.
  */
 import { type IncomingMessage } from "http"
+import { db } from "@/server/db"
 import { initTRPC, TRPCError } from "@trpc/server"
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next"
 import { type NodeHTTPCreateContextFnOptions } from "@trpc/server/adapters/node-http"
-import { db } from "~/server/db"
 import superjson from "superjson"
 import type ws from "ws"
 import { ZodError } from "zod"

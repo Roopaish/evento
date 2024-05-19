@@ -1,9 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { api } from "~/trpc/react"
+import { api } from "@/trpc/react"
 
-import { Input } from "~/components/ui/input"
+import { Input } from "@/components/ui/input"
 
 export default function TestSubscription() {
   const setMsg = api.post.setMsg.useMutation()
