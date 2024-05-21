@@ -28,7 +28,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const isLogin = pathname === "/login"
 
   const [loadingProvider, setLoadingProvider] = useState<
-    "google" | "email" | null
+    "google" | "email" | "github" | null
   >(null)
 
   const {
@@ -39,7 +39,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     resolver: zodResolver(authFormSchema),
   })
 
-  const signInWithProvider = (provider: "google" | "email") => {
+  const signInWithProvider = (provider: "google" | "email" | "github") => {
     setLoadingProvider(provider)
 
     signIn(provider, {
@@ -142,6 +142,21 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
           <Icons.google className="mr-2 h-4 w-4" />
         )}{" "}
         Google
+      </Button>
+      <Button
+        variant="outline"
+        type="button"
+        disabled={loadingProvider === "github"}
+        onClick={() => {
+          signInWithProvider("github")
+        }}
+      >
+        {loadingProvider === "github" ? (
+          <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
+        ) : (
+          <Icons.github className="mr-2 h-4 w-4" />
+        )}{" "}
+        Github
       </Button>
     </div>
   )

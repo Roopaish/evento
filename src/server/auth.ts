@@ -7,6 +7,7 @@ import {
   type NextAuthOptions,
 } from "next-auth"
 import EmailProvider from "next-auth/providers/email"
+import GithubProvider from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 
 import { env } from "~/env"
@@ -35,6 +36,15 @@ if (typeof GoogleProvider === "function") {
     GoogleProvider({
       clientId: env.GOOGLE_CLIENT_ID,
       clientSecret: env.GOOGLE_CLIENT_SECRET,
+    })
+  )
+}
+
+if (typeof GithubProvider === "function") {
+  providers.push(
+    GithubProvider({
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     })
   )
 }
