@@ -23,6 +23,7 @@ export const userSideNavItems: SideNavItem[] = [
       { icon: "CalendarCheck", label: "Events", path: "/dashboard/events" },
       { icon: "Users", label: "Staffs", path: "/dashboard/staffs" },
       { icon: "MessagesSquare", label: "Chats", path: "/dashboard/chats" },
+      { icon: "ListTodo", label: "Kanban", path: "/dashboard/kanban" },
     ],
   },
   {
