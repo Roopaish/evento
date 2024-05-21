@@ -3,6 +3,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc"
 
 import { chatRouter } from "./routers/chat"
 import { eventRouter } from "./routers/event"
+import { kanbanRouter } from "./routers/kanban"
 
 /**
  * This is the primary router for your server.
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   post: postRouter,
   event: eventRouter,
   chat: chatRouter,
+  kanban: kanbanRouter,
 })
 
 // export type definition of API
