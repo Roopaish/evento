@@ -11,16 +11,17 @@ export default {
   ],
   prefix: "",
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
+      container: {
+        center: true,
+        padding: {
+          DEFAULT: "1.5rem",
+          lg: "2.5rem",
+        },
+      },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
+        serif: ["var(--font-serif)", ...fontFamily.serif],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -31,10 +32,32 @@ export default {
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
+          50: "#f0fdf4",
+          100: "#dcfce7",
+          200: "#bbf7d0",
+          300: "#86efac",
+          400: "#4ade80",
+          500: "#22c55e",
+          600: "#16a34a",
+          700: "#15803d",
+          800: "#166534",
+          900: "#14532d",
+          950: "#052e16",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+          50: "rgb(254, 248, 250)",
+          100: "rgb(252, 231, 239)",
+          200: "rgb(250, 212, 227)",
+          300: "rgb(248, 191, 213)",
+          400: "rgb(244, 162, 194)",
+          500: "rgb(234, 76, 137)",
+          600: "rgb(228, 74, 133)",
+          700: "rgb(187, 61, 110)",
+          800: "rgb(155, 50, 91)",
+          900: "rgb(111, 36, 65)",
+          950: "rgb(69, 22, 40)",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
@@ -76,6 +99,13 @@ export default {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      boxShadow: {
+        container:
+          "0px 0px 2px 0px rgba(145, 158, 171, 0.20), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
+      },
+    },
+    backgroundImage: {
+      bar: "linear-gradient(66deg, #e6fbfe 0%, #edddfb 100%)",
     },
   },
   plugins: [require("tailwindcss-animate")],
