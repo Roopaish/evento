@@ -7,6 +7,14 @@ import { type Session } from "next-auth"
 import { mainNavItems } from "@/config/nav"
 import { cn } from "@/lib/utils"
 import { Icons } from "@/components/ui/icons"
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
 
 import { Button } from "../ui/button"
 import SearchBar from "./search-bar"
@@ -18,11 +26,12 @@ export default function Header({ session }: { session: Session | null }) {
   return (
     <header className="fixed left-0 right-0 top-0 z-50 bg-background">
       <div className="border-b py-3">
-        <div className="flex items-center px-4">
+        <div className="hidden items-center  px-4 md:flex">
           <nav className="flex flex-1 items-center  space-x-4 lg:space-x-6">
             <Link href={"/"} className="mr-4">
               <Icons.logo mode="light"></Icons.logo>
             </Link>
+
             <SearchBar />
 
             {/* TODO: On dashboard, show a event switch button to switch between events */}
@@ -51,6 +60,48 @@ export default function Header({ session }: { session: Session | null }) {
               <UserNav session={session} />
             </div>
           </div>
+        </div>
+        <div className="px-4 md:hidden">
+          <nav className="flex items-center justify-between">
+            <Link href={"/"} className="mr-4">
+              <Icons.logo mode="light"></Icons.logo>
+            </Link>
+            <div className="flex items-center">
+              <Link href="/login">
+                <Button variant={"ghost"}>Login</Button>
+              </Link>
+              <Link href="/register">
+                <Button variant={"ghost"}>Register</Button>
+              </Link>
+
+              <Sheet>
+                <SheetTrigger>
+                  <Icons.Menu className="cursor-pointer" />
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle></SheetTitle>
+                    <SheetDescription>
+                      <div className="flex-col items-center gap-4">
+                        <Link href="/">
+                          <Button variant={"ghost"}>Find Event</Button>
+                        </Link>
+                        <Link href="/">
+                          <Button variant={"ghost"}>Create Event</Button>
+                        </Link>
+                      </div>
+                    </SheetDescription>
+                  </SheetHeader>
+                </SheetContent>
+              </Sheet>
+            </div>
+
+            {/* TODO: On dashboard, show a event switch button to switch between events */}
+
+            {/* TODO: Search Bar, Got to /search?q=something */}
+          </nav>
+
+          <SearchBar className="" />
         </div>
       </div>
     </header>
