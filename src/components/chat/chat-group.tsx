@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useEffect, useRef, useState } from "react"
@@ -101,25 +102,21 @@ export default function ChatGroup({ session }: { session: Session | null }) {
           <div className="flex w-80 flex-col justify-start gap-3 overflow-x-hidden overflow-y-scroll border-r-2 border-gray-300 p-5">
             {groups?.map((group) => (
               <div
-                onClick={() => getMessage(group.id, group.name)}
+                onClick={() => getMessage(group.id, "ok")}
                 className={`flex min-h-20 min-w-64 cursor-pointer flex-col justify-start gap-1 rounded-xl bg-clip-border p-4 shadow-sm ${
                   id === group.id ? "bg-gray-300" : null
                 }`}
               >
-                <div className="font-semibold">{group.name}</div>
+                <div className="font-semibold">Group Name</div>
 
                 <div className="flex gap-2 overflow-hidden text-sm">
                   {!id ? (
                     <>
                       <div className="flex gap-2 overflow-hidden text-sm">
-                        <div>{`${
-                          session?.user.name ===
-                          group?.chatMessage[0]?.user.name
-                            ? "you"
-                            : formatUsername(group.chatMessage[0]?.user.name)
-                        }`}</div>
+                        <div>User</div>
                         <div className="text-sm text-[#dc2626]">
-                          {group.chatMessage[0]?.message}
+                          {/* {group.chatMessage[0]?.message} */}
+                          Msg
                         </div>
                       </div>
                     </>
@@ -127,30 +124,17 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                     <>
                       {id != group.id && group.id === msg?.chatGroupId ? (
                         <>
-                          <div>{`${
-                            session?.user.name === msg.createdByName
-                              ? "you"
-                              : formatUsername(msg?.createdByName)
-                          }`}</div>
-                          <div className="text-sm text-[#dc2626]">
-                            {msg?.message}
-                          </div>
+                          <div>User</div>
+                          <div className="text-sm text-[#dc2626]">Message</div>
                         </>
                       ) : (
                         <>
                           {id != group.id ? (
                             <>
                               <div className="flex gap-2 overflow-hidden text-sm">
-                                <div>{`${
-                                  session?.user.name ===
-                                  group.chatMessage[0]?.user.name
-                                    ? "you"
-                                    : formatUsername(
-                                        group.chatMessage[0]?.user.name
-                                      )
-                                }`}</div>
+                                <div>user</div>
                                 <div className="text-sm text-[#dc2626]">
-                                  {group.chatMessage[0]?.message}
+                                  message
                                 </div>
                               </div>
                             </>
@@ -182,7 +166,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
               <div className="flex h-screen flex-auto flex-col justify-start gap-5 overflow-y-scroll border-b-2 border-gray-200 p-5">
                 {allMessages?.map((message) => (
                   <>
-                    {message.createdById === session?.user.id ? (
+                    {true ? (
                       <div className="flex flex-wrap items-start justify-end gap-2">
                         <div className="flex max-w-60 flex-col flex-wrap gap-1">
                           <div className="flex items-center justify-end">
@@ -206,15 +190,15 @@ export default function ChatGroup({ session }: { session: Session | null }) {
                       </div>
                     ) : (
                       <div className="flex flex-wrap items-start gap-2">
-                        <img
+                        {/* <img
                           className="h-8 w-8 rounded-full"
                           src={message.user.image!}
                           alt="user image"
-                        />
+                        /> */}
                         <div className="flex max-w-60 flex-col flex-wrap gap-1">
                           <div className="flex items-center space-x-2 rtl:space-x-reverse">
                             <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                              {message.user.name}
+                              username
                             </span>
                             <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                               {timeFormatter(message.createdAt)}

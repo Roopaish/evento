@@ -31,6 +31,7 @@ export async function POST(request: NextRequest) {
         data: uploadedImages.map((img) => {
           return {
             ...img,
+            id: img.fileId,
             userId: session.user.id,
           }
         }),

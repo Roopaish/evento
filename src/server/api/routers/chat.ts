@@ -1,4 +1,3 @@
-import { revalidatePath } from "next/cache"
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc"
 import { ee } from "@/trpc/shared"
 import { type ChatMessage } from "@prisma/client"
@@ -14,29 +13,13 @@ interface ChatMessageProps extends ChatMessage {
 }
 
 export const chatRouter = createTRPCRouter({
-  create: protectedProcedure
-    .input(z.object({ name: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const group = await ctx.db.chatGroup.create({
-        data: {
-          name: input.name,
-          userId: ctx.session.user.id,
-        },
-      })
-      // Emit event when a post is created so that event in getLatest function is triggered
-      // ee.emit(Events.LATEST_POST, group)
-      revalidatePath("/dashboard/chats")
-      return group
-    }),
-
   sendMessage: protectedProcedure
     .input(z.object({ message: z.string(), id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const message = await ctx.db.chatMessage.create({
         data: {
           message: input.message,
-          createdById: ctx.session.user.id,
-          createdByName: ctx.session.user.name!,
+          userId: ctx.session.user.id,
           chatGroupId: input.id,
         },
         select: {
@@ -50,9 +33,7 @@ export const chatRouter = createTRPCRouter({
             },
           },
           createdAt: true,
-          createdById: true,
-          createdByName: true,
-          chatGroupId: true,
+          userId: true,
         },
       })
 
@@ -90,7 +71,7 @@ export const chatRouter = createTRPCRouter({
             },
           },
           createdAt: true,
-          createdById: true,
+          userId: true,
         },
         orderBy: {
           createdAt: "asc",
@@ -100,34 +81,7 @@ export const chatRouter = createTRPCRouter({
     }),
 
   allGroups: protectedProcedure.query(async ({ ctx }) => {
-    const groups = await ctx.db.chatGroup.findMany({
-      select: {
-        id: true,
-        name: true,
-        createdAt: true,
-        userId: true,
-        user: {
-          select: {
-            name: true,
-            image: true,
-          },
-        },
-        chatMessage: {
-          select: {
-            id: true,
-            message: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
-          orderBy: {
-            id: "desc",
-          },
-        },
-      },
-    })
+    const groups = await ctx.db.chatGroup.findMany()
 
     return groups
   }),

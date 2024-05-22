@@ -37,13 +37,8 @@ export default function AddEvent() {
     defaultValues: {},
   })
 
-  // const images = form.watch("images")
-  const setChatGroup = api.chat.create.useMutation()
   const { mutate, isLoading } = api.event.addEvent.useMutation({
-    onSuccess: (data) => {
-      setChatGroup.mutate({
-        name: data.title,
-      })
+    onSuccess: () => {
       toast.success("Event has been created")
       router.push("/dashboard/events")
     },
