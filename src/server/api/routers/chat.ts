@@ -15,12 +15,11 @@ interface ChatMessageProps extends ChatMessage {
 
 export const chatRouter = createTRPCRouter({
   create: protectedProcedure
-    .input(z.object({ name: z.string() }))
+    .input(z.object({ eventId: z.number() }))
     .mutation(async ({ ctx, input }) => {
       const group = await ctx.db.chatGroup.create({
         data: {
-          name: input.name,
-          userId: ctx.session.user.id,
+          eventId: input.eventId,
         },
       })
       // Emit event when a post is created so that event in getLatest function is triggered
@@ -35,8 +34,7 @@ export const chatRouter = createTRPCRouter({
       const message = await ctx.db.chatMessage.create({
         data: {
           message: input.message,
-          createdById: ctx.session.user.id,
-          createdByName: ctx.session.user.name!,
+          userid: ctx.session.user.id,
           chatGroupId: input.id,
         },
         select: {
@@ -50,9 +48,16 @@ export const chatRouter = createTRPCRouter({
             },
           },
           createdAt: true,
-          createdById: true,
-          createdByName: true,
           chatGroupId: true,
+        },
+      })
+
+      await ctx.db.chatGroup.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          latestMessageId: message.id,
         },
       })
 
@@ -90,7 +95,6 @@ export const chatRouter = createTRPCRouter({
             },
           },
           createdAt: true,
-          createdById: true,
         },
         orderBy: {
           createdAt: "asc",
@@ -103,18 +107,8 @@ export const chatRouter = createTRPCRouter({
     const groups = await ctx.db.chatGroup.findMany({
       select: {
         id: true,
-        name: true,
-        createdAt: true,
-        userId: true,
-        user: {
+        latestMessage: {
           select: {
-            name: true,
-            image: true,
-          },
-        },
-        chatMessage: {
-          select: {
-            id: true,
             message: true,
             user: {
               select: {
@@ -122,8 +116,10 @@ export const chatRouter = createTRPCRouter({
               },
             },
           },
-          orderBy: {
-            id: "desc",
+        },
+        event: {
+          select: {
+            title: true,
           },
         },
       },
@@ -131,4 +127,33 @@ export const chatRouter = createTRPCRouter({
 
     return groups
   }),
+
+  seenBy: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      const chatMessages = await ctx.db.chatMessage.findMany({
+        where: {
+          chatGroupId: input.id,
+        },
+      })
+
+      // Get the current user ID
+      const userId = ctx.session.user.id
+
+      // Update the seenBy field for each chat message
+      for (const message of chatMessages) {
+        await ctx.db.chatMessage.update({
+          where: {
+            id: message.id,
+          },
+          data: {
+            seenBy: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        })
+      }
+    }),
 })

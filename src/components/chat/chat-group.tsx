@@ -9,6 +9,7 @@ import { type Session } from "next-auth"
 import { Textarea } from "@/components/ui/textarea"
 
 import { Icons } from "../ui/icons"
+import GroupList from "./group-list"
 
 interface ChatMessageProps extends ChatMessage {
   user: {
@@ -35,6 +36,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
     id,
   }).data
   const sendMessage = api.chat.sendMessage.useMutation()
+  const seenBy = api.chat.seenBy.useMutation()
 
   api.chat.getLatestMsg.useSubscription(undefined, {
     onData(data) {
@@ -63,6 +65,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
 
   function getMessage(id: number, name: string) {
     setId(id)
+    seenBy.mutate({ id })
     setName(name)
   }
 
@@ -84,12 +87,6 @@ export default function ChatGroup({ session }: { session: Session | null }) {
     return displayDate
   }
 
-  function formatUsername(name: string | null | undefined) {
-    if (name == undefined) return ""
-    if (name == null) return ""
-    return name.split(" ")[0] + ":"
-  }
-
   return (
     <>
       {groups?.length === 0 ? (
@@ -100,67 +97,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
         <div className="flex h-screen justify-start">
           <div className="flex w-80 flex-col justify-start gap-3 overflow-x-hidden overflow-y-scroll border-r-2 border-gray-300 p-5">
             {groups?.map((group) => (
-              <div
-                onClick={() => getMessage(group.id, group.name)}
-                className={`flex min-h-20 min-w-64 cursor-pointer flex-col justify-start gap-1 rounded-xl bg-clip-border p-4 shadow-sm ${
-                  id === group.id ? "bg-gray-300" : null
-                }`}
-              >
-                <div className="font-semibold">{group.name}</div>
-
-                <div className="flex gap-2 overflow-hidden text-sm">
-                  {!id ? (
-                    <>
-                      <div className="flex gap-2 overflow-hidden text-sm">
-                        <div>{`${
-                          session?.user.name ===
-                          group?.chatMessage[0]?.user.name
-                            ? "you"
-                            : formatUsername(group.chatMessage[0]?.user.name)
-                        }`}</div>
-                        <div className="text-sm text-[#dc2626]">
-                          {group.chatMessage[0]?.message}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      {id != group.id && group.id === msg?.chatGroupId ? (
-                        <>
-                          <div>{`${
-                            session?.user.name === msg.createdByName
-                              ? "you"
-                              : formatUsername(msg?.createdByName)
-                          }`}</div>
-                          <div className="text-sm text-[#dc2626]">
-                            {msg?.message}
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          {id != group.id ? (
-                            <>
-                              <div className="flex gap-2 overflow-hidden text-sm">
-                                <div>{`${
-                                  session?.user.name ===
-                                  group.chatMessage[0]?.user.name
-                                    ? "you"
-                                    : formatUsername(
-                                        group.chatMessage[0]?.user.name
-                                      )
-                                }`}</div>
-                                <div className="text-sm text-[#dc2626]">
-                                  {group.chatMessage[0]?.message}
-                                </div>
-                              </div>
-                            </>
-                          ) : null}
-                        </>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
+              <GroupList group={group} getMessage={getMessage} />
             ))}
           </div>
 
@@ -182,7 +119,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
               <div className="flex h-screen flex-auto flex-col justify-start gap-5 overflow-y-scroll border-b-2 border-gray-200 p-5">
                 {allMessages?.map((message) => (
                   <>
-                    {message.createdById === session?.user.id ? (
+                    {message.user.id === session?.user.id ? (
                       <div className="flex flex-wrap items-start justify-end gap-2">
                         <div className="flex max-w-60 flex-col flex-wrap gap-1">
                           <div className="flex items-center justify-end">

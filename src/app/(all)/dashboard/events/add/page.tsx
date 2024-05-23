@@ -42,7 +42,7 @@ export default function AddEvent() {
   const { mutate, isLoading } = api.event.addEvent.useMutation({
     onSuccess: (data) => {
       setChatGroup.mutate({
-        name: data.title,
+        eventId: data.id,
       })
       toast.success("Event has been created")
       router.push("/dashboard/events")

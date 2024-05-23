@@ -215,8 +215,7 @@ model ChatMessage {
     user   User   @relation(fields: [userid], references: [id])
     userid String
 
-    seenBy User[] @relation("SeenBy")
-
+    seenBy    User[]   @relation("SeenBy")
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }
