@@ -61,3 +61,10 @@
     @apply px-4 pt-8 md:px-7 lg:px-10;
   }
 }
+
+@layer components {
+  .textInput {
+    @apply my-2 flex h-[40px]  w-full items-center justify-between rounded-[4px] border border-[#828FA3] border-opacity-25 bg-white bg-opacity-0 px-4  py-2 text-bodyl
+      text-black outline-none  focus:border-purple dark:text-white  dark:placeholder:opacity-25;
+  }
+}
