@@ -2,7 +2,6 @@ import "@/styles/globals.css"
 
 import { getServerAuthSession } from "@/server/auth"
 
-import Footer from "@/components/layout/footer"
 import Header from "@/components/layout/header"
 
 export default async function RootLayout({
@@ -15,7 +14,6 @@ export default async function RootLayout({
     <>
       <Header session={session} />
       <div className="mt-[60px] min-h-screen bg-background">{children}</div>
-      <Footer />
     </>
   )
 }
