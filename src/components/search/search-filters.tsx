@@ -192,7 +192,7 @@ export default function SearchFilters() {
                     <FormLabel>Address</FormLabel>
                     <FormControl>
                       <div className="relative mt-2">
-                        <Icons.Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2" />
+                        <Icons.MapPin className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2" />
                         <Input
                           {...field}
                           placeholder="Search address"
