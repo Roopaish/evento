@@ -6,16 +6,11 @@ import SearchFilters from "@/components/search/search-filters"
 
 export default async function Home() {
   return (
-    <div>
+    <div className="space-y-12 pb-10">
       <HeroCarousel />
       <SearchFilters />
       <EventsNearYou />
-      <div className="mt-8">
-        <EventsNearYou />
-      </div>
-      <div className="mt-8">
-        <UpcomingEvents />
-      </div>
+      <UpcomingEvents />
       <CreateNewEventBanner />
     </div>
   )

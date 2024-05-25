@@ -62,7 +62,7 @@ export default function Header({ session }: { session: Session | null }) {
           </div>
         </div>
         <div className="px-4 md:hidden">
-          <nav className="flex items-center justify-between">
+          <nav className="mb-2 flex items-center justify-between">
             <Link href={"/"} className="mr-4">
               <Icons.logo mode="light"></Icons.logo>
             </Link>

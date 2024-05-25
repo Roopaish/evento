@@ -1,5 +1,6 @@
 "use client"
 
+import { Text } from "../ui/text"
 import EventGrid from "./event-grid"
 
 export default function EventsNearYou() {
@@ -8,10 +9,11 @@ export default function EventsNearYou() {
   return (
     <section className="container">
       <div>
-        <span className=" text-3xl font-semibold text-black">Events </span>
-        <span className="text-3xl font-semibold text-purple-600">Near You</span>
+        <Text variant={"h5"} semibold>
+          Events Near You
+        </Text>
       </div>
-      <EventGrid events={[]} onLoadMore={() => console.log("load more")} />
+      <EventGrid events={[]} />
     </section>
   )
 }
