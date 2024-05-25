@@ -18,6 +18,9 @@ export const SearchFiltersSchema = z
           message: "Please select a valid type.",
         }
       ),
+    date: z.coerce.date().optional(),
+    address: z.string().optional(),
+    hasJobOffers: z.boolean().optional(),
   })
   .merge(
     PaginatedInput.omit({

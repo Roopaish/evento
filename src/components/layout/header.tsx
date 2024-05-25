@@ -83,10 +83,10 @@ export default function Header({ session }: { session: Session | null }) {
                     <SheetTitle></SheetTitle>
                     <SheetDescription>
                       <div className="flex-col items-center gap-4">
-                        <Link href="/">
+                        <Link href="/search">
                           <Button variant={"ghost"}>Find Event</Button>
                         </Link>
-                        <Link href="/">
+                        <Link href="/dashboard/events/add">
                           <Button variant={"ghost"}>Create Event</Button>
                         </Link>
                       </div>
@@ -101,7 +101,7 @@ export default function Header({ session }: { session: Session | null }) {
             {/* TODO: Search Bar, Got to /search?q=something */}
           </nav>
 
-          <SearchBar className="" />
+          <SearchBar />
         </div>
       </div>
     </header>

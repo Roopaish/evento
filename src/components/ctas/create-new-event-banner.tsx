@@ -6,13 +6,13 @@ import { Button } from "../ui/button"
 
 export default function CreateNewEventBanner() {
   return (
-    <div className="pt-20">
-      <div className="container mx-auto max-w-7xl rounded-xl bg-primary">
+    <div className="container pt-20">
+      <div className="container mx-auto max-w-6xl rounded-xl bg-primary">
         <div className="flex flex-col justify-around md:flex-row">
           <Image
             className="-mt-20"
-            src="/calender.svg"
-            alt="calender"
+            src="/events.svg"
+            alt="events"
             width={400}
             height={320}
           ></Image>

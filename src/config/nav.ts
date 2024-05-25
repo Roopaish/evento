@@ -3,12 +3,12 @@ import { type NavItem, type SideNavItem } from "@/types"
 export const mainNavItems: (NavItem & { showWhenLoggedIn?: boolean })[] = [
   {
     label: "Find Event",
-    path: "/Events",
+    path: "/search",
     showWhenLoggedIn: true,
   },
   {
     label: "Create Event",
-    path: "/add-events",
+    path: "/dashboard/events/add",
     showWhenLoggedIn: true,
   },
   {

@@ -1,14 +1,35 @@
+import { cn } from "@/lib/utils"
+import { Text } from "@/components/ui/text"
 import CreateNewEventBanner from "@/components/ctas/create-new-event-banner"
 import EventsNearYou from "@/components/event/event-near-you"
 import UpcomingEvents from "@/components/event/upcoming-events"
-import HeroCarousel from "@/components/home/hero-carousel"
 import SearchFilters from "@/components/search/search-filters"
 
 export default async function Home() {
   return (
-    <div className="space-y-12 pb-10">
-      <HeroCarousel />
-      <SearchFilters />
+    <div className="space-y-24 pb-10">
+      <div>
+        <div
+          className={cn(
+            "relative bg-[url('/hero.jpg')] bg-cover bg-center bg-no-repeat pb-40 pt-10"
+          )}
+        >
+          <div className="absolute inset-0 bg-black opacity-50"></div>
+
+          <div className="container relative text-center text-white">
+            <Text variant={"h2"} semibold className="mt-10 text-center">
+              Event Management Simplified
+            </Text>
+            <Text variant={"large"} className="mx-auto mt-4 max-w-3xl">
+              Create, manage, publish, and staff your events effortlessly.
+            </Text>
+          </div>
+        </div>
+
+        <div className="mx-auto -mt-20">
+          <SearchFilters />
+        </div>
+      </div>
       <EventsNearYou />
       <UpcomingEvents />
       <CreateNewEventBanner />
