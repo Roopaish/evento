@@ -55,10 +55,13 @@ export const eventRouter = createTRPCRouter({
         where: {
           title: {
             contains: q,
+            mode: "insensitive",
           },
           type: type ? { equals: type as EventType } : undefined,
           date: date ? { equals: date } : undefined,
-          address: address ? { contains: address } : undefined,
+          address: address
+            ? { contains: address, mode: "insensitive" }
+            : undefined,
           jobPositions: hasJobOffers ? { some: {} } : undefined,
           createdById: userId
             ? { equals: userId }
@@ -134,10 +137,13 @@ export const eventRouter = createTRPCRouter({
         where: {
           title: {
             contains: q,
+            mode: "insensitive",
           },
           type: type ? { equals: type as EventType } : undefined,
           date: date ? { equals: date } : undefined,
-          address: address ? { contains: address } : undefined,
+          address: address
+            ? { contains: address, mode: "insensitive" }
+            : undefined,
           jobPositions: hasJobOffers ? { some: {} } : undefined,
         },
       })
