@@ -12,6 +12,7 @@
 - `pnpm main:next` to run the next.js server
 - `pnpm main:wss` to run the websocket server
 - `pnpm main` to run both at once
+- `npx prisma db seed` to seed the database
 
 ## Database - Postgresql
 

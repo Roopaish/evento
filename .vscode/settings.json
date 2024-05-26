@@ -5,5 +5,11 @@
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "cSpell.words": ["Evento", "signup"]
+  "cSpell.words": ["Evento", "signup"],
+  "files.exclude": {
+    "**/dist": true,
+    "**/node_modules": true,
+    "**/.next": true
+  },
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

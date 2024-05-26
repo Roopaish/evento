@@ -22,11 +22,6 @@ export const SearchFiltersSchema = z
     address: z.string().optional(),
     hasJobOffers: z.boolean().optional(),
   })
-  .merge(
-    PaginatedInput.omit({
-      cursor: true,
-      limit: true,
-    })
-  )
+  .merge(PaginatedInput)
 
 export type SearchSearchParams = z.infer<typeof SearchFiltersSchema>

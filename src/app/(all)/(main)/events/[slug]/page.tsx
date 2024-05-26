@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { api } from "@/trpc/server"
 
 import { siteConfig } from "@/config/site"
 
@@ -8,10 +9,17 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 }
 
-export default function EventDetails({ params }: { params: { slug: string } }) {
+export default async function EventDetails({
+  params,
+}: {
+  params: { slug: number }
+}) {
+  const data = await api.event.getEvent.query({ id: params.slug })
+
   return (
     <div>
       EventDetails {params.slug}
+      <pre>{JSON.stringify(data, null, 2)}</pre>
       {/* TODO: Image Carousel */}
       {/* TODO: Event title, address, time */}
       {/* TODO: Event description in rich text format */}

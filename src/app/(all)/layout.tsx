@@ -13,7 +13,7 @@ export default async function RootLayout({
   return (
     <>
       <Header session={session} />
-      <div className="mt-[60px] min-h-screen bg-background">{children}</div>
+      <div className="mt-[60px] bg-background">{children}</div>
     </>
   )
 }
