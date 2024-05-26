@@ -18,6 +18,12 @@ import { getUrl, transformer } from "./shared"
 
 export const api = createTRPCReact<AppRouter>()
 
+let currentEvent: number | undefined
+
+export function setCurrentEvent(eventId?: number) {
+  currentEvent = eventId
+}
+
 export function TRPCReactProvider(props: {
   children: React.ReactNode
   cookies: string
@@ -54,6 +60,7 @@ export function TRPCReactProvider(props: {
             headers() {
               return {
                 cookie: props.cookies,
+                event: (currentEvent ?? "1").toString(),
                 "x-trpc-source": "react",
               }
             },

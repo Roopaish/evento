@@ -35,7 +35,7 @@ export default function Sidebar({
 
                 return (
                   <Button
-                    variant={pathname === path ? "secondary" : "ghost"}
+                    variant={pathname === path ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => {
                       router.push(path)

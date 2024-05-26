@@ -10,7 +10,6 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
 export const eventRouter = createTRPCRouter({
   addEvent: protectedProcedure
     .input(eventFormSchema)
-
     .mutation(({ input, ctx }) => {
       const { jobPositions, assets, managerImage, ...rest } = input
 
@@ -83,6 +82,31 @@ export const eventRouter = createTRPCRouter({
       return event
     }),
 
+  getParticipatingEvents: protectedProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.event.findMany({
+      select: {
+        id: true,
+        title: true,
+      },
+      where: {
+        OR: [
+          {
+            participants: {
+              some: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+          {
+            createdById: ctx.session.user.id,
+          },
+        ],
+      },
+    })
+
+    return data
+  }),
+
   getUserEvents: publicProcedure
     .input(
       SearchFiltersSchema.extend({ userId: z.string().optional().nullish() })
@@ -146,10 +170,17 @@ export const eventRouter = createTRPCRouter({
   getMyEvent: protectedProcedure
     .input(z.object({ id: z.number() }))
     .query(async ({ ctx, input }) => {
+      console.log(ctx.currentEvent)
       const event = await ctx.db.event.findFirst({
         where: {
           id: input.id,
           createdById: ctx.session.user.id,
+        },
+        include: {
+          assets: true,
+          jobPositions: true,
+          managerImage: true,
+          createdBy: true,
         },
       })
       if (!event) {

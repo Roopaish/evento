@@ -59,7 +59,7 @@ export default function EventForm({ id }: { id?: number }) {
     defaultValues: {},
   })
 
-  const { data: previousData } = api.event.getEvent.useQuery(
+  const { data: previousData } = api.event.getMyEvent.useQuery(
     {
       id: id!,
     },
