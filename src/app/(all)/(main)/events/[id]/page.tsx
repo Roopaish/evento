@@ -36,8 +36,8 @@ export default async function EventDetails({
           ]}
           title={data?.title}
         />
-        <div className="flex justify-between">
-          <div className="m-6 flex w-full flex-col space-y-4 md:mt-10 md:w-1/2">
+        <div className="grid grid-cols-3 gap-4">
+          <div className="col-span-2 m-6 flex flex-col space-y-4 md:mt-10">
             <div className="flex items-center space-x-2 text-lg text-gray-600">
               <span role="img" aria-label="calendar">
                 📅
@@ -72,8 +72,7 @@ export default async function EventDetails({
               </div>
             </div>
           </div>
-
-          <div className="mt-5 w-full px-4 sm:px-2 md:w-1/2">
+          <div className="col-span-1 mt-5 px-4 sm:px-2">
             <div className="mb-5">
               <h2 className="text-xl font-semibold">Event Location</h2>
             </div>
