@@ -8,7 +8,7 @@ export const orderFilter = ["asc", "desc"] as const
 
 export const PaginatedInput = z.object({
   limit: z.number().min(1).max(100).optional().default(20),
-  cursor: z.number().nullish(),
+  cursor: z.number().or(z.string()).nullish(),
   sortBy: z.enum(sortFilter).optional().default("created_at"),
   orderBy: z.enum(orderFilter).optional().default("desc"),
 })

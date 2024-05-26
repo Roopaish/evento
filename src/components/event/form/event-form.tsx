@@ -10,14 +10,22 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover"
+import { useMutation } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
+import { uploadFiles } from "@/lib/requests/upload-file"
 import { cn } from "@/lib/utils"
-import { eventFormSchema } from "@/lib/validations/event-form-validation"
+import { eventFormSchemaClient } from "@/lib/validations/event-form-validation-client"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import {
@@ -46,16 +54,32 @@ export default function EventForm({ id }: { id?: number }) {
 
   const router = useRouter()
 
-  const form = useForm<z.infer<typeof eventFormSchema>>({
-    resolver: zodResolver(eventFormSchema),
+  const form = useForm<z.infer<typeof eventFormSchemaClient>>({
+    resolver: zodResolver(eventFormSchemaClient),
     defaultValues: {},
   })
 
-  useEffect(() => {
-    if (isEdit) {
-      // form.formState
+  const { data: previousData } = api.event.getEvent.useQuery(
+    {
+      id: id!,
+    },
+    {
+      enabled: isEdit,
     }
-  }, [isEdit])
+  )
+
+  useEffect(() => {
+    if (!!previousData) {
+      const cleanedRest = Object.fromEntries(
+        Object.entries(previousData).map(([key, value]) => [
+          key,
+          value === "" ? null : value,
+        ])
+      )
+
+      form.reset(cleanedRest)
+    }
+  }, [previousData])
 
   const { mutate, isLoading } = api.event.addEvent.useMutation({
     onSuccess: () => {
@@ -67,8 +91,89 @@ export default function EventForm({ id }: { id?: number }) {
     },
   })
 
-  function onSubmit(values: z.infer<typeof eventFormSchema>) {
-    mutate(values)
+  const { mutate: update, isLoading: isUpdating } =
+    api.event.editEvent.useMutation({
+      onSuccess: () => {
+        toast.success("Event has been created")
+        router.push("/dashboard/events")
+      },
+      onError: (e) => {
+        toast.error(e.message ?? "Something went wrong")
+      },
+    })
+
+  const { mutateAsync: uploadAssets, isLoading: isUploading } = useMutation({
+    mutationFn: (files: File[] | FileList) => uploadFiles(files),
+    onSuccess: (data) => {
+      // toast.success("Images uploaded successfully!")
+      // form.reset()
+      console.log({ successData: data })
+    },
+    onError: () => {
+      toast.error("Failed to upload images!")
+    },
+  })
+
+  const { mutateAsync: deleteAsset, isLoading: isDeleting } =
+    api.asset.delete.useMutation({
+      onSuccess: () => {
+        toast.success("Images deleted successfully!")
+      },
+      onError: () => {
+        toast.error("Failed to delete images!")
+      },
+    })
+
+  async function onSubmit(values: z.infer<typeof eventFormSchemaClient>) {
+    // Upload Cover Images
+    const assetsToUpload = Array.from(values.assets).filter(
+      (asset) => !("url" in asset)
+    )
+    const assets: { url: string; id: string }[] = []
+
+    if (assetsToUpload.length) {
+      const { data: uploadedAssets } = await uploadAssets(assetsToUpload)
+      console.log({ uploadedAssets })
+      if (uploadedAssets?.images) {
+        assets.push(
+          ...uploadedAssets?.images?.map((a) => {
+            return {
+              url: a.url,
+              id: a.fileId,
+            }
+          })
+        )
+      }
+    }
+
+    const assetsToDelete =
+      previousData?.assets?.filter(
+        (image) =>
+          !Array.from(values.assets)?.some((i) =>
+            "id" in i ? i.id === image.id : false
+          )
+      ) ?? []
+
+    if (assetsToDelete.length) {
+      await deleteAsset({ ids: assetsToDelete.map((a) => a.id) })
+    }
+
+    // Upload Manager Image
+    let managerImage: { url: string; id: string } | undefined = undefined
+    if (values.managerImage) {
+      const { data: uploadedAsset } = await uploadAssets(values.managerImage)
+
+      managerImage = {
+        id: uploadedAsset?.images[0]?.fileId as unknown as string,
+        url: uploadedAsset.images[0]?.url as unknown as string,
+      }
+    }
+
+    if (isEdit) {
+      update({ ...values, id, assets, managerImage })
+    } else {
+      mutate({ ...values, assets, managerImage })
+    }
   }
 
   return (
@@ -80,6 +185,7 @@ export default function EventForm({ id }: { id?: number }) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 rounded-2xl bg-background px-6 py-8 shadow-container transition-all"
       >
+        {JSON.stringify(form.formState.errors)}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}
@@ -266,12 +372,24 @@ export default function EventForm({ id }: { id?: number }) {
           name={"managerImage"}
           title="Manager Image"
           form={form}
+          max={1}
         />
 
         <AssetUploader name={"assets"} title={"Images"} form={form} />
 
+        <Accordion type="single" collapsible>
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              Are your looking to hire somebody?
+            </AccordionTrigger>
+            <AccordionContent>TODO</AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
         <Button type="submit">
-          {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
+          {(isLoading || isUpdating || isDeleting || isUploading) && (
+            <Icons.spinner className="h-4 w-4 animate-spin" />
+          )}
           Submit
         </Button>
       </form>

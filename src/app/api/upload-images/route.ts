@@ -30,7 +30,10 @@ export async function POST(request: NextRequest) {
       await db.asset.createMany({
         data: uploadedImages.map((img) => {
           return {
-            ...img,
+            name: img.name,
+            size: img.size,
+            thumbnailUrl: img.thumbnailUrl,
+            url: img.url,
             id: img.fileId,
             userId: session.user.id,
           }

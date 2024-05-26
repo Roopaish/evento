@@ -15,23 +15,7 @@ export default async function EventDetails({
   return (
     <>
       <div className="container">
-        <EventCarousel
-          assets={[
-            {
-              url: "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
-              id: "eventdetail",
-            },
-            {
-              url: "https://www.oyorooms.com/blog/wp-content/uploads/2018/02/type-of-event.jpg",
-              id: "eventdetail2",
-            },
-            {
-              url: "https://images.unsplash.com/photo-1505373877841-8d25f7d46678",
-              id: "eventdetail3",
-            },
-          ]}
-          title={data?.title}
-        />{" "}
+        <EventCarousel assets={data?.assets ?? []} title={data?.title} />{" "}
       </div>
       <div>
         <InviteMembersButton />

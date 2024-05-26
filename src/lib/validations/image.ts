@@ -6,7 +6,7 @@ import { ACCEPTED_IMAGE_TYPES, MAX_FILE_SIZE } from "@/config/constants"
 
 export const zodImageUploadValidation = ({
   max = 5,
-}: { max?: number } = {}) => {
+}: { max?: number; isRequired?: boolean } = {}) => {
   return z
     .custom<FileList>((val) => {
       console.log({ val })

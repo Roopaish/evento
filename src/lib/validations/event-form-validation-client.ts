@@ -4,7 +4,7 @@ import { eventFormSchema } from "@/lib/validations/event-form-validation"
 
 import { zodImageUploadValidation } from "./image"
 
-export const eventFormValidationClient = eventFormSchema.extend({
+export const eventFormSchemaClient = eventFormSchema.extend({
   assets: zodImageUploadValidation(),
-  managerImage: zodImageUploadValidation({ max: 1 }),
+  managerImage: zodImageUploadValidation({ max: 1, isRequired: false }),
 })
