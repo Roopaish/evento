@@ -20,11 +20,14 @@ import { Icons } from "../ui/icons"
 export default function AssetUploader({
   form,
   name,
-  max,
+  max = 10,
+  title,
 }: {
-  form: UseFormReturn
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  form: UseFormReturn<any>
   name: string
   max?: number
+  title?: string
 }) {
   const inputRef = useRef<ElementRef<"input">>(null)
 
@@ -38,7 +41,7 @@ export default function AssetUploader({
         render={({ field: { onChange }, ...field }) => {
           return (
             <FormItem>
-              <FormLabel></FormLabel>
+              <FormLabel>{title ?? name}</FormLabel>
               {/* File Upload */}
               <FormControl>
                 <div className="mt-2 flex flex-wrap gap-2">
@@ -110,15 +113,17 @@ export default function AssetUploader({
                       )
                     })}
 
-                  <div
-                    onClick={() => {
-                      inputRef.current?.click()
-                    }}
-                    className="flex h-40 w-40 cursor-pointer flex-col items-center justify-center space-y-2 overflow-hidden rounded-sm border-2 border-primary"
-                  >
-                    <Icons.PlusSquare className="h-8 w-8" />
-                    <Label>Add images</Label>
-                  </div>
+                  {Array.from(images || [])?.length > max && (
+                    <div
+                      onClick={() => {
+                        inputRef.current?.click()
+                      }}
+                      className="flex h-40 w-40 cursor-pointer flex-col items-center justify-center space-y-2 overflow-hidden rounded-sm border-2 border-primary"
+                    >
+                      <Icons.PlusSquare className="h-8 w-8" />
+                      <Label>Add images</Label>
+                    </div>
+                  )}
                   <Input
                     {...field}
                     type="file"

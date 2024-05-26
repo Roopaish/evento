@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/select"
 import { Text } from "@/components/ui/text"
 import { Textarea } from "@/components/ui/textarea"
+import AssetUploader from "@/components/assets/assets-uploader"
 
 export default function EventForm({ id }: { id?: number }) {
   const isEdit = !!id
@@ -72,17 +73,20 @@ export default function EventForm({ id }: { id?: number }) {
 
   return (
     <Form {...form}>
-      <Text variant={"h4"} medium className="mb-10">
+      <Text variant={"h5"} semibold className="mb-4 mt-5 text-center">
         {isEdit ? "Edit event" : "Create new event"}
       </Text>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <div className="flex items-center gap-2">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-8 rounded-2xl bg-background px-6 py-8 shadow-container transition-all"
+      >
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}
             name="title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Event Title</FormLabel>
+                <FormLabel>Title</FormLabel>
                 <FormControl>
                   <Input {...field} />
                 </FormControl>
@@ -96,7 +100,7 @@ export default function EventForm({ id }: { id?: number }) {
             name="type"
             render={({ field }) => (
               <FormItem className="">
-                <FormLabel>Event Type</FormLabel>
+                <FormLabel>Type</FormLabel>
                 <FormControl>
                   <Select
                     {...field}
@@ -124,75 +128,62 @@ export default function EventForm({ id }: { id?: number }) {
               </FormItem>
             )}
           />
+
+          <FormField
+            control={form.control}
+            name="date"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date</FormLabel>
+                <div>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full justify-start pl-3 text-left font-normal hover:scale-100 focus:scale-100",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          <CalendarIcon className="h-4 w-4 opacity-50" />
+
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-auto bg-white p-0"
+                      align="start"
+                    >
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date: Date) => date < new Date()}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
-
-        <FormField
-          control={form.control}
-          name="date"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date</FormLabel>
-              <div>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full justify-start pl-3 text-left font-normal hover:scale-100 focus:scale-100",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        <CalendarIcon className="h-4 w-4 opacity-50" />
-
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto bg-white p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      // disabled={(date:Date) =>
-                      //   date > new Date() || date < new Date("1900-01-01")
-                      // }
-                      initialFocus
-                    />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
         <FormField
           control={form.control}
           name="address"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Location</FormLabel>
+              <FormLabel>Location</FormLabel>
               <FormControl>
                 <Input {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="capacity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Event Capacity</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -204,7 +195,7 @@ export default function EventForm({ id }: { id?: number }) {
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Description</FormLabel>
+              <FormLabel>Description</FormLabel>
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
@@ -212,12 +203,13 @@ export default function EventForm({ id }: { id?: number }) {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
           name="instruction"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Event Instruction</FormLabel>
+              <FormLabel>Instruction</FormLabel>
               <FormControl>
                 <Textarea {...field} />
               </FormControl>
@@ -225,6 +217,58 @@ export default function EventForm({ id }: { id?: number }) {
             </FormItem>
           )}
         />
+
+        <FormField
+          control={form.control}
+          name="capacity"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Capacity</FormLabel>
+              <FormControl>
+                <Input {...field} type="number" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <div className="grid grid-cols-1  gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <FormField
+            control={form.control}
+            name="managerName"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Manager Name</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="managerPhone"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Manager Phone</FormLabel>
+                <FormControl>
+                  <Input {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <AssetUploader
+          name={"managerImage"}
+          title="Manager Image"
+          form={form}
+        />
+
+        <AssetUploader name={"assets"} title={"Images"} form={form} />
 
         <Button type="submit">
           {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
