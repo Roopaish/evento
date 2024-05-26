@@ -23,7 +23,7 @@ export default function InviteMembersButton() {
     console.log(values)
   }
 
-  const emails = form.watch("emails")
+  const emails = form.watch("emails") ?? []
 
   return (
     <>
