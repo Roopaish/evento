@@ -18,7 +18,7 @@ export default async function EventDetails({
 
   return (
     <div>
-      EventDetails {params.slug}
+      {params.slug}
       <pre>{JSON.stringify(data, null, 2)}</pre>
       {/* TODO: Image Carousel */}
       {/* TODO: Event title, address, time */}
