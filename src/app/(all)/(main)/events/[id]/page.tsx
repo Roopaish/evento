@@ -36,36 +36,57 @@ export default async function EventDetails({
           ]}
           title={data?.title}
         />
-        <div className="flex justify-between ">
-          <div className=" m-6 flex flex-col space-y-2 md:mt-10">
-            <Text as="h1" variant={"h4"} medium className="font-serif">
+        <div className="flex justify-between">
+          <div className="m-6 flex w-full flex-col space-y-4 md:mt-10 md:w-1/2">
+            <div className="flex items-center space-x-2 text-lg text-gray-600">
+              <span role="img" aria-label="calendar">
+                📅
+              </span>
+              <Text variant="medium" medium className="font-semibold">
+                {data?.date?.toDateString()}
+              </Text>
+            </div>
+            <Text
+              as="h1"
+              variant="h4"
+              medium
+              className="text-2xl font-bold text-gray-800"
+            >
               {data?.title}
             </Text>
-            {/* <Text as="h1" variant={"h4"} medium className="font-serif">
-            📅 {data?.date}
-            </Text> */}
-            <Text variant={"medium"} medium className="mt-10 font-serif">
+            <Text variant="medium" medium className="mt-4 text-gray-700">
               {data?.description}
             </Text>
-            <p>{data?.capacity}</p>
-            <p>{data?.address}</p>
-          </div>
-          <div>
-            <div className="md:max-w-screen mt-5 w-full px-6 sm:px-4 ">
-              <div className="mb-5">
-                <h2 className="text-xl font-semibold">Event Location</h2>
+            <div className="mt-4 space-y-2">
+              <div className="flex items-center space-x-2">
+                <span className="text-lg font-semibold text-gray-600">
+                  Capacity:
+                </span>
+                <p className="text-lg text-gray-800">{data?.capacity}</p>
               </div>
-              <div className="rounded-lg bg-gray-100 p-4 ">
-                <div className="mb-4">
-                  <h3 className="text-lg font-medium">Lokanthali,Ram Mandir</h3>
-                  <p>Bhaktapur, Nepal</p>
-                </div>
-                <div className="flex h-64 items-center justify-center rounded-lg bg-gray-300">
-                  <span className="text-gray-700">Map Rakhne </span>
-                </div>
+              <div className="flex items-center space-x-2">
+                <span className="text-lg font-semibold text-gray-600">
+                  Address:
+                </span>
+                <p className="text-lg text-gray-800">{data?.address}</p>
               </div>
             </div>
-            <div className="">
+          </div>
+
+          <div className="mt-5 w-full px-4 sm:px-2 md:w-1/2">
+            <div className="mb-5">
+              <h2 className="text-xl font-semibold">Event Location</h2>
+            </div>
+            <div className="rounded-lg bg-gray-100 p-4">
+              <div className="mb-4">
+                <h3 className="text-lg font-medium">Lokanthali, Ram Mandir</h3>
+                <p>Bhaktapur, Nepal</p>
+              </div>
+              <div className="flex h-64 items-center justify-center rounded-lg bg-gray-300">
+                <span className="text-gray-700">Map Rakhne </span>
+              </div>
+            </div>
+            <div className="mt-5">
               <ShareEvent />
             </div>
           </div>

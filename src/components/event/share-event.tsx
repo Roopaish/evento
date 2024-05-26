@@ -20,7 +20,7 @@ export default function ShareEvent({ title }: { title?: string }) {
   const url = typeof window !== "undefined" ? window.location.href : ""
 
   return (
-    <div className="mt-4 flex flex-col items-center justify-between  p-4">
+    <div className="mt-4 flex  items-center justify-between rounded border p-4">
       <Text variant="medium" semibold>
         Share with friends :
       </Text>
