@@ -1,8 +1,12 @@
 "use client"
 
 import { type RouterOutputs } from "@/trpc/shared"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useForm } from "react-hook-form"
+import { type z } from "zod"
 
 import { cn } from "@/lib/utils"
+import { jobApplicationSchema } from "@/lib/validations/job-application-validation"
 
 import { Button } from "../ui/button"
 import {
@@ -13,9 +17,81 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form"
+import { Input } from "../ui/input"
 import { Separator } from "../ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet"
 import { Text } from "../ui/text"
+
+const JobApplicationForm = () => {
+  const form = useForm<z.infer<typeof jobApplicationSchema>>({
+    resolver: zodResolver(jobApplicationSchema),
+    defaultValues: {},
+  })
+
+  function onSubmit(values: z.infer<typeof jobApplicationSchema>) {
+    console.log("On Submit")
+  }
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="cv"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Cv</FormLabel>
+              <FormControl>
+                <Input {...field}></Input>
+              </FormControl>
+              <FormDescription>Add Cv</FormDescription>
+              <FormMessage></FormMessage>
+            </FormItem>
+          )}
+        ></FormField>
+
+        <FormField
+          control={form.control}
+          name="pan"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Pan No.</FormLabel>
+              <FormControl>
+                <Input {...field}></Input>
+              </FormControl>
+              <FormDescription>Add Pan no:</FormDescription>
+              <FormMessage></FormMessage>
+            </FormItem>
+          )}
+        ></FormField>
+        <FormField
+          control={form.control}
+          name="message"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Message</FormLabel>
+              <FormControl>
+                <Input {...field} />
+              </FormControl>
+              <FormDescription>Add Message</FormDescription>
+              <FormMessage></FormMessage>
+            </FormItem>
+          )}
+        ></FormField>
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
+  )
+}
 
 export default function JobPositionsDetail({
   jobPositions,
@@ -48,7 +124,7 @@ export default function JobPositionsDetail({
                 <DialogHeader>
                   <DialogTitle>Apply for {item.title}</DialogTitle>
                   <DialogDescription>
-                    <div>Cv:</div>{" "}
+                    <JobApplicationForm></JobApplicationForm>
                   </DialogDescription>
                 </DialogHeader>
               </DialogContent>

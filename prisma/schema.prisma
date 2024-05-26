@@ -159,7 +159,6 @@ model Event {
 
     invitations Invitation[]
     tasks       Task[]
-    Apply
 
     @@index([title, address])
 }
