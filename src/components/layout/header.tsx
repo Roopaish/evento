@@ -62,7 +62,12 @@ export default function Header({ session }: { session: Session | null }) {
           </div>
         </div>
         <div className="px-4 md:hidden">
-          <nav className="mb-2 flex items-center justify-between">
+          <nav
+            className={cn(
+              "flex items-center justify-between",
+              pathname.includes("/dashboard") ? "" : "mb-2"
+            )}
+          >
             <Link href={"/"} className="mr-4">
               <Icons.logo mode="light"></Icons.logo>
             </Link>
@@ -101,7 +106,7 @@ export default function Header({ session }: { session: Session | null }) {
             {/* TODO: Search Bar, Got to /search?q=something */}
           </nav>
 
-          <SearchBar />
+          {pathname.includes("/dashboard") ? null : <SearchBar />}
         </div>
       </div>
     </header>
