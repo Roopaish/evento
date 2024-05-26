@@ -1,6 +1,9 @@
 import { api } from "@/trpc/server"
 
+import { Separator } from "@/components/ui/separator"
+import { Text } from "@/components/ui/text"
 import EventCarousel from "@/components/event/event-carousel"
+import EventGrid from "@/components/event/event-grid"
 import InviteMembersButton from "@/components/event/invite-members"
 
 export default async function EventDetails({
@@ -14,7 +17,7 @@ export default async function EventDetails({
 
   return (
     <>
-      <div className="container">
+      <div className="container py-8">
         <EventCarousel
           assets={[
             {
@@ -31,11 +34,30 @@ export default async function EventDetails({
             },
           ]}
           title={data?.title}
-        />{" "}
-      </div>
-      <div>
-        <InviteMembersButton />
-        {JSON.stringify(data)}
+        />
+
+        <div className="m-6 space-y-2 md:mt-10">
+          <Text as="h1" variant={"h4"} medium className="font-serif">
+            {data?.title}
+          </Text>
+          <Text variant={"medium"} medium className="mt-10 font-serif">
+            {data?.description}
+          </Text>
+          <p>{data?.capacity}</p>
+          <p>{data?.address}</p>
+        </div>
+        <Separator className="my-10" />
+
+        <div className="space-y-5">
+          <Text variant={"h6"} semibold className="mb-5">
+            More Events like this
+          </Text>
+          <EventGrid />
+        </div>
+        <div>
+          <InviteMembersButton />
+        </div>
+        <div className="mb-6">{JSON.stringify(data)}</div>
       </div>
     </>
   )
