@@ -4,6 +4,7 @@ import { siteConfig } from "@/config/site"
 import { getInitials } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Text } from "@/components/ui/text"
+import EventGrid from "@/components/event/event-grid"
 
 export const metadata: Metadata = {
   title: "User | " + siteConfig.name,
@@ -33,6 +34,8 @@ export default function UserPage({ params }: { params: { id: string } }) {
           </div>
         </div>
       </div>
+
+      <EventGrid />
     </div>
   )
 }
