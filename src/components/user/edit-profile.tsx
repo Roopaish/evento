@@ -1,6 +1,9 @@
 "use client"
 
+import { redirect } from "next/navigation"
+import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Session } from "next-auth"
 import { useForm } from "react-hook-form"
 import { type z } from "zod"
 
@@ -19,16 +22,25 @@ import { Input } from "@/components/ui/input"
 
 import { Textarea } from "../ui/textarea"
 
-export default function EditProfileForm() {
+export default function ProfileForm({ session }: { session: Session | null }) {
   const form = useForm<z.infer<typeof editProfileFormSchema>>({
     resolver: zodResolver(editProfileFormSchema),
     defaultValues: {},
   })
 
-  function onSubmit(values: z.infer<typeof editProfileFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  const editMutation = api.user.editProfile.useMutation()
+
+  const onSubmit = async (values: z.infer<typeof editProfileFormSchema>) => {
+    // console.log("Form values", values)
+    if (!session?.user) {
+      redirect("/")
+    }
+    const result = await editMutation.mutateAsync(values)
+    if (result) {
+      alert("Profile updated successfully")
+      form.reset()
+      // redirect("/dashboard/profile")
+    }
   }
 
   return (
