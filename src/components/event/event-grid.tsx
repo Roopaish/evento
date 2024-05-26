@@ -11,23 +11,17 @@ import { EventCard } from "./event-card"
 
 export default function EventGrid({
   queryOptions,
+  shouldPaginate = true,
 }: {
   queryOptions: ReturnType<typeof api.event.getUserEvents.useInfiniteQuery>
+  shouldPaginate?: boolean
 }) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.5,
   })
 
-  const {
-    data,
-    isLoading: loading,
-    isFetchingNextPage,
-    fetchStatus,
-    hasNextPage,
-    fetchNextPage,
-  } = queryOptions
-
-  const isLoading = loading || fetchStatus !== "idle"
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    queryOptions
 
   useEffect(() => {
     if (isIntersecting && !isLoading && !isFetchingNextPage && hasNextPage) {
@@ -63,7 +57,7 @@ export default function EventGrid({
             <p>No events found.</p>
           </div>
         )}
-      <div ref={ref} className="py-4"></div>
+      {shouldPaginate && <div ref={ref} className="py-4"></div>}
     </>
   )
 }

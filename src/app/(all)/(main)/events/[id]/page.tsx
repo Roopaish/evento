@@ -22,12 +22,12 @@ export default async function EventDetails({
   })
 
   return (
-    <>
-      <div className="container py-8">
+    <div className="pb-10 pt-10">
+      <div className="container">
         <EventCarousel assets={data?.assets ?? []} title={data?.title} />
 
         <div className="grid grid-cols-3 gap-4">
-          <div className="col-span-2 m-6 flex flex-col space-y-4 md:mt-10">
+          <div className="col-span-3 my-6 flex flex-col space-y-4 md:mt-10 lg:col-span-2">
             <div className="flex items-center space-x-2 text-lg text-gray-600">
               <span role="img" aria-label="calendar">
                 📅
@@ -65,7 +65,7 @@ export default async function EventDetails({
             </div>
           </div>
 
-          <div className="col-span-1 mt-5 px-4 sm:px-2">
+          <div className="col-span-3 mt-5 px-4 sm:px-2 lg:col-span-1">
             <div className="mb-5">
               <h2 className="text-xl font-semibold">Event Location</h2>
             </div>
@@ -80,13 +80,19 @@ export default async function EventDetails({
             </div>
 
             {session?.user?.id === data?.createdById && (
-              <div className="my-2">
-                <Link href={`/dashboard/events/${data?.id}/edit`}>
-                  <Button className="w-full" variant={"outline"}>
-                    Edit Event
-                  </Button>
-                </Link>
-              </div>
+              <>
+                <div className="my-2">
+                  <Link href={`/dashboard/events/${data?.id}/edit`}>
+                    <Button className="w-full" variant={"outline"}>
+                      Edit Event
+                    </Button>
+                  </Link>
+                </div>
+
+                <div className="my-2">
+                  <InviteMembersButton eventId={params.id} />
+                </div>
+              </>
             )}
 
             <div className="mt-5">
@@ -96,16 +102,9 @@ export default async function EventDetails({
         </div>
 
         <Separator className="my-10" />
-
-        <div className="space-y-5">
-          <Text variant={"h6"} semibold className="mb-5">
-            More Events like this
-          </Text>
-          <AllEvents idToRecommendFor={params.id} />
-        </div>
-
-        <InviteMembersButton />
       </div>
-    </>
+
+      <AllEvents idToRecommendFor={params.id} title="Recommended Events" />
+    </div>
   )
 }

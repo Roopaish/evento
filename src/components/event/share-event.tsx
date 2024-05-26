@@ -20,11 +20,11 @@ export default function ShareEvent({ title }: { title?: string }) {
   const url = typeof window !== "undefined" ? window.location.href : ""
 
   return (
-    <div className="mt-4 flex items-center gap-4 rounded border p-2">
+    <div className="mt-4 flex items-center justify-between gap-4 rounded border px-4 py-2">
       <Text variant="medium" semibold>
         Share with friends :
       </Text>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center justify-between gap-2">
         <Button
           size="icon"
           variant={"ghost"}

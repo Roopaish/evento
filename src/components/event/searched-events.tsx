@@ -20,7 +20,7 @@ export default function SearchedEvents({
   const data = api.event.getAll.useInfiniteQuery(
     {
       ...searchParams,
-      limit: 20,
+      limit: 4,
     },
     {
       initialData: initialData
@@ -29,6 +29,7 @@ export default function SearchedEvents({
             pageParams: [""],
           }
         : undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   )
 

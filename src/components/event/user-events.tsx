@@ -33,6 +33,7 @@ export default function UserEvents({
             pageParams: [""],
           }
         : undefined,
+      getNextPageParam: (lastPage) => lastPage.nextCursor,
     }
   )
   return (
