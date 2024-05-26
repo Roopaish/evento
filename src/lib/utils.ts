@@ -20,3 +20,29 @@ export function getInitials(name?: string | null) {
     return ""
   }
 }
+
+export function formatPrice(price: number): string {
+  const priceStr = price.toString()
+
+  const parts = priceStr.split(".")
+  const integerPart = parts[0]!
+  const decimalPart = parts[1] ?? ""
+
+  let formattedInteger = ""
+  let counter = 0
+  for (let i = integerPart.length - 1; i >= 0; i--) {
+    formattedInteger = integerPart[i] + formattedInteger
+    counter++
+    if (counter === 3 && i !== 0) {
+      formattedInteger = "," + formattedInteger
+      counter = 0
+    }
+  }
+
+  let formattedPrice = formattedInteger
+  if (decimalPart) {
+    formattedPrice += "." + decimalPart
+  }
+
+  return "NPR " + formattedPrice
+}
