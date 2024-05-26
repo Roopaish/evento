@@ -4,14 +4,18 @@ import { siteConfig } from "@/config/site"
 import EventForm from "@/components/event/form/event-form"
 
 export const metadata: Metadata = {
-  title: "Add Event | " + siteConfig.name,
+  title: "Edit Event | " + siteConfig.name,
   description: siteConfig.description,
 }
 
-export default function EventFormPage() {
+export default function EditEventFormPage({
+  params,
+}: {
+  params: { id: number }
+}) {
   return (
     <>
-      <EventForm />
+      <EventForm id={Number(params.id)} />
     </>
   )
 }

@@ -20,9 +20,17 @@ export function EventCard({
         className
       )}
     >
-      <figure className="w-full  overflow-hidden rounded-md ">
+      <figure className="w-full overflow-hidden rounded-md ">
         <Image
-          src={assets?.length > 0 ? assets[0]?.url ?? "/hero.jpg" : "/hero.jpg"}
+          src={
+            assets?.length > 0
+              ? assets[0]?.url
+                ? assets[0]?.url.startsWith("http")
+                  ? assets[0]?.url
+                  : "/hero.jpg"
+                : "/hero.jpg"
+              : "/hero.jpg"
+          }
           alt={title}
           height={350}
           width={350}

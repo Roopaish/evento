@@ -12,12 +12,69 @@ export const eventRouter = createTRPCRouter({
     .input(eventFormSchema)
 
     .mutation(({ input, ctx }) => {
-      const { location, ...rest } = input
+      const { jobPositions, assets, managerImage, ...rest } = input
 
       const event = ctx.db.event.create({
         data: {
           ...rest,
-          address: location.address,
+          assets: {
+            connect: assets?.map((id) => {
+              return {
+                id,
+              }
+            }),
+          },
+          managerImage: managerImage
+            ? {
+                connect: {
+                  id: managerImage,
+                },
+              }
+            : undefined,
+          jobPositions: {
+            createMany: {
+              data: jobPositions,
+            },
+          },
+          createdById: ctx.session.user.id,
+        },
+      })
+      return event
+    }),
+
+  editEvent: protectedProcedure
+    .input(
+      eventFormSchema.extend({
+        id: z.coerce.number(),
+      })
+    )
+    .mutation(({ input, ctx }) => {
+      const { jobPositions, assets, managerImage, ...rest } = input
+
+      const event = ctx.db.event.create({
+        data: {
+          ...rest,
+          assets: {
+            connect: assets?.map((id) => {
+              return {
+                id,
+              }
+            }),
+          },
+          managerImage: managerImage
+            ? {
+                connect: {
+                  id: managerImage,
+                },
+              }
+            : undefined,
+          jobPositions: jobPositions
+            ? {
+                createMany: {
+                  data: jobPositions,
+                },
+              }
+            : undefined,
           createdById: ctx.session.user.id,
         },
       })
@@ -105,6 +162,11 @@ export const eventRouter = createTRPCRouter({
       const event = await ctx.db.event.findFirst({
         where: {
           id: input.id,
+        },
+        include: {
+          assets: true,
+          jobPositions: true,
+          managerImage: true,
         },
       })
       if (!event) {
