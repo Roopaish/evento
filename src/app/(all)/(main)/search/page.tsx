@@ -4,7 +4,7 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { type SearchSearchParams } from "@/lib/validations/search-filter-schema"
 import { Text } from "@/components/ui/text"
-import EventGrid from "@/components/event/event-grid"
+import SearchedEvents from "@/components/event/searched-events"
 import SearchFilters from "@/components/search/search-filters"
 
 export const metadata: Metadata = {
@@ -42,7 +42,7 @@ export default function SearchPage({
       </div>
 
       <div className="container mt-10">
-        <EventGrid type="all" searchParams={searchParams} />
+        <SearchedEvents searchParams={searchParams} />
       </div>
     </>
   )

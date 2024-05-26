@@ -5,8 +5,8 @@ import { api } from "@/trpc/server"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
+import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
-import EventGrid from "@/components/event/event-grid"
 import InviteMembersButton from "@/components/event/invite-members"
 import ShareEvent from "@/components/event/share-event"
 
@@ -25,6 +25,7 @@ export default async function EventDetails({
     <>
       <div className="container py-8">
         <EventCarousel assets={data?.assets ?? []} title={data?.title} />
+
         <div className="grid grid-cols-3 gap-4">
           <div className="col-span-2 m-6 flex flex-col space-y-4 md:mt-10">
             <div className="flex items-center space-x-2 text-lg text-gray-600">
@@ -35,6 +36,7 @@ export default async function EventDetails({
                 {data?.date?.toDateString()}
               </Text>
             </div>
+
             <Text
               as="h1"
               variant="h4"
@@ -46,6 +48,7 @@ export default async function EventDetails({
             <Text variant="medium" medium className="mt-4 text-gray-700">
               {data?.description}
             </Text>
+
             <div className="mt-4 space-y-2">
               <div className="flex items-center space-x-2">
                 <span className="text-lg font-semibold text-gray-600">
@@ -98,12 +101,10 @@ export default async function EventDetails({
           <Text variant={"h6"} semibold className="mb-5">
             More Events like this
           </Text>
-          <EventGrid />
+          <AllEvents idToRecommendFor={params.id} />
         </div>
-        <div>
-          <InviteMembersButton />
-        </div>
-        <div className="mb-6">{JSON.stringify(data)}</div>
+
+        <InviteMembersButton />
       </div>
     </>
   )
