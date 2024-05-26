@@ -47,10 +47,7 @@ const NewTask = ({
           title: "",
           description: "",
           status: cols[0]?.name as string,
-          subtasks: [
-            { title: "", id: undefined },
-            { title: "", id: undefined },
-          ],
+          subtasks: [],
         }
   )
   const [showDropdown, setShowDropdown] = useState(false)

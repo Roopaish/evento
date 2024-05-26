@@ -161,8 +161,10 @@ const App = ({ setShowSidebar, showSideBar }: AppProps) => {
               {activeBoard.columnsList.map((col) => (
                 <ColumnCard
                   colid={col.id}
-                  setShowModal={setShowModal}
-                  className="mr-6 h-full w-[17.5rem] min-w-[17.5rem]"
+                  dispatch={dispatch}
+                  parentSetShowModal={setShowModal}
+                  boardID={activeBoard.id}
+                  className="mr-6 h-full w-[17.5rem] min-w-[17.5rem] rounded-md border-x border-t border-[#666666] bg-opacity-25 bg-gradient-to-br from-[#E9EFFA] to-[#e9effa80] p-4 hover:border-spacing-2 dark:border-darkGrey dark:bg-opacity-25 dark:from-[#2b2c3740] dark:to-[#2b2c3720]"
                   key={col.id}
                   tasks={activeBoard.tasks
                     .filter((task) => task.status.id === col.id)
@@ -184,12 +186,16 @@ const App = ({ setShowSidebar, showSideBar }: AppProps) => {
                 ) : null}
               </DragOverlay>
             </DndContext>
-            <button
-              onClick={() => setShowModal(-1)}
-              className="mt-10 flex cursor-pointer items-center justify-center rounded-md bg-opacity-25 bg-gradient-to-br from-[#E9EFFA] to-[#e9effa80] text-hxl text-mediumGrey hover:text-purple dark:bg-opacity-25 dark:from-[#2b2c3740] dark:to-[#2b2c3720]"
+            <Button
+              onClick={() => {
+                setShowModal(-1)
+              }}
+              cType="primaryL"
+              className="rounded-md"
+              // className="mt-10 flex cursor-pointer items-center justify-center rounded-md bg-opacity-25 bg-gradient-to-br from-[#E9EFFA] to-[#e9effa80] text-hxl text-mediumGrey hover:text-purple dark:bg-opacity-25 dark:from-[#2b2c3740] dark:to-[#2b2c3720]"
             >
-              + New Column
-            </button>
+              +
+            </Button>
           </div>
           {isNumber(showModal) && (
             <Modal setShowModal={setShowModal}>
