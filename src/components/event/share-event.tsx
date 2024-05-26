@@ -55,11 +55,8 @@ export default function ShareEvent({ title }: { title?: string }) {
         >
           <FacebookIcon size={32} round />
         </FacebookShareButton>
-        <WhatsappShareButton
-          url={url}
-          title={title}
-          hashtag={`#${siteConfig.name}`}
-        >
+
+        <WhatsappShareButton url={url} title={title}>
           <WhatsappIcon size={32} round />
         </WhatsappShareButton>
 

@@ -1,5 +1,8 @@
+import Link from "next/link"
+import { getServerAuthSession } from "@/server/auth"
 import { api } from "@/trpc/server"
 
+import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
 import EventCarousel from "@/components/event/event-carousel"
@@ -12,6 +15,8 @@ export default async function EventDetails({
 }: {
   params: { id: number }
 }) {
+  const session = await getServerAuthSession()
+
   const data = await api.event.getEvent.query({
     id: Number(params.id),
   })
@@ -56,19 +61,31 @@ export default async function EventDetails({
               </div>
             </div>
           </div>
+
           <div className="col-span-1 mt-5 px-4 sm:px-2">
             <div className="mb-5">
               <h2 className="text-xl font-semibold">Event Location</h2>
             </div>
             <div className="rounded-lg bg-gray-100 p-4">
               <div className="mb-4">
-                <h3 className="text-lg font-medium">Lokanthali, Ram Mandir</h3>
-                <p>Bhaktapur, Nepal</p>
+                <h3 className="text-lg font-medium">{data?.address}</h3>
+                {/* <p>{data?.lat}</p> */}
               </div>
               <div className="flex h-64 items-center justify-center rounded-lg bg-gray-300">
-                <span className="text-gray-700">Map Rakhne </span>
+                <span className="text-gray-700">Map Here </span>
               </div>
             </div>
+
+            {session?.user?.id === data?.createdById && (
+              <div className="my-2">
+                <Link href={`/dashboard/events/${data?.id}/edit`}>
+                  <Button className="w-full" variant={"outline"}>
+                    Edit Event
+                  </Button>
+                </Link>
+              </div>
+            )}
+
             <div className="mt-5">
               <ShareEvent />
             </div>

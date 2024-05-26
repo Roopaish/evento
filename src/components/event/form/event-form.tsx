@@ -185,7 +185,6 @@ export default function EventForm({ id }: { id?: number }) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 rounded-2xl bg-background px-6 py-8 shadow-container transition-all"
       >
-        {JSON.stringify(form.formState.errors)}
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FormField
             control={form.control}

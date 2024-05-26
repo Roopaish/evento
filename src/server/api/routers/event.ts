@@ -172,6 +172,7 @@ export const eventRouter = createTRPCRouter({
           assets: true,
           jobPositions: true,
           managerImage: true,
+          createdBy: true,
         },
       })
       if (!event) {
