@@ -21,7 +21,7 @@ export const uploadFiles = async (
   }
 
   try {
-    const response = await fetch("/api/images/add", {
+    const response = await fetch("/api/upload-images", {
       method: "POST",
       credentials: "include",
       body: formData,

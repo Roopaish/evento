@@ -18,7 +18,7 @@ export const eventRouter = createTRPCRouter({
         data: {
           ...rest,
           assets: {
-            connect: assets?.map((id) => {
+            connect: assets?.map(({ id }) => {
               return {
                 id,
               }
@@ -27,15 +27,17 @@ export const eventRouter = createTRPCRouter({
           managerImage: managerImage
             ? {
                 connect: {
-                  id: managerImage,
+                  id: managerImage.id,
                 },
               }
             : undefined,
-          jobPositions: {
-            createMany: {
-              data: jobPositions,
-            },
-          },
+          jobPositions: jobPositions
+            ? {
+                createMany: {
+                  data: jobPositions,
+                },
+              }
+            : undefined,
           createdById: ctx.session.user.id,
         },
       })
@@ -55,7 +57,7 @@ export const eventRouter = createTRPCRouter({
         data: {
           ...rest,
           assets: {
-            connect: assets?.map((id) => {
+            connect: assets?.map(({ id }) => {
               return {
                 id,
               }
@@ -64,7 +66,7 @@ export const eventRouter = createTRPCRouter({
           managerImage: managerImage
             ? {
                 connect: {
-                  id: managerImage,
+                  id: managerImage.id,
                 },
               }
             : undefined,
@@ -98,7 +100,10 @@ export const eventRouter = createTRPCRouter({
 
       const data = await ctx.db.event.findMany({
         take: pagination.limit + 1,
-        cursor: pagination.cursor ? { id: pagination.cursor } : undefined,
+        cursor:
+          typeof pagination.cursor === "number"
+            ? { id: pagination.cursor }
+            : undefined,
         orderBy: {
           title: pagination.sortBy === "title" ? pagination.orderBy : undefined,
           createdAt:
@@ -167,6 +172,7 @@ export const eventRouter = createTRPCRouter({
           assets: true,
           jobPositions: true,
           managerImage: true,
+          createdBy: true,
         },
       })
       if (!event) {
@@ -185,7 +191,10 @@ export const eventRouter = createTRPCRouter({
 
       const data = await ctx.db.event.findMany({
         take: pagination.limit + 1,
-        cursor: pagination.cursor ? { id: pagination.cursor } : undefined,
+        cursor:
+          typeof pagination.cursor === "number"
+            ? { id: pagination.cursor }
+            : undefined,
         orderBy: {
           title: pagination.sortBy === "title" ? pagination.orderBy : undefined,
           createdAt:

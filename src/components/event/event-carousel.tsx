@@ -44,7 +44,7 @@ export default function EventCarousel({
     <>
       <Carousel
         opts={{
-          loop: true,
+          loop: false,
         }}
         setApi={setApi}
       >

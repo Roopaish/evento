@@ -113,17 +113,16 @@ export default function AssetUploader({
                       )
                     })}
 
-                  {Array.from(images || [])?.length > max && (
-                    <div
-                      onClick={() => {
-                        inputRef.current?.click()
-                      }}
-                      className="flex h-40 w-40 cursor-pointer flex-col items-center justify-center space-y-2 overflow-hidden rounded-sm border-2 border-primary"
-                    >
-                      <Icons.PlusSquare className="h-8 w-8" />
-                      <Label>Add images</Label>
-                    </div>
-                  )}
+                  <div
+                    onClick={() => {
+                      inputRef.current?.click()
+                    }}
+                    className="flex h-40 w-40 cursor-pointer flex-col items-center justify-center space-y-2 overflow-hidden rounded-sm border-2 border-primary"
+                  >
+                    <Icons.PlusSquare className="h-8 w-8" />
+                    <Label>Add images</Label>
+                  </div>
+
                   <Input
                     {...field}
                     type="file"
