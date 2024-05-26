@@ -14,6 +14,12 @@ export const jobRouter = createTRPCRouter({
           message: message,
           userId: ctx.session.user.id,
           jobPositionId: jobPositionId,
+          cv: {
+            connect: {
+              id: cv,
+            },
+          },
+          pan,
         },
       })
     }),
