@@ -2,6 +2,7 @@ import { api } from "@/trpc/server"
 
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
+import JobPositionsDetail from "@/components/event/job-positions-details"
 
 export default async function EventDetails({
   params,
@@ -33,9 +34,13 @@ export default async function EventDetails({
           title={data?.title}
         />{" "}
       </div>
+
+      <div>
+        <JobPositionsDetail jobPositions={data?.jobPositions} />
+      </div>
       <div>
         <InviteMembersButton />
-        {JSON.stringify(data)}
+        <pre>{JSON.stringify(data, null, 2)}</pre>
       </div>
     </>
   )
