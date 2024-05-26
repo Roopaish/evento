@@ -41,7 +41,7 @@ export default function SearchPage({
         </div>
       </div>
 
-      <div className="mt-10">
+      <div className="container mt-10">
         <EventGrid type="all" searchParams={searchParams} />
       </div>
     </>
