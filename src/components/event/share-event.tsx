@@ -22,7 +22,7 @@ export default function ShareEvent({ title }: { title?: string }) {
   return (
     <div className="mt-4 flex flex-col items-center justify-between  p-4">
       <Text variant="medium" semibold>
-        Share this Event :
+        Share with friends :
       </Text>
       <div className="flex items-center gap-2">
         <Button
