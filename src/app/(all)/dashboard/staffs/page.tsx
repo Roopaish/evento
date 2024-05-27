@@ -1,3 +1,9 @@
+import Reminder from "@/components/common/reminder"
+
 export default function Staffs() {
-  return <div>Staffs</div>
+  return (
+    <div>
+      <Reminder />
+    </div>
+  )
 }
