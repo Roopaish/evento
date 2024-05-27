@@ -41,10 +41,10 @@ export default function EventCarousel({
   }, [api])
 
   return (
-    <>
+    <div>
       <Carousel
         opts={{
-          loop: false,
+          loop: true,
         }}
         setApi={setApi}
       >
@@ -91,6 +91,6 @@ export default function EventCarousel({
         images={assets}
         startIndex={currentGalleryIndex}
       />
-    </>
+    </div>
   )
 }
