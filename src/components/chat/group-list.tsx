@@ -31,7 +31,7 @@ export default function GroupList({
       <div className="font-semibold">{group.event.title}</div>
 
       <div className="flex gap-2 overflow-hidden text-sm">
-        <div>{formatUsername(group.latestMessage!.user.name!)}</div>
+        <div>{formatUsername(group.latestMessage?.user.name ?? "")}</div>
         <div className="text-sm text-[#dc2626]">
           {group.latestMessage?.message}
         </div>

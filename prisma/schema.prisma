@@ -72,7 +72,7 @@ enum UserRole {
 }
 
 model Asset {
-    id           Int    @id
+    id           String @id
     name         String
     url          String @unique
     thumbnailUrl String @unique
@@ -155,7 +155,7 @@ model Event {
 
     participants User[]        @relation("JoinedEvents")
     jobPositions JobPosition[]
-    ChatGroup    ChatGroup[]
+    chatGroup    ChatGroup?
 
     invitations Invitation[]
     tasks       Task[]
@@ -198,7 +198,7 @@ model ChatGroup {
     latestMessageId Int?         @unique
 
     event   Event @relation(fields: [eventId], references: [id])
-    eventId Int
+    eventId Int   @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -212,10 +212,11 @@ model ChatMessage {
     chatGroupId            Int
     latestMessageChatGroup ChatGroup? @relation("LatestMessage")
 
-    user   User   @relation(fields: [userid], references: [id])
-    userid String
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
 
-    seenBy    User[]   @relation("SeenBy")
+    seenBy User[] @relation("SeenBy")
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

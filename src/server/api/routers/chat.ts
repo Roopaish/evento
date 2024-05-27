@@ -1,16 +1,12 @@
 import { revalidatePath } from "next/cache"
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc"
 import { ee } from "@/trpc/shared"
-import { type ChatMessage } from "@prisma/client"
+import { type ChatMessage, type User } from "@prisma/client"
 import { observable } from "@trpc/server/observable"
 import { z } from "zod"
 
 interface ChatMessageProps extends ChatMessage {
-  user: {
-    id: string
-    name: string | null
-    image: string | null
-  }
+  user: User
 }
 
 export const chatRouter = createTRPCRouter({
@@ -34,21 +30,11 @@ export const chatRouter = createTRPCRouter({
       const message = await ctx.db.chatMessage.create({
         data: {
           message: input.message,
-          userid: ctx.session.user.id,
+          userId: ctx.session.user.id,
           chatGroupId: input.id,
         },
-        select: {
-          id: true,
-          message: true,
-          user: {
-            select: {
-              name: true,
-              id: true,
-              image: true,
-            },
-          },
-          createdAt: true,
-          chatGroupId: true,
+        include: {
+          user: true,
         },
       })
 
@@ -84,17 +70,8 @@ export const chatRouter = createTRPCRouter({
         where: {
           chatGroupId: input.id,
         },
-        select: {
-          id: true,
-          message: true,
-          user: {
-            select: {
-              name: true,
-              id: true,
-              image: true,
-            },
-          },
-          createdAt: true,
+        include: {
+          user: true,
         },
         orderBy: {
           createdAt: "asc",
@@ -103,30 +80,19 @@ export const chatRouter = createTRPCRouter({
       return chatMessage
     }),
 
-  allGroups: protectedProcedure.query(async ({ ctx }) => {
-    const groups = await ctx.db.chatGroup.findMany({
-      select: {
-        id: true,
-        latestMessage: {
-          select: {
-            message: true,
-            user: {
-              select: {
-                name: true,
-              },
-            },
-          },
+  findGroupById: protectedProcedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const group = await ctx.db.chatGroup.findUnique({
+        where: {
+          eventId: input.id,
         },
-        event: {
-          select: {
-            title: true,
-          },
+        include: {
+          event: true,
         },
-      },
-    })
-
-    return groups
-  }),
+      })
+      return group
+    }),
 
   seenBy: protectedProcedure
     .input(z.object({ id: z.number() }))
