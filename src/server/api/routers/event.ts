@@ -38,6 +38,16 @@ export const eventRouter = createTRPCRouter({
               }
             : undefined,
           createdById: ctx.session.user.id,
+          chatGroup: {
+            create: {
+              messages: {
+                create: {
+                  message: `Chat group created for ${rest?.title}!`,
+                  userId: ctx.session.user.id,
+                },
+              },
+            },
+          },
         },
       })
       return event
