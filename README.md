@@ -9,9 +9,10 @@
 - Copy .env.example to .env and fill the values
   - For the Email part, replace `noreply@example.com` with your email, and replace password with your app password which can be generated from your `Manage Google Account > Security > 2 Factor Authentication > App Passwords`
   - [Database](#database---postgresql)
-- `pnpm main:next` to run the next.js server
-- `pnpm main:wss` to run the websocket server
-- `pnpm main` to run both at once
+- `pnpm dev:next` to run the next.js server
+- `pnpm dev:wss` to run the websocket server
+- `pnpm dev` to run both at once
+- `npx prisma db seed` to seed the database
 
 ## Database - Postgresql
 

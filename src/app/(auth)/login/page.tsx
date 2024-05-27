@@ -3,8 +3,10 @@ import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { getServerAuthSession } from "@/server/auth"
+import { AlertCircle } from "lucide-react"
 
 import { miniSiteContent, siteConfig } from "@/config/site"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Icons } from "@/components/ui/icons"
 
 import { UserAuthForm } from "../../../components/auth/user-auth-form"
@@ -14,7 +16,13 @@ export const metadata: Metadata = {
   description: `Get started with ${siteConfig.name}`,
 }
 
-export default async function AuthenticationPage() {
+export default async function AuthenticationPage({
+  searchParams,
+}: {
+  searchParams: {
+    msg: string
+  }
+}) {
   const session = await getServerAuthSession()
 
   if (session?.user) {
@@ -36,7 +44,9 @@ export default async function AuthenticationPage() {
             />
           </div>
           <div className="relative z-20 flex items-center text-lg font-medium">
-            <Icons.logo mode="dark"></Icons.logo>
+            <Link href="/">
+              <Icons.logo mode="dark"></Icons.logo>
+            </Link>
           </div>
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">
@@ -52,15 +62,23 @@ export default async function AuthenticationPage() {
         <div className="h-full p-8">
           <div className="mx-auto flex h-full w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
-              <h1 className="text-2xl font-semibold tracking-tight">
-                Welcome back
-              </h1>
+              {searchParams.msg === "unauthorized" ? (
+                <Alert variant="destructive" className="text-left">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertTitle>Can't proceed</AlertTitle>
+                  <AlertDescription>Please login to continue.</AlertDescription>
+                </Alert>
+              ) : (
+                <h1 className="text-2xl font-semibold tracking-tight">
+                  Welcome back
+                </h1>
+              )}
               <p className="text-sm text-muted-foreground">
                 Enter your email to sign in to your account
               </p>
             </div>
             <UserAuthForm />
-            <p className="px-8 text-center text-sm text-muted-foreground">
+            <div className="px-8 text-center text-sm text-muted-foreground">
               <p className="px-8 text-center text-sm text-muted-foreground">
                 <Link
                   href="/register"
@@ -69,7 +87,7 @@ export default async function AuthenticationPage() {
                   Don&apos;t have an account? Sign Up
                 </Link>
               </p>
-            </p>
+            </div>
           </div>
         </div>
       </div>

@@ -47,7 +47,9 @@ export default async function AuthenticationPage() {
             />
           </div>
           <div className="relative z-20 flex items-center text-lg font-medium">
-            <Icons.logo mode="dark"></Icons.logo>
+            <Link href="/">
+              <Icons.logo mode="dark"></Icons.logo>
+            </Link>
           </div>
           <div className="relative z-20 mt-auto">
             <blockquote className="space-y-2">

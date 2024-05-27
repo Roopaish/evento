@@ -44,28 +44,19 @@ export default function UserNav({ session }: { session: Session | null }) {
   }
 
   if (!session?.user) {
-    return (
-      <div className="flex gap-2 align-middle">
-        <Link href="/login">
-          <Button variant="secondary">Login</Button>
-        </Link>
-        <Link href="/register">
-          <Button>Register</Button>
-        </Link>
-      </div>
-    )
+    return null
   }
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
+          <Avatar className="h-9 w-9">
             <AvatarImage
               src={session?.user?.image ?? ""}
               alt={session?.user?.name ?? "avatar"}
             />
-            <AvatarFallback>
+            <AvatarFallback className="bg-primary text-white">
               {session?.user?.name ? (
                 getInitials(session?.user?.name)
               ) : (

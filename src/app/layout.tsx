@@ -2,9 +2,8 @@ import "@/styles/globals.css"
 
 import localFont from "next/font/local"
 import { cookies } from "next/headers"
-import { TRPCReactProvider } from "@/trpc/react"
 
-import { Toaster } from "@/components/ui/sonner"
+import Providers from "@/lib/providers"
 
 const inter = localFont({
   src: "../fonts/Inter-VariableFont_slnt-wght.ttf",
@@ -25,10 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          <Toaster closeButton richColors theme="light" />
-          {children}
-        </TRPCReactProvider>
+        <Providers cookies={cookies().toString()}>{children}</Providers>
       </body>
     </html>
   )

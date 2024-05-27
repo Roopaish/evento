@@ -16,20 +16,21 @@ import { Button } from "../ui/button"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { InputTags } from "../ui/input-tags"
 
-export default function InviteMembersButton() {
+export default function InviteMembersButton({ eventId }: { eventId: number }) {
+  console.log(eventId)
   const form = useForm<{ emails: string[] }>()
 
   function onSubmit(values: { emails: string[] }) {
     console.log(values)
   }
 
-  const emails = form.watch("emails")
+  const emails = form.watch("emails") ?? []
 
   return (
     <>
       <Dialog>
-        <DialogTrigger>
-          <Button>Invite Members</Button>
+        <DialogTrigger className="w-full">
+          <Button className="w-full">Invite Members</Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

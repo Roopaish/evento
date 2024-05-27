@@ -25,7 +25,7 @@ export default function Sidebar({
     <div className={cn("pb-12", className)}>
       <div className="space-y-4 py-4">
         {data?.map(({ title, data: children }) => (
-          <div className="px-3 py-2">
+          <div className="px-3 py-2" key={title}>
             <h2 className="mb-2 px-4 text-lg font-semibold tracking-tight">
               {title}
             </h2>
@@ -35,11 +35,12 @@ export default function Sidebar({
 
                 return (
                   <Button
-                    variant={pathname === path ? "secondary" : "ghost"}
+                    variant={pathname === path ? "default" : "ghost"}
                     className="w-full justify-start"
                     onClick={() => {
                       router.push(path)
                     }}
+                    key={path}
                   >
                     <Icon className="mr-2 h-4 w-4" />
                     {label}

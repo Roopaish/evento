@@ -13,7 +13,7 @@ export default async function RootLayout({
   const session = await getServerAuthSession()
 
   if (!session?.user) {
-    redirect("/login")
+    redirect("/login?msg=unauthorized")
   }
 
   return (
