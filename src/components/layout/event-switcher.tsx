@@ -21,10 +21,15 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-export default function EventSwitcher() {
+export default function EventSwitcher({
+  initialValue,
+}: {
+  initialValue?: number
+}) {
   const [open, setOpen] = useState(false)
-  const { currentEvent, setCurrentEvent } = useCurrentEventStore()
+  const { currentEvent: event, setCurrentEvent } = useCurrentEventStore()
 
+  const currentEvent = event ?? initialValue
   const { data: events } = api.event.getParticipatingEvents.useQuery()
 
   return (

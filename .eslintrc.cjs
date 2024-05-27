@@ -31,6 +31,7 @@ const config = {
         checksVoidReturn: { attributes: false },
       },
     ],
+    // "react/jsx-key": "warn", // TODO: Fix not working
   },
 }
 

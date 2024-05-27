@@ -22,7 +22,13 @@ import EventSwitcher from "./event-switcher"
 import SearchBar from "./search-bar"
 import UserNav from "./user-nav"
 
-export default function Header({ session }: { session: Session | null }) {
+export default function Header({
+  session,
+  currentEvent,
+}: {
+  session: Session | null
+  currentEvent?: number
+}) {
   const pathname = usePathname()
   const [open, setOpen] = useState(false)
 
@@ -38,7 +44,7 @@ export default function Header({ session }: { session: Session | null }) {
             </Link>
 
             {pathname.startsWith("/dashboard") ? (
-              <EventSwitcher />
+              <EventSwitcher initialValue={currentEvent} />
             ) : (
               <SearchBar />
             )}
@@ -78,7 +84,9 @@ export default function Header({ session }: { session: Session | null }) {
               <Link href={"/"} className="mr-4">
                 <Icons.logo mode="light"></Icons.logo>
               </Link>
-              {pathname.startsWith("/dashboard") && <EventSwitcher />}
+              {pathname.startsWith("/dashboard") && (
+                <EventSwitcher initialValue={currentEvent} />
+              )}
             </div>
             <div className="flex items-center">
               {!isAuthenticated && (

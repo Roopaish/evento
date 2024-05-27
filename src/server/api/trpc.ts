@@ -16,6 +16,7 @@ import type ws from "ws"
 import { ZodError } from "zod"
 
 import { getServerAuthSession } from "../auth"
+import { getCookieFromCookies } from "../utils/cookies"
 
 /**
  * 1. CONTEXT
@@ -94,13 +95,18 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
 
-  // console.log(ctx.req?.headers)
-
   return next({
     ctx: {
-      // @ts-expect-error - get current event from headers
+      // @ts-expect-error - req is in ctx
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      currentEvent: ctx.req?.headers?.event,
+      currentEvent: ctx.req?.headers?.cookie
+        ? getCookieFromCookies({
+            // @ts-expect-error - req is in ctx
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            cookies: ctx.req?.headers?.cookie,
+            key: "event",
+          })
+        : null,
       session: { ...ctx.session, user: ctx.session.user },
     },
   })

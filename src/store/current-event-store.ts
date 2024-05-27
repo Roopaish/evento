@@ -1,6 +1,6 @@
-import { setCurrentEvent } from "@/trpc/react"
+import { setCookie } from "@/server/utils/cookies"
 import { create } from "zustand"
-import { persist } from "zustand/middleware"
+import { createJSONStorage, persist } from "zustand/middleware"
 
 interface CurrentEvent {
   currentEvent?: number
@@ -13,13 +13,17 @@ export const useCurrentEventStore = create<CurrentEvent>()(
       currentEvent: undefined,
       setCurrentEvent: (event) => {
         set({ currentEvent: event })
-        setCurrentEvent(event)
+        setCookie("event", event?.toString() ?? "")
+        window.location.reload()
       },
     }),
     {
       name: "current-event-storage",
-      onRehydrateStorage(state) {
-        setCurrentEvent(state.currentEvent)
+      storage: createJSONStorage(() => localStorage),
+      onRehydrateStorage: () => (state) => {
+        if (state) {
+          setCookie("event", state.currentEvent?.toString() ?? "")
+        }
       },
     }
   )
