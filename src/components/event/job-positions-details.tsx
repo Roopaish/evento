@@ -1,12 +1,13 @@
 "use client"
 
+import { api } from "@/trpc/react"
 import { type RouterOutputs } from "@/trpc/shared"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { type z } from "zod"
 
 import { cn } from "@/lib/utils"
-import { jobApplicationSchema } from "@/lib/validations/job-application-validation"
+import { jobApplicationSchemaClient } from "@/lib/validations/job-application-validation-client"
 
 import { Button } from "../ui/button"
 import {
@@ -31,14 +32,16 @@ import { Separator } from "../ui/separator"
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet"
 import { Text } from "../ui/text"
 
-const JobApplicationForm = () => {
-  const form = useForm<z.infer<typeof jobApplicationSchema>>({
-    resolver: zodResolver(jobApplicationSchema),
+const JobApplicationForm = ({ id }: { id: number }) => {
+  const form = useForm<z.infer<typeof jobApplicationSchemaClient>>({
+    resolver: zodResolver(jobApplicationSchemaClient),
     defaultValues: {},
   })
 
-  function onSubmit(values: z.infer<typeof jobApplicationSchema>) {
-    console.log("On Submit")
+  const { mutate, isLoading } = api.jobs.addApplication.useMutation({})
+
+  function onSubmit(values: z.infer<typeof jobApplicationSchemaClient>) {
+    mutate({ ...values, jobPositionId: id })
   }
 
   return (
@@ -124,7 +127,7 @@ export default function JobPositionsDetail({
                 <DialogHeader>
                   <DialogTitle>Apply for {item.title}</DialogTitle>
                   <DialogDescription>
-                    <JobApplicationForm></JobApplicationForm>
+                    <JobApplicationForm id={item.id}></JobApplicationForm>
                   </DialogDescription>
                 </DialogHeader>
               </DialogContent>
