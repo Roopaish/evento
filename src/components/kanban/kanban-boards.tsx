@@ -16,16 +16,16 @@ export default function KanbanBoards() {
 
   return (
     <>
-      <div className="container m-6 flex  flex-col gap-5 px-4">
+      <div className="container m-6 flex flex-col gap-5 px-4">
         <KanbanHeader />
-        <Text variant={"h1"} bold className=" text-2xl">
+        <Text variant={"h1"} bold className="text-2xl">
           Team Project Board
         </Text>
 
-        <div className="flex">
-          <Board title="To do" tasknumber={6} />
-          <Board title="Doing" tasknumber={3} />
-          <Board title="Done" tasknumber={2} />
+        <div className="flex max-h-[80vh] overflow-x-auto">
+          <Board title="To do" taskNumber={6} />
+          <Board title="Doing" taskNumber={3} />
+          <Board title="Done" taskNumber={2} />
         </div>
       </div>
     </>

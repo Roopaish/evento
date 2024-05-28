@@ -1,43 +1,51 @@
-// export default function TaskCard({ title }: { title: string }) {
-//   return <>{title}</>
-// }
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Button } from "../ui/button"
+import { Icons } from "../ui/icons"
+import { Text } from "../ui/text"
 
 const TaskCard = ({
   title,
   taskDetails,
   date,
+  assignedTo,
 }: {
   title: string
   taskDetails: string
   date: string
+  assignedTo?: string
 }) => {
   return (
     <div
-      className="group relative m-3 flex cursor-pointer flex-col items-start rounded-lg bg-gray-200  p-4 hover:bg-opacity-100"
+      className="group relative m-3 flex cursor-pointer flex-col items-start rounded-lg bg-gray-100  p-4 hover:bg-opacity-100"
       draggable="true"
     >
-      <span className="flex h-6 items-center rounded-full bg-pink-100 px-3 text-xs font-semibold text-pink-500">
+      <Text
+        variant={"small"}
+        semibold
+        className="flex h-6 items-center rounded-full bg-pink-100 px-3  text-pink-500"
+      >
         {title}
-      </span>
-      <h4 className="mt-3 text-sm font-medium">{taskDetails}</h4>
+      </Text>
+
+      <Text variant={"medium"} className="mt-3 text-sm">
+        {taskDetails}
+      </Text>
+
       <div className="mt-3 flex w-full items-center text-xs font-medium text-gray-400">
         <div className="flex items-center">
-          <svg
-            className="h-4 w-4 fill-current text-gray-300"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 20 20"
-            fill="currentColor"
-          >
-            <path
-              fillRule="evenodd"
-              d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span className="ml-1 leading-none">{date}</span>
+          <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
+          <div className="ml-1 leading-none">{date}</div>
         </div>
+
+        <Text variant={"small"} className="mt-3 text-sm font-medium">
+          {assignedTo}
+        </Text>
 
         <Avatar className="ml-10 h-6 w-6 rounded-full">
           <AvatarImage
@@ -47,16 +55,37 @@ const TaskCard = ({
           <AvatarFallback>ABK</AvatarFallback>
         </Avatar>
       </div>
-      <button className="absolute right-0 top-0 mr-4 mt-3  h-5 w-5 items-center justify-center rounded text-gray-500 hover:bg-gray-200 hover:text-gray-700 group-hover:flex">
-        <svg
-          className="h-4 w-4 fill-current"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-        </svg>
-      </button>
+
+      <Popover>
+        <PopoverTrigger asChild>
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute right-0 top-0 mr-4 mt-3  h-5 w-5 items-center justify-center"
+          >
+            <Icons.MoreVertical />
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent className="max-w-40 p-0">
+          <div className="divide-y-2">
+            <Button
+              variant={"ghost"}
+              className="w-full justify-start rounded-none"
+            >
+              <Icons.Pencil />
+              Edit Task
+            </Button>
+
+            <Button
+              variant="ghost"
+              className="w-full justify-start rounded-none"
+            >
+              <Icons.Trash />
+              Delete Task
+            </Button>
+          </div>
+        </PopoverContent>
+      </Popover>
     </div>
   )
 }

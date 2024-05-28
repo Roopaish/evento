@@ -6,7 +6,7 @@ export default function KanbanHeader() {
         type="search"
         placeholder="Search for anything…"
       />
-      <div className="ml-10">
+      {/* <div className="ml-10">
         <a className="mx-2 text-sm font-semibold text-primary-700" href="#">
           Projects
         </a>
@@ -22,7 +22,7 @@ export default function KanbanHeader() {
         >
           Activity
         </a>
-      </div>
+      </div> */}
     </div>
   )
 }
