@@ -66,6 +66,7 @@ import {
 
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
+import { Textarea } from "../ui/textarea"
 
 export default function TaskForm({ onCancel }: { onCancel: () => void }) {
   const onSubmit = (values: TaskFormSchema) => {
@@ -103,7 +104,7 @@ export default function TaskForm({ onCancel }: { onCancel: () => void }) {
             <FormItem>
               <FormLabel>Task Description</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Textarea placeholder="" {...field} />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />

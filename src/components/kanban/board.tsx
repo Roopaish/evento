@@ -66,29 +66,43 @@ export default function Board({
 
           <div>
             <TaskCard
+              category="Design"
               title="task 1"
               date="july-12 "
-              taskDetails="lightening fix "
+              taskDescription="lightening fix "
+              assignedTo="Ram"
             />
             <TaskCard
+              category="Staff manage"
               title="task 2"
               date="May-28 "
-              taskDetails="lightening fix "
+              taskDescription="lightening fix "
             />
             <TaskCard
-              title="task 2"
-              date="May-28 "
-              taskDetails="lightening fix "
+              category="Design"
+              title="task 1"
+              date="july-12 "
+              taskDescription="lightening fix "
+              assignedTo="Ram"
             />
             <TaskCard
+              category="Staff manage"
               title="task 2"
               date="May-28 "
-              taskDetails="lightening fix "
+              taskDescription="lightening fix "
             />
             <TaskCard
+              category="Design"
+              title="task 1"
+              date="july-12 "
+              taskDescription="lightening fix "
+              assignedTo="Ram"
+            />
+            <TaskCard
+              category="Staff manage"
               title="task 2"
               date="May-28 "
-              taskDetails="lightening fix "
+              taskDescription="lightening fix "
             />
           </div>
         </div>
