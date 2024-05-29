@@ -1,64 +1,43 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client"
 
 import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import { useCurrentEventStore } from "@/store/current-event-store"
 import { api } from "@/trpc/react"
-import { type ChatGroup, type ChatMessage, type Event } from "@prisma/client"
+import { type ChatGroup } from "@prisma/client"
 import { type Session } from "next-auth"
 
 import { Textarea } from "@/components/ui/textarea"
 
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Icons } from "../ui/icons"
 import ChatHeader from "./chat-header"
 import ChatMessages from "./chat-message"
 
-interface ChatGroupProps extends ChatGroup {
-  event: Event
-}
-
-export default function ChatGroup({
-  chatGroup,
-  session,
-}: {
-  chatGroup: ChatGroupProps | null
-  session: Session | null
-}) {
+export default function ChatGroup({ session }: { session: Session | null }) {
   const [value, setValue] = useState("")
-  const router = useRouter()
-  const [msg, setMsg] = useState<ChatMessage>()
+  const eventId = useCurrentEventStore().currentEvent!
+  const { data: currentGroup } = api.chat.findGroupByEventId.useQuery()
 
-  const allMessages = api.chat.findAllMessage.useQuery({
-    id: chatGroup!.id,
-  }).data
   const sendMessage = api.chat.sendMessage.useMutation()
-  const seenBy = api.chat.seenBy.useMutation()
+  const { mutate: seenBy } = api.chat.seenBy.useMutation()
 
-  api.chat.getLatestMsg.useSubscription(undefined, {
-    onData(data) {
-      if (chatGroup?.id === data.chatGroupId) {
-        allMessages?.push(data)
-        seenBy.mutate({ id: chatGroup.id })
-        router.refresh()
-      }
-      setMsg(data)
-    },
-  })
   function setMessage() {
     if (value == "") {
       return
     }
     sendMessage.mutate({
       message: value,
-      id: chatGroup!.id,
+      id: currentGroup!.id,
     })
     setValue("")
   }
 
   useEffect(() => {
-    seenBy.mutate({ id: chatGroup!.id })
+    if (currentGroup?.id) seenBy({ id: currentGroup?.id })
   }, [])
+
+  if (!eventId) {
+    return <div>No event chosen</div>
+  }
 
   return (
     <>
@@ -71,7 +50,7 @@ export default function ChatGroup({
           </div>
 
           <div className="flex h-screen flex-auto flex-col justify-start gap-5 overflow-y-scroll border-b-2 border-gray-200 p-5">
-            <ChatMessages session={session} messages={allMessages} msg={msg} />
+            <ChatMessages session={session} chatGroup={currentGroup!} />
           </div>
 
           <div className="flex items-center justify-center gap-3 p-5">

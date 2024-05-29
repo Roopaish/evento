@@ -81,8 +81,13 @@ export default function EventForm({ id }: { id?: number }) {
     }
   }, [previousData])
 
+  const createChat = api.chat.create.useMutation()
+
   const { mutate, isLoading } = api.event.addEvent.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
+      createChat.mutate({
+        eventId: data.id,
+      })
       toast.success("Event has been created")
       router.push("/dashboard/events")
     },

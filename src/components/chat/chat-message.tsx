@@ -1,24 +1,39 @@
-import { useEffect, useRef } from "react"
-import { type ChatMessage, type User } from "@prisma/client"
+import { useEffect, useRef, useState } from "react"
+import { useRouter } from "next/navigation"
+import { api } from "@/trpc/react"
+import {
+  type ChatGroup,
+  type ChatMessage,
+  type Event,
+  type User,
+} from "@prisma/client"
 import { type Session } from "next-auth"
 
 import { getInitials } from "@/lib/utils"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Icons } from "../ui/icons"
 
-interface ChatMessagesProps extends ChatMessage {
+interface ChatMessageProps extends ChatMessage {
   user: User
+}
+
+interface ChatGroupProps extends ChatGroup {
+  event: Event
 }
 
 export default function ChatMessages({
   session,
-  messages,
-  msg,
+  chatGroup,
 }: {
   session: Session | null
-  messages: ChatMessagesProps[] | undefined
-  msg: ChatMessage | undefined
+  chatGroup: ChatGroupProps
 }) {
+  console.log(chatGroup)
+
+  const [msg, setMsg] = useState<ChatMessageProps>()
+  const router = useRouter()
+
   function timeFormatter(date: Date) {
     const time = date.toLocaleTimeString()
     const displayTime = time.slice(0, 4) + time.slice(7, 10)
@@ -31,10 +46,46 @@ export default function ChatMessages({
     return displayDate
   }
 
+  // useEffect(()=>{
+  //    setMsg(chatMessages)
+  // },[])
+
+  const { data: messages, isLoading: messageLoading } =
+    api.chat.findAllMessage.useQuery(
+      { id: chatGroup?.id },
+      {
+        enabled: !!chatGroup?.id,
+        // trpc: {
+        //   context: {
+        //     skipBatch: true,
+        //   },
+        // }
+      }
+    )
+
+  const seenBy = api.chat.seenBy.useMutation()
+
+  api.chat.getLatestMsg.useSubscription(undefined, {
+    onData(data) {
+      if (chatGroup?.id === data.chatGroupId) {
+        // setMsg((prevState) => Array.isArray(prevState) ? [...prevState, data] : [data]);
+        messages?.push(data)
+
+        seenBy.mutate({ id: chatGroup.id })
+        router.refresh()
+      }
+      setMsg(data)
+    },
+  })
+
   const messageRef = useRef<null | HTMLDivElement>(null)
   useEffect(() => {
     messageRef.current?.scrollIntoView({ block: "nearest", inline: "nearest" })
   }, [messages, msg])
+
+  if (messageLoading) {
+    return <Icons.spinner className="h-4 w-4 animate-spin" />
+  }
 
   return (
     <>
