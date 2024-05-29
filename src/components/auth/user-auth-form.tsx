@@ -25,6 +25,8 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
   const pathname = usePathname()
   const searchParams = useSearchParams()
 
+  const next = searchParams.get("next") ?? ""
+
   const isLogin = pathname === "/login"
 
   const [loadingProvider, setLoadingProvider] = useState<
@@ -43,7 +45,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
     setLoadingProvider(provider)
 
     signIn(provider, {
-      callbackUrl: "/",
+      callbackUrl: next ?? "/",
     })
       .then((data) => {
         console.log(data)
@@ -64,7 +66,7 @@ export function UserAuthForm({ className, ...props }: UserAuthFormProps) {
       const signInResult = await signIn("email", {
         email: data.email.toLowerCase(),
         redirect: false,
-        callbackUrl: searchParams?.get("from") ?? "/",
+        callbackUrl: next ?? "/",
       })
 
       if (!signInResult?.ok) {
