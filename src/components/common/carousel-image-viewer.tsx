@@ -28,7 +28,7 @@ export default function CarouselImageViewer({
       >
         <Carousel
           carouselOptions={{
-            loop: false,
+            loop: true,
             startIndex: startIndex,
           }}
           className="px-5"

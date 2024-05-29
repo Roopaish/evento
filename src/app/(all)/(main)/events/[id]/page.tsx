@@ -2,6 +2,8 @@ import Link from "next/link"
 import { getServerAuthSession } from "@/server/auth"
 import { api } from "@/trpc/server"
 
+import { getInitials } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
@@ -56,11 +58,41 @@ export default async function EventDetails({
                 </span>
                 <p className="text-lg text-gray-800">{data?.capacity}</p>
               </div>
+
               <div className="flex items-center space-x-2">
                 <span className="text-lg font-semibold text-gray-600">
                   Address:
                 </span>
                 <p className="text-lg text-gray-800">{data?.address}</p>
+              </div>
+
+              <div>
+                <Separator className="my-10" />
+              </div>
+
+              <div className="flex gap-2">
+                <Avatar className="h-14 w-14 rounded-full ">
+                  <AvatarImage
+                    src={`${data.managerImage?.url}`}
+                    className="object-cover"
+                  />
+                  <AvatarFallback>
+                    {getInitials(data.managerName)}
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex flex-col">
+                  <div className="ml-4">
+                    <div className="text-lg font-medium">
+                      Event Manage by {data.managerName}
+                    </div>
+                    <div className="flex items-center space-x-2 text-sm text-gray-600">
+                      <div>{data.managerPhone}</div>
+                      {data.managerEmail && <span>-</span>}
+                      <div>{data.managerEmail}</div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

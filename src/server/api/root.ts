@@ -4,6 +4,7 @@ import { createTRPCRouter } from "@/server/api/trpc"
 import { assetRouter } from "./routers/asset"
 import { chatRouter } from "./routers/chat"
 import { eventRouter } from "./routers/event"
+import { invitationRouter } from "./routers/invitations"
 
 /**
  * This is the primary router for your server.
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   event: eventRouter,
   chat: chatRouter,
   asset: assetRouter,
+  invitation: invitationRouter,
 })
 
 // export type definition of API

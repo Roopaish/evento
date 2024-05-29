@@ -73,7 +73,7 @@ export default function EventForm({ id }: { id?: number }) {
       const cleanedRest = Object.fromEntries(
         Object.entries(previousData).map(([key, value]) => [
           key,
-          value === "" ? null : value,
+          value === "" ? null : key === "managerImage" ? [value] : value,
         ])
       )
 
@@ -89,7 +89,7 @@ export default function EventForm({ id }: { id?: number }) {
         eventId: data.id,
       })
       toast.success("Event has been created")
-      router.push("/dashboard/events")
+      router.push(`/events/${data.id}`)
     },
     onError: (e) => {
       toast.error(e.message ?? "Something went wrong")
@@ -98,9 +98,9 @@ export default function EventForm({ id }: { id?: number }) {
 
   const { mutate: update, isLoading: isUpdating } =
     api.event.editEvent.useMutation({
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success("Event has been created")
-        router.push("/dashboard/events")
+        router.push(`/events/${data.id}`)
       },
       onError: (e) => {
         toast.error(e.message ?? "Something went wrong")

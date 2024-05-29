@@ -168,7 +168,7 @@ Table ChatMessage {
 Table Invitation {
   id Int [pk, increment]
   email String [not null]
-  uniqueToken String [not null]
+  uniqueToken String [unique, not null]
   status Status [not null, default: 'PENDING']
   sender User [not null]
   senderId String [not null]

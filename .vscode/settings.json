@@ -5,7 +5,7 @@
     ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
     ["cx\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
-  "cSpell.words": ["Evento", "signup"],
+  "cSpell.words": ["Evento", "Kanban", "NEXTAUTH", "signup"],
   "files.exclude": {
     "**/dist": true,
     "**/node_modules": true,
