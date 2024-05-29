@@ -1,88 +1,27 @@
 "use client"
 
 import { useEffect } from "react"
-import { api } from "@/trpc/react"
-import { type RouterOutputs } from "@/trpc/shared"
+import { type api } from "@/trpc/react"
 
 import { cn } from "@/lib/utils"
-import { type SearchSearchParams } from "@/lib/validations/search-filter-schema"
 import { useIntersectionObserver } from "@/hooks/use-intersection-observer"
 
 import { Icons } from "../ui/icons"
 import { EventCard } from "./event-card"
 
 export default function EventGrid({
-  initialData,
-  type = "all",
-  userId,
-  searchParams,
+  queryOptions,
+  shouldPaginate = true,
 }: {
-  initialData?: RouterOutputs["event"]["getAll"]
-  type?: "user" | "me" | "all"
-  userId?: string
-  searchParams?: SearchSearchParams
+  queryOptions: ReturnType<typeof api.event.getUserEvents.useInfiniteQuery>
+  shouldPaginate?: boolean
 }) {
   const { isIntersecting, ref } = useIntersectionObserver({
     threshold: 0.5,
   })
 
-  const {
-    data: userData,
-    isLoading: isUserDataLoading,
-    isFetchingNextPage: isFetchingNextUserPage,
-    hasNextPage: hasNextUserPage,
-    fetchNextPage: fetchNextUserPage,
-    fetchStatus: fetchUserStatus,
-  } = api.event.getUserEvents.useInfiniteQuery(
-    {
-      limit: 20,
-      orderBy: "desc",
-      sortBy: "created_at",
-      userId,
-    },
-    {
-      initialData:
-        (type === "user" || type === "me") && initialData
-          ? {
-              pages: [initialData],
-              pageParams: [""],
-            }
-          : undefined,
-      enabled: type === "user" || type === "me",
-    }
-  )
-
-  const {
-    data: allData,
-    isLoading: isAllLoading,
-    isFetchingNextPage: isAllFetchingNextPage,
-    hasNextPage: hasAllNextPage,
-    fetchNextPage: fetchAllNextPage,
-    fetchStatus: fetchAllStatus,
-  } = api.event.getAll.useInfiniteQuery(
-    {
-      limit: 20,
-      ...searchParams,
-    },
-    {
-      initialData:
-        type === "all" && initialData
-          ? {
-              pages: [initialData],
-              pageParams: [""],
-            }
-          : undefined,
-      enabled: type === "all",
-    }
-  )
-
-  const data = userData ?? allData
-  const isLoading =
-    (isUserDataLoading && fetchUserStatus !== "idle") ??
-    (isAllLoading && fetchAllStatus !== "idle")
-  const isFetchingNextPage = isFetchingNextUserPage ?? isAllFetchingNextPage
-  const hasNextPage = hasNextUserPage ?? hasAllNextPage
-  const fetchNextPage = fetchNextUserPage ?? fetchAllNextPage
+  const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
+    queryOptions
 
   useEffect(() => {
     if (isIntersecting && !isLoading && !isFetchingNextPage && hasNextPage) {
@@ -118,7 +57,7 @@ export default function EventGrid({
             <p>No events found.</p>
           </div>
         )}
-      <div ref={ref} className="py-4"></div>
+      {shouldPaginate && <div ref={ref} className="py-4"></div>}
     </>
   )
 }

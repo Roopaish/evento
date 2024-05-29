@@ -1,8 +1,7 @@
 import { cn } from "@/lib/utils"
 import { Text } from "@/components/ui/text"
 import CreateNewEventBanner from "@/components/ctas/create-new-event-banner"
-import EventsNearYou from "@/components/event/event-near-you"
-import UpcomingEvents from "@/components/event/upcoming-events"
+import AllEvents from "@/components/event/all-events"
 import SearchFilters from "@/components/search/search-filters"
 
 export default async function Home() {
@@ -15,7 +14,6 @@ export default async function Home() {
           )}
         >
           <div className="absolute inset-0 bg-black opacity-50"></div>
-
           <div className="container relative text-center text-white">
             <Text variant={"h2"} semibold className="mt-10 text-center">
               Event Management Simplified
@@ -30,8 +28,11 @@ export default async function Home() {
           <SearchFilters />
         </div>
       </div>
-      <EventsNearYou />
-      <UpcomingEvents />
+
+      <AllEvents type="upcoming" title="Upcoming Events" />
+
+      <AllEvents type="near-you" title="Events Near You" />
+
       <CreateNewEventBanner />
     </div>
   )

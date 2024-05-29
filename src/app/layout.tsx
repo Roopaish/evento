@@ -1,14 +1,20 @@
 import "@/styles/globals.css"
 
+import { Sofia } from "next/font/google"
 import localFont from "next/font/local"
 import { cookies } from "next/headers"
-import { TRPCReactProvider } from "@/trpc/react"
 
-import { Toaster } from "@/components/ui/sonner"
+import Providers from "@/lib/providers"
 
 const inter = localFont({
   src: "../fonts/Inter-VariableFont_slnt-wght.ttf",
   variable: "--font-sans",
+})
+
+const sofia = Sofia({
+  variable: "--font-sofia",
+  weight: "400",
+  subsets: ["latin"],
 })
 
 export const metadata = {
@@ -24,11 +30,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider cookies={cookies().toString()}>
-          <Toaster closeButton richColors theme="light" />
-          {children}
-        </TRPCReactProvider>
+      <body className={`font-sans ${inter.variable} ${sofia.variable}`}>
+        <Providers cookies={cookies().toString()}>{children}</Providers>
       </body>
     </html>
   )

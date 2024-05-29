@@ -59,7 +59,7 @@ export default function EventForm({ id }: { id?: number }) {
     defaultValues: {},
   })
 
-  const { data: previousData } = api.event.getEvent.useQuery(
+  const { data: previousData } = api.event.getMyEvent.useQuery(
     {
       id: id!,
     },
@@ -73,7 +73,7 @@ export default function EventForm({ id }: { id?: number }) {
       const cleanedRest = Object.fromEntries(
         Object.entries(previousData).map(([key, value]) => [
           key,
-          value === "" ? null : value,
+          value === "" ? null : key === "managerImage" ? [value] : value,
         ])
       )
 
