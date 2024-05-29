@@ -93,6 +93,7 @@ export const invitationRouter = createTRPCRouter({
         where: {
           uniqueToken: token,
           email: ctx.session.user.email,
+          status: "PENDING",
         },
         include: {
           event: true,
@@ -105,6 +106,15 @@ export const invitationRouter = createTRPCRouter({
           message: "Invitation not found",
         })
       }
+
+      await ctx.db.invitation.update({
+        where: {
+          id: invitation.id,
+        },
+        data: {
+          status: "ACCEPTED",
+        },
+      })
 
       await ctx.db.event.update({
         where: {
