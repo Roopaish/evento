@@ -14,9 +14,7 @@ export default function EventStaffs() {
 
   return (
     <>
-      <JobApplicationDetails
-        user={{ name: "Kushal", cv: "asdasdsadasdasd" }}
-      ></JobApplicationDetails>
+      <JobApplicationDetails></JobApplicationDetails>
     </>
   )
 }
