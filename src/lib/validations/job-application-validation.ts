@@ -1,7 +1,8 @@
+import { Status } from "@prisma/client"
 import { z } from "zod"
 
 const jobApplicationSchema = z.object({
-  cv: z.string(),
+  cv: z.object({ url: z.string(), id: z.string() }),
   pan: z
     .string()
     .min(10, { message: "pan has 10 digits" })
@@ -10,4 +11,12 @@ const jobApplicationSchema = z.object({
   jobPositionId: z.number(),
 })
 
-export { jobApplicationSchema }
+const jobApplicationAdminSchema = jobApplicationSchema.extend({
+  status: z.nativeEnum(Status),
+})
+
+export type JobApplicationAdminSchema = z.infer<
+  typeof jobApplicationAdminSchema
+>
+
+export { jobApplicationSchema, jobApplicationAdminSchema }

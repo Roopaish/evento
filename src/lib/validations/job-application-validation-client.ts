@@ -6,5 +6,5 @@ export const jobApplicationSchemaClient = jobApplicationSchema
     jobPositionId: true,
   })
   .extend({
-    // cv:zodImageUploadValidation({max:1})
+    cv: zodImageUploadValidation({ max: 1 }),
   })

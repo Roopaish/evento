@@ -10,8 +10,8 @@ import { Text } from "@/components/ui/text"
 import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
-import JobPositionsDetail from "@/components/event/job-positions-details"
 import ShareEvent from "@/components/event/share-event"
+import JobPositionsDetail from "@/components/job/job-positions-details"
 
 export default async function EventDetails({
   params,

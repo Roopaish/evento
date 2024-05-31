@@ -1,3 +1,5 @@
+import { TRPCError } from "@trpc/server"
+
 import { jobApplicationSchema } from "@/lib/validations/job-application-validation"
 
 import { createTRPCRouter, protectedProcedure } from "../trpc"
@@ -5,10 +7,10 @@ import { createTRPCRouter, protectedProcedure } from "../trpc"
 export const jobRouter = createTRPCRouter({
   addApplication: protectedProcedure
     .input(jobApplicationSchema)
-    .mutation(({ input, ctx }) => {
+    .mutation(async ({ input, ctx }) => {
       const { pan, cv, message, jobPositionId, ...rest } = input
 
-      const application = ctx.db.jobApplication.create({
+      const application = await ctx.db.jobApplication.create({
         data: {
           ...rest,
           message: message,
@@ -16,11 +18,23 @@ export const jobRouter = createTRPCRouter({
           jobPositionId: jobPositionId,
           cv: {
             connect: {
-              id: cv,
+              id: cv.id,
             },
           },
           pan,
         },
       })
+
+      return application
     }),
+
+  getApplications: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.currentEvent) {
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "Please select event first",
+      })
+    }
+    // return ctx.db.jobApplication
+  }),
 })
