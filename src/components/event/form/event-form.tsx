@@ -82,9 +82,9 @@ export default function EventForm({ id }: { id?: number }) {
   }, [previousData])
 
   const { mutate, isLoading } = api.event.addEvent.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Event has been created")
-      router.push("/dashboard/events")
+      router.push(`/events/${data.id}`)
     },
     onError: (e) => {
       toast.error(e.message ?? "Something went wrong")
@@ -93,9 +93,9 @@ export default function EventForm({ id }: { id?: number }) {
 
   const { mutate: update, isLoading: isUpdating } =
     api.event.editEvent.useMutation({
-      onSuccess: () => {
+      onSuccess: (data) => {
         toast.success("Event has been created")
-        router.push("/dashboard/events")
+        router.push(`/events/${data.id}`)
       },
       onError: (e) => {
         toast.error(e.message ?? "Something went wrong")

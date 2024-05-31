@@ -12,11 +12,18 @@ import { Icons } from "@/components/ui/icons"
 import { UserAuthForm } from "../../../components/auth/user-auth-form"
 
 export const metadata: Metadata = {
-  title: "Login / Get Started",
+  title: "Register / Get Started",
   description: `Get started with ${siteConfig.name}`,
 }
 
-export default async function AuthenticationPage() {
+export default async function AuthenticationPage({
+  searchParams,
+}: {
+  searchParams: {
+    msg: string
+    next?: string
+  }
+}) {
   const session = await getServerAuthSession()
 
   if (session?.user) {
@@ -27,7 +34,9 @@ export default async function AuthenticationPage() {
     <>
       <div className="container relative flex min-h-screen flex-col items-center justify-center md:grid lg:max-w-none lg:grid-cols-2 lg:px-0">
         <Link
-          href="/login"
+          href={`/login${
+            searchParams.next ? `?next=${searchParams.next}` : ""
+          }`}
           className={cn(
             buttonVariants({ variant: "ghost" }),
             "absolute right-4 top-4 md:right-8 md:top-8"

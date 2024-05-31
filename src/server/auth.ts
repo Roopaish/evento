@@ -11,7 +11,8 @@ import GoogleProvider from "next-auth/providers/google"
 
 import { env } from "@/env"
 
-import { sendVerificationRequest } from "./email"
+import { sendEmail } from "./email"
+import emailTemplates from "./email-templates"
 
 declare module "next-auth" {
   interface Session extends DefaultSession {
@@ -52,9 +53,18 @@ if (typeof EmailProvider === "function") {
       },
       from: env.EMAIL_FROM,
       async sendVerificationRequest({ identifier, url }) {
-        await sendVerificationRequest({
+        const { host } = new URL(url)
+        await sendEmail({
           identifier,
-          url,
+          subject: `Sign in to ${host}`,
+          template: {
+            html: emailTemplates.verificationRequest.html({
+              url,
+              host,
+              email: identifier,
+            }),
+            text: emailTemplates.verificationRequest.text({ url, host }),
+          },
         })
       },
     })

@@ -21,6 +21,7 @@ export default async function AuthenticationPage({
 }: {
   searchParams: {
     msg: string
+    next?: string
   }
 }) {
   const session = await getServerAuthSession()
@@ -62,10 +63,12 @@ export default async function AuthenticationPage({
         <div className="h-full p-8">
           <div className="mx-auto flex h-full w-full flex-col justify-center space-y-6 sm:w-[350px]">
             <div className="flex flex-col space-y-2 text-center">
-              {searchParams.msg === "unauthorized" ? (
+              {searchParams.msg ? (
                 <Alert variant="destructive" className="text-left">
                   <AlertCircle className="h-4 w-4" />
-                  <AlertTitle>Can't proceed</AlertTitle>
+                  <AlertTitle className="capitalize">
+                    {searchParams.msg}
+                  </AlertTitle>
                   <AlertDescription>Please login to continue.</AlertDescription>
                 </Alert>
               ) : (
@@ -81,7 +84,9 @@ export default async function AuthenticationPage({
             <div className="px-8 text-center text-sm text-muted-foreground">
               <p className="px-8 text-center text-sm text-muted-foreground">
                 <Link
-                  href="/register"
+                  href={`/register${
+                    searchParams.next ? `?next=${searchParams.next}` : ""
+                  }`}
                   className="underline underline-offset-4 hover:text-primary"
                 >
                   Don&apos;t have an account? Sign Up
