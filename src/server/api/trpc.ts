@@ -100,12 +100,14 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
       // @ts-expect-error - req is in ctx
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
       currentEvent: ctx.req?.headers?.cookie
-        ? getCookieFromCookies({
-            // @ts-expect-error - req is in ctx
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-            cookies: ctx.req?.headers?.cookie,
-            key: "event",
-          })
+        ? Number(
+            getCookieFromCookies({
+              // @ts-expect-error - req is in ctx
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+              cookies: ctx.req?.headers?.cookie,
+              key: "event",
+            })
+          )
         : null,
       session: { ...ctx.session, user: ctx.session.user },
     },

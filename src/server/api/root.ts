@@ -5,6 +5,7 @@ import { assetRouter } from "./routers/asset"
 import { chatRouter } from "./routers/chat"
 import { eventRouter } from "./routers/event"
 import { invitationRouter } from "./routers/invitations"
+import { kanbanRouter } from "./routers/kanban"
 
 /**
  * This is the primary router for your server.
@@ -15,6 +16,7 @@ export const appRouter = createTRPCRouter({
   post: postRouter,
   event: eventRouter,
   chat: chatRouter,
+  kanban: kanbanRouter,
   asset: assetRouter,
   invitation: invitationRouter,
 })
