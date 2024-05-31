@@ -11,6 +11,7 @@ import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
 import ShareEvent from "@/components/event/share-event"
+import GetTicketButton from "@/components/ticket/get-tickets-button"
 
 export default async function EventDetails({
   params,
@@ -64,6 +65,9 @@ export default async function EventDetails({
                   Address:
                 </span>
                 <p className="text-lg text-gray-800">{data?.address}</p>
+              </div>
+              <div className="my-2">
+                <GetTicketButton id={params.id} />
               </div>
 
               <div>
