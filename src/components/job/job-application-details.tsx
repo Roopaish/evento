@@ -1,21 +1,14 @@
-import Image from "next/image"
 import { api } from "@/trpc/react"
 import { toast } from "sonner"
 
 import { Button } from "../ui/button"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog"
 import { Table, TableCell, TableHead, TableRow } from "../ui/table"
+import { Text } from "../ui/text"
 
 export const JobApplicationDetails = () => {
-  const { data } = api.jobs.getApplications.useQuery()
+  const { data, refetch } = api.jobs.getApplications.useQuery()
   console.log(data)
+
   const { mutateAsync, isLoading } = api.jobs.resolveJobApplication.useMutation(
     {
       onError(error) {
@@ -23,6 +16,7 @@ export const JobApplicationDetails = () => {
       },
       onSuccess() {
         toast.success("Approved")
+        refetch()
       },
     }
   )
@@ -41,7 +35,10 @@ export const JobApplicationDetails = () => {
   }
 
   return (
-    <div className="container">
+    <div>
+      <Text variant={"h6"} className="mb-4 mt-10" medium>
+        Job Applications
+      </Text>
       <Table>
         {/* <TableCaption>Job Applications</TableCaption> */}
         <TableRow>

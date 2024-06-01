@@ -5,7 +5,12 @@ import * as z from "zod"
 import { eventFormSchema } from "@/lib/validations/event-form-validation"
 import { SearchFiltersSchema } from "@/lib/validations/search-filter-schema"
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
+import {
+  createTRPCRouter,
+  protectedEventProcedure,
+  protectedProcedure,
+  publicProcedure,
+} from "../trpc"
 
 export const eventRouter = createTRPCRouter({
   addEvent: protectedProcedure
@@ -325,4 +330,48 @@ export const eventRouter = createTRPCRouter({
         nextCursor,
       }
     }),
+
+  getEventParticipants: protectedEventProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.event.findFirst({
+      select: {
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            role: true,
+            image: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            role: true,
+            image: true,
+          },
+        },
+      },
+      where: {
+        OR: [
+          {
+            participants: {
+              some: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+          {
+            createdById: ctx.session.user.id,
+          },
+        ],
+        id: ctx.currentEvent,
+      },
+    })
+
+    return data
+  }),
 })
