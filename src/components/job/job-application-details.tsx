@@ -52,7 +52,7 @@ export const JobApplicationDetails = () => {
           <TableHead>Action</TableHead>
         </TableRow>
         {data?.map(
-          ({ message, pan, status, jobPosition, updatedAt, id, user }) => {
+          ({ message, pan, status, jobPosition, updatedAt, id, user, cv }) => {
             return (
               <TableRow>
                 <TableCell>{id}</TableCell>
@@ -63,12 +63,23 @@ export const JobApplicationDetails = () => {
                     alt={user.id}
                     height={"20"}
                     width="20"
-                  ></Image> */}
+                ></Image> */}
                   {/* Image not loading */}
                   {user.name}
                 </TableCell>
                 <TableCell>{user.name}</TableCell>
-                <TableCell>CV Here</TableCell>
+                <TableCell>
+                  <Dialog>
+                    <DialogTrigger>
+                      <img src={cv?.url} alt={cv?.name}></img>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogDescription>
+                        <img src={cv?.url} alt={cv?.name}></img>
+                      </DialogDescription>
+                    </DialogContent>
+                  </Dialog>
+                </TableCell>
                 <TableCell>{message}</TableCell>
                 <TableCell>{pan}</TableCell>
                 <TableCell>
