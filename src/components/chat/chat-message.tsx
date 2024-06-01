@@ -7,6 +7,7 @@ import {
   type Event,
   type User,
 } from "@prisma/client"
+import { format } from "date-fns"
 import { type Session } from "next-auth"
 
 import { getInitials } from "@/lib/utils"
@@ -35,15 +36,11 @@ export default function ChatMessages({
   const router = useRouter()
 
   function timeFormatter(date: Date) {
-    const time = date.toLocaleTimeString()
-    const displayTime = time.slice(0, 4) + time.slice(7, 10)
-    return displayTime
+    return format(date, "hh:mm aa")
   }
 
   function dateFormatter(date: Date) {
-    const d = date.toLocaleDateString()
-    const displayDate = d.slice(0, 4)
-    return displayDate
+    return format(date, "do MMMM")
   }
 
   // useEffect(()=>{
@@ -118,13 +115,13 @@ export default function ChatMessages({
               <Avatar className="h-8 w-8 rounded-full">
                 <AvatarImage src={message.user.image!} alt="user image" />
                 <AvatarFallback>
-                  {getInitials(message.user.name)}
+                  {getInitials(message.user.name ?? message.user.email)}
                 </AvatarFallback>
               </Avatar>
               <div className="flex max-w-60 flex-col flex-wrap gap-1">
                 <div className="flex items-center space-x-2 rtl:space-x-reverse">
                   <span className="text-sm font-semibold text-gray-900 dark:text-white">
-                    {message.user.name}
+                    {message.user.name ?? message.user.email?.split("@")[0]}
                   </span>
                   <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
                     {timeFormatter(message.createdAt)}
