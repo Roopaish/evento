@@ -6,8 +6,8 @@ export const eventFormSchema = z.object({
   type: z.nativeEnum(EventType),
   date: z.coerce.date(),
   address: z.string(),
-  lat: z.string().optional(),
-  lng: z.string().optional(),
+  // lat: z.string().optional(),
+  // lng: z.string().optional(),
   capacity: z.coerce.number().min(0),
   description: z.string().min(80),
   instruction: z.string().optional(),
@@ -24,6 +24,7 @@ export const eventFormSchema = z.object({
         description: z.string().optional(),
         noOfEmployees: z.coerce.number(),
         salary: z.coerce.number().optional(),
+        id: z.coerce.number().optional().nullable(),
       })
     )
     .optional(),

@@ -2,10 +2,7 @@ import { Status } from "@prisma/client"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 
-import {
-  jobApplicationAdminSchema,
-  jobApplicationSchema,
-} from "@/lib/validations/job-application-validation"
+import { jobApplicationSchema } from "@/lib/validations/job-application-validation"
 
 import { createTRPCRouter, protectedProcedure } from "../trpc"
 

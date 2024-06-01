@@ -1,16 +1,17 @@
 "use client"
 
 import { useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
 import { api } from "@/trpc/react"
 import { type RouterOutputs } from "@/trpc/shared"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation } from "@tanstack/react-query"
+import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
 import { uploadFiles } from "@/lib/requests/upload-file"
-import { cn } from "@/lib/utils"
 import { jobApplicationSchemaClient } from "@/lib/validations/job-application-validation-client"
 
 import AssetUploader from "../assets/assets-uploader"
@@ -26,7 +27,6 @@ import {
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -36,6 +36,7 @@ import { Icons } from "../ui/icons"
 import { Input } from "../ui/input"
 import { Separator } from "../ui/separator"
 import { Text } from "../ui/text"
+import { Textarea } from "../ui/textarea"
 
 const JobApplicationForm = ({
   id,
@@ -90,7 +91,7 @@ const JobApplicationForm = ({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <AssetUploader name={"cv"} title={"Add CV"} form={form} max={1} />
 
         <FormField
@@ -102,7 +103,6 @@ const JobApplicationForm = ({
               <FormControl>
                 <Input {...field}></Input>
               </FormControl>
-              <FormDescription>Add Pan no:</FormDescription>
               <FormMessage></FormMessage>
             </FormItem>
           )}
@@ -114,9 +114,8 @@ const JobApplicationForm = ({
             <FormItem>
               <FormLabel>Message</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Textarea {...field} />
               </FormControl>
-              <FormDescription>Add Message</FormDescription>
               <FormMessage></FormMessage>
             </FormItem>
           )}
@@ -134,18 +133,28 @@ const JobApplicationForm = ({
 
 export default function JobPositionsDetail({
   jobPositions,
+  isCreatedByMe,
 }: {
   jobPositions: RouterOutputs["event"]["getEvent"]["jobPositions"]
+  isCreatedByMe: boolean
 }) {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isOpen, setIsOpen] = useState(false)
+  const session = useSession()
+  const router = useRouter()
+  const pathname = usePathname()
+
   return (
-    <div className={cn("container")}>
-      <div className="flex flex-col border-2 py-2 ">
+    <div className="rounded-2xl bg-background px-6 py-8 shadow-container">
+      <Text variant={"h6"} semibold>
+        Open Job Positions
+      </Text>
+
+      <div className="mt-4 flex flex-col space-y-4">
         {jobPositions.map((item) => (
-          <div className="flex items-center justify-between px-4">
+          <div className="flex flex-col justify-between gap-4 rounded-sm py-3 transition-all hover:bg-primary-50 hover:px-2 sm:flex-row sm:items-center">
             <div className="flex flex-col" key={item.id}>
-              <div className="border-b-2 border-primary-50 ">
-                <Text variant={"h5"} className="mb-2">
+              <div>
+                <Text variant={"medium"} className="mb-2" medium>
                   {item.title}
                 </Text>
                 <Text variant={"small"}>{item.description}</Text>
@@ -157,22 +166,39 @@ export default function JobPositionsDetail({
               </div>
             </div>
 
-            <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-              <DialogTrigger>
-                <Button>Apply</Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Apply for {item.title}</DialogTitle>
-                  <DialogDescription>
-                    <JobApplicationForm
-                      id={item.id}
-                      onCancel={() => setIsOpen(false)}
-                    ></JobApplicationForm>
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
+            {!isCreatedByMe && (
+              <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+                <DialogTrigger>
+                  <Button className="w-full sm:w-auto">Apply</Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Apply for {item.title}</DialogTitle>
+                    <DialogDescription>
+                      {session?.data?.user ? (
+                        <JobApplicationForm
+                          id={item.id}
+                          onCancel={() => setIsOpen(false)}
+                        ></JobApplicationForm>
+                      ) : (
+                        <div>
+                          <Text>
+                            You need to be logged in to apply for this job.
+                          </Text>
+                          <Button
+                            onClick={() => {
+                              router.push(`/login?next=${pathname}`)
+                            }}
+                          >
+                            Go to Login
+                          </Button>
+                        </div>
+                      )}
+                    </DialogDescription>
+                  </DialogHeader>
+                </DialogContent>
+              </Dialog>
+            )}
           </div>
         ))}
       </div>

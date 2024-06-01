@@ -33,7 +33,14 @@ export const eventRouter = createTRPCRouter({
           jobPositions: jobPositions
             ? {
                 createMany: {
-                  data: jobPositions,
+                  data: jobPositions.map((job) => {
+                    return {
+                      title: job.title,
+                      description: job.description,
+                      noOfEmployees: job.noOfEmployees,
+                      salary: job.salary,
+                    }
+                  }),
                 },
               }
             : undefined,
@@ -59,10 +66,52 @@ export const eventRouter = createTRPCRouter({
         id: z.coerce.number(),
       })
     )
-    .mutation(({ input, ctx }) => {
-      const { jobPositions, assets, managerImage, ...rest } = input
+    .mutation(async ({ input, ctx }) => {
+      const { jobPositions, assets, managerImage, id, ...rest } = input
 
-      const event = ctx.db.event.create({
+      const existingJobPositions = await ctx.db.jobPosition.findMany({
+        where: {
+          eventId: id,
+        },
+      })
+
+      const jobPositionsToCreate =
+        jobPositions
+          ?.filter((job) => !job.id)
+          .map((job) => {
+            return {
+              title: job.title,
+              description: job.description,
+              noOfEmployees: job.noOfEmployees,
+              salary: job.salary,
+            }
+          }) ?? []
+
+      const jobPositionsToUpdate =
+        jobPositions
+          ?.filter((job) => job.id)
+          .map((job) => {
+            return {
+              where: {
+                id: job.id as number,
+              },
+              data: {
+                title: job.title,
+                description: job.description,
+                noOfEmployees: job.noOfEmployees,
+                salary: job.salary,
+              },
+            }
+          }) ?? []
+
+      const jobPositionsToDelete = existingJobPositions
+        .map((job) => job.id)
+        .filter((id) => !(jobPositions ?? []).map((job) => job.id).includes(id))
+
+      const event = ctx.db.event.update({
+        where: {
+          id,
+        },
         data: {
           ...rest,
           assets: {
@@ -82,11 +131,16 @@ export const eventRouter = createTRPCRouter({
           jobPositions: jobPositions
             ? {
                 createMany: {
-                  data: jobPositions,
+                  data: jobPositionsToCreate,
+                },
+                updateMany: jobPositionsToUpdate,
+                deleteMany: {
+                  id: {
+                    in: jobPositionsToDelete,
+                  },
                 },
               }
             : undefined,
-          createdById: ctx.session.user.id,
         },
       })
       return event
