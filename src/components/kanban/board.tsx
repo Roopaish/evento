@@ -1,4 +1,5 @@
 import { useState } from "react"
+import type { TaskStatus } from "@prisma/client"
 
 import {
   Dialog,
@@ -18,9 +19,11 @@ import TaskForm from "./task-form"
 export default function Board({
   title,
   taskNumber,
+  status,
 }: {
   title: string
   taskNumber?: number
+  status: TaskStatus
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -36,7 +39,7 @@ export default function Board({
                 </Text>
                 <div className="bg-primary- ml-2 h-5 w-5 items-center justify-center rounded text-primary-500">
                   <Text variant="small" semibold>
-                    {taskNumber}
+                    ({taskNumber})
                   </Text>
                 </div>
               </div>
@@ -59,7 +62,7 @@ export default function Board({
                     Add New Tasks here. Click save when you're done.
                   </DialogDescription>
                 </DialogHeader>
-                <TaskForm onCancel={() => setIsOpen(false)} />
+                <TaskForm status={status} onCancel={() => setIsOpen(false)} />
               </DialogContent>
             </Dialog>
           </div>
@@ -72,7 +75,7 @@ export default function Board({
               taskDescription="lightening fix "
               assignedTo="Ram"
             />
-            <TaskCard
+            {/* <TaskCard
               category="Staff manage"
               title="task 2"
               date="May-28 "
@@ -103,7 +106,7 @@ export default function Board({
               title="task 2"
               date="May-28 "
               taskDescription="lightening fix "
-            />
+            /> */}
           </div>
         </div>
       </div>

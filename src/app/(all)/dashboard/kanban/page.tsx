@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { getServerAuthSession } from "@/server/auth"
 
 import { siteConfig } from "@/config/site"
 import KanbanBoards from "@/components/kanban/kanban-boards"
@@ -8,10 +9,11 @@ export const metadata: Metadata = {
   description: siteConfig.description,
 }
 
-export default function KanbanPage() {
+export default async function KanbanPage() {
+  const session = await getServerAuthSession()
   return (
     <>
-      <KanbanBoards />
+      <KanbanBoards session={session} />
     </>
   )
 }

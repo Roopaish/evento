@@ -32,11 +32,7 @@ export const kanbanRouter = createTRPCRouter({
   }),
 
   addTask: protectedProcedure
-    .input(
-      taskFormSchema.extend({
-        status: z.nativeEnum(TaskStatus),
-      })
-    )
+    .input(taskFormSchema)
     .mutation(async ({ ctx, input }) => {
       if (!ctx.currentEvent) {
         throw new TRPCError({
@@ -44,13 +40,12 @@ export const kanbanRouter = createTRPCRouter({
           message: "No event found in context",
         })
       }
-      const { taskDescription: description, assignedTo, ...restInput } = input
+      const { assignedTo, ...restInput } = input
 
       const task = await ctx.db.task.create({
         data: {
           ...restInput,
           assignedTo: assignedTo ? { connect: { id: assignedTo } } : undefined,
-          description,
           eventId: ctx.currentEvent,
           createdById: ctx.session.user.id,
         },
@@ -66,12 +61,7 @@ export const kanbanRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const {
-        id,
-        taskDescription: description,
-        assignedTo,
-        ...restInput
-      } = input
+      const { id, assignedTo, ...restInput } = input
 
       const task = await ctx.db.task.update({
         where: {
@@ -80,7 +70,6 @@ export const kanbanRouter = createTRPCRouter({
         data: {
           ...restInput,
           assignedTo: assignedTo ? { connect: { id: assignedTo } } : undefined,
-          description,
         },
       })
 

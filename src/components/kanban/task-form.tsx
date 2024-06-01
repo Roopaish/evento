@@ -38,7 +38,9 @@
 // }
 "use client"
 
+import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { TaskStatus } from "@prisma/client"
 import {
   Popover,
   PopoverContent,
@@ -68,9 +70,25 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Textarea } from "../ui/textarea"
 
-export default function TaskForm({ onCancel }: { onCancel: () => void }) {
+export default function TaskForm({
+  status,
+  onCancel,
+}: {
+  status: TaskStatus
+  onCancel: () => void
+}) {
+  const addNewTask = api.kanban.addTask.useMutation()
+  // const [taskStatus, setTaskStatus] = useState<TaskStatus>(status)
+
   const onSubmit = (values: TaskFormSchema) => {
     console.log({ values })
+    console.log("status", status)
+    const updatedValues = {
+      ...values,
+      status: status,
+    }
+    console.log({ updatedValues })
+    addNewTask.mutate(updatedValues)
     onCancel()
   }
 
@@ -99,7 +117,7 @@ export default function TaskForm({ onCancel }: { onCancel: () => void }) {
 
         <FormField
           control={form.control}
-          name="taskDescription"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Task Description</FormLabel>
@@ -161,6 +179,27 @@ export default function TaskForm({ onCancel }: { onCancel: () => void }) {
               <FormLabel>Task assign to</FormLabel>
               <FormControl>
                 <Input placeholder="" {...field} />
+              </FormControl>
+              <FormDescription></FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Task Status</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder={status}
+                  value={status}
+                  // required={false}
+                  readOnly
+                  // className="mx-1 inline-block cursor-pointer rounded border-none bg-blue-500 px-4 py-2 text-center text-lg text-white no-underline transition-all duration-200"
+                />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
