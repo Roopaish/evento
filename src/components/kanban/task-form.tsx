@@ -1,11 +1,53 @@
 "use client"
 
+// import { Button } from "../ui/button"
+// import { Input } from "../ui/input"
+// import { Label } from "../ui/label"
+
+// export default function TaskForm({ onCancel }: { onCancel: () => void }) {
+//   const onSubmit = (values: string) => {
+//     onCancel()
+//     console.log({ values })
+//   }
+
+//   return (
+//     <>
+//       {/* <div className="grid gap-4 py-4">
+//         <div className="grid grid-cols-4 items-center gap-4">
+//           <Label htmlFor="title" className="text-right">
+//             Task Title
+//           </Label>
+//           <Input id="title" className="col-span-3" />
+//         </div>
+//         <div className="grid grid-cols-4 items-center gap-4">
+//           <Label htmlFor="taskDetails" className="text-right">
+//             Task Description
+//           </Label>
+//           <Input id="taskDetails" className="col-span-3" />
+//         </div>
+//         <div className="grid grid-cols-4 items-center gap-4">
+//           <Label htmlFor="assignedTo" className="text-right">
+//             Assigned to
+//           </Label>
+//           <Input id="assignedTo" className="col-span-3" />
+//         </div>
+//       </div>
+//       <Button type="button" onClick={() => onSubmit("d")}>
+//         Save changes
+//       </Button> */}
+//     </>
+//   )
+// }
+import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { TaskStatus } from "@prisma/client"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover"
+import { useQueryClient } from "@tanstack/react-query"
+import { getQueryKey } from "@trpc/react-query"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -30,9 +72,29 @@ import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Textarea } from "../ui/textarea"
 
-export default function TaskForm({ onCancel }: { onCancel: () => void }) {
-  const onSubmit = (values: TaskFormSchema) => {
-    console.log({ values })
+export default function TaskForm({
+  status,
+  onCancel,
+}: {
+  status: TaskStatus
+  onCancel: () => void
+}) {
+  const addNewTask = api.kanban.addTask.useMutation()
+  const queryKey = getQueryKey(api.kanban.getTasks)
+  const client = useQueryClient()
+
+  const onSubmit = async (values: TaskFormSchema) => {
+    // console.log({ values })
+    // console.log("status", status)
+    const updatedValues = {
+      ...values,
+      status,
+    }
+    // console.log({ updatedValues })
+    await addNewTask.mutateAsync(updatedValues)
+    client.refetchQueries({
+      queryKey: queryKey,
+    })
     onCancel()
   }
 
@@ -61,7 +123,7 @@ export default function TaskForm({ onCancel }: { onCancel: () => void }) {
 
         <FormField
           control={form.control}
-          name="taskDescription"
+          name="description"
           render={({ field }) => (
             <FormItem>
               <FormLabel>Task Description</FormLabel>
@@ -123,6 +185,27 @@ export default function TaskForm({ onCancel }: { onCancel: () => void }) {
               <FormLabel>Task assign to</FormLabel>
               <FormControl>
                 <Input placeholder="" {...field} />
+              </FormControl>
+              <FormDescription></FormDescription>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="status"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Task Status</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  placeholder={status}
+                  value={status}
+                  // required={false}
+                  readOnly
+                  // className="mx-1 inline-block cursor-pointer rounded border-none bg-blue-500 px-4 py-2 text-center text-lg text-white no-underline transition-all duration-200"
+                />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />

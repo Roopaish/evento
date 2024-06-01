@@ -2,7 +2,7 @@ import Link from "next/link"
 import { getServerAuthSession } from "@/server/auth"
 import { api } from "@/trpc/server"
 
-import { getInitials } from "@/lib/utils"
+import { formatPrice, getInitials } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
@@ -11,6 +11,7 @@ import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
 import ShareEvent from "@/components/event/share-event"
+import JobPositionsDetail from "@/components/job/job-positions-details"
 import GetTicketButton from "@/components/ticket/get-tickets-button"
 
 export default async function EventDetails({
@@ -23,6 +24,8 @@ export default async function EventDetails({
   const data = await api.event.getEvent.query({
     id: Number(params.id),
   })
+
+  const isCreatedByMe = session?.user?.id === data?.createdById
 
   return (
     <div className="pb-10 pt-10">
@@ -58,6 +61,15 @@ export default async function EventDetails({
                   Capacity:
                 </span>
                 <p className="text-lg text-gray-800">{data?.capacity}</p>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="text-lg font-semibold text-gray-600">
+                  Price:
+                </span>
+                <p className="text-lg text-gray-800">
+                  {data?.price ? formatPrice(data?.price) : "Free"}
+                </p>
               </div>
 
               <div className="flex items-center space-x-2">
@@ -99,6 +111,11 @@ export default async function EventDetails({
                 </div>
               </div>
             </div>
+
+            <JobPositionsDetail
+              jobPositions={data?.jobPositions}
+              isCreatedByMe={isCreatedByMe}
+            />
           </div>
 
           <div className="col-span-3 mt-5 px-4 sm:px-2 lg:col-span-1">
@@ -115,7 +132,7 @@ export default async function EventDetails({
               </div>
             </div>
 
-            {session?.user?.id === data?.createdById && (
+            {isCreatedByMe && (
               <>
                 <div className="my-2">
                   <Link href={`/dashboard/events/${data?.id}/edit`}>

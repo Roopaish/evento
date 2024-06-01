@@ -1,6 +1,9 @@
 "use client"
 
+import { useState } from "react"
+import { api } from "@/trpc/react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 import * as z from "zod"
 
 import {
@@ -14,21 +17,36 @@ import {
 
 import { Button } from "../ui/button"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
+import { Icons } from "../ui/icons"
 import { InputTags } from "../ui/input-tags"
 
 export default function InviteMembersButton({ eventId }: { eventId: number }) {
-  console.log(eventId)
+  const [isOpen, setIsOpen] = useState(false)
   const form = useForm<{ emails: string[] }>()
 
+  const { mutateAsync, isLoading } = api.invitation.invite.useMutation({
+    onError(error) {
+      toast.error(error.message)
+    },
+    onSuccess() {
+      toast.success("Invitation sent")
+      form.reset()
+      setIsOpen(false)
+    },
+  })
+
   function onSubmit(values: { emails: string[] }) {
-    console.log(values)
+    void mutateAsync({
+      eventId: Number(eventId),
+      emails: values.emails,
+    })
   }
 
   const emails = form.watch("emails") ?? []
 
   return (
     <>
-      <Dialog>
+      <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
         <DialogTrigger className="w-full">
           <Button className="w-full">Invite Members</Button>
         </DialogTrigger>
@@ -65,6 +83,9 @@ export default function InviteMembersButton({ eventId }: { eventId: number }) {
 
                     {emails.length > 0 && (
                       <Button type="submit" className="w-full">
+                        {isLoading && (
+                          <Icons.spinner className="animate-spin" />
+                        )}
                         Send Invitation
                       </Button>
                     )}

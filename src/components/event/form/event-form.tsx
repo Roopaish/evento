@@ -13,7 +13,7 @@ import {
 import { useMutation } from "@tanstack/react-query"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
@@ -59,12 +59,20 @@ export default function EventForm({ id }: { id?: number }) {
     defaultValues: {},
   })
 
+  const { fields, append, remove } = useFieldArray({
+    name: "jobPositions",
+    control: form.control,
+  })
+
   const { data: previousData } = api.event.getMyEvent.useQuery(
     {
       id: id!,
     },
     {
       enabled: isEdit,
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
     }
   )
 
@@ -82,9 +90,9 @@ export default function EventForm({ id }: { id?: number }) {
   }, [previousData])
 
   const { mutate, isLoading } = api.event.addEvent.useMutation({
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Event has been created")
-      router.push("/dashboard/events")
+      router.push(`/events/${data.id}`)
     },
     onError: (e) => {
       toast.error(e.message ?? "Something went wrong")
@@ -93,9 +101,9 @@ export default function EventForm({ id }: { id?: number }) {
 
   const { mutate: update, isLoading: isUpdating } =
     api.event.editEvent.useMutation({
-      onSuccess: () => {
-        toast.success("Event has been created")
-        router.push("/dashboard/events")
+      onSuccess: (data) => {
+        toast.success("Event has been updated")
+        router.push(`/events/${data.id}`)
       },
       onError: (e) => {
         toast.error(e.message ?? "Something went wrong")
@@ -160,7 +168,10 @@ export default function EventForm({ id }: { id?: number }) {
 
     // Upload Manager Image
     let managerImage: { url: string; id: string } | undefined = undefined
-    if (values.managerImage) {
+    if (
+      values.managerImage &&
+      Array.from(values.managerImage).some((asset) => !("url" in asset))
+    ) {
       const { data: uploadedAsset } = await uploadAssets(values.managerImage)
 
       managerImage = {
@@ -323,19 +334,34 @@ export default function EventForm({ id }: { id?: number }) {
           )}
         />
 
-        <FormField
-          control={form.control}
-          name="capacity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Capacity</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <FormField
+            control={form.control}
+            name="capacity"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Capacity</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input {...field} type="number" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         <div className="grid grid-cols-1  gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FormField
@@ -377,15 +403,119 @@ export default function EventForm({ id }: { id?: number }) {
         <AssetUploader name={"assets"} title={"Images"} form={form} />
 
         <Accordion type="single" collapsible>
-          <AccordionItem value="item-1">
+          <AccordionItem value="item-1" className="overflow-visible">
             <AccordionTrigger>
               Are your looking to hire somebody?
             </AccordionTrigger>
-            <AccordionContent>TODO</AccordionContent>
+            <AccordionContent>
+              <div className="space-y-8">
+                {fields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="grid grid-cols-1 gap-8 rounded-sm border p-4 md:grid-cols-2 lg:grid-cols-3"
+                  >
+                    <FormField
+                      control={form.control}
+                      name={`jobPositions.${index}.title`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Title</FormLabel>
+                          <FormControl>
+                            <Input {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`jobPositions.${index}.salary`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Salary</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="number" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`jobPositions.${index}.noOfEmployees`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>No of Employees needed</FormLabel>
+                          <FormControl>
+                            <Input {...field} type="number" />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name={`jobPositions.${index}.description`}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      type="button"
+                      variant={"outline"}
+                      className="mt-auto"
+                      onClick={() => remove(index)}
+                    >
+                      <Icons.MinusCircle /> Delete Job Position
+                    </Button>
+                  </div>
+                ))}
+              </div>
+              <Button
+                className="mt-4"
+                onClick={() => {
+                  append({
+                    title: "",
+                    description: "",
+                    salary: 0,
+                    noOfEmployees: 0,
+                  })
+                }}
+                type="button"
+                variant={"outline"}
+              >
+                <Icons.Plus />
+                Add job position
+              </Button>
+            </AccordionContent>
           </AccordionItem>
         </Accordion>
 
-        <Button type="submit">
+        <Button
+          type="submit"
+          onClick={() => {
+            const errors = form.formState.errors
+
+            if (Object.keys(errors).length) {
+              toast.error(
+                Object.keys(errors)
+                  .flatMap((p) => `${p}: ${errors[p as "title"]?.message}`)
+                  .join(", ")
+              )
+              return
+            }
+          }}
+        >
           {(isLoading || isUpdating || isDeleting || isUploading) && (
             <Icons.spinner className="h-4 w-4 animate-spin" />
           )}

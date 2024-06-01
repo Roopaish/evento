@@ -185,6 +185,7 @@ model JobApplication {
     jobPosition   JobPosition @relation(fields: [jobPositionId], references: [id])
     jobPositionId Int
     cv            Asset?      @relation("JobApplication")
+    pan           String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -230,7 +231,7 @@ enum Status {
 model Invitation {
     id          Int    @id @default(autoincrement())
     email       String
-    uniqueToken String
+    uniqueToken String @unique @default(uuid())
 
     status Status @default(PENDING)
 

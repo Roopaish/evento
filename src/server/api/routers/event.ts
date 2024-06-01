@@ -5,7 +5,12 @@ import * as z from "zod"
 import { eventFormSchema } from "@/lib/validations/event-form-validation"
 import { SearchFiltersSchema } from "@/lib/validations/search-filter-schema"
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
+import {
+  createTRPCRouter,
+  protectedEventProcedure,
+  protectedProcedure,
+  publicProcedure,
+} from "../trpc"
 
 export const eventRouter = createTRPCRouter({
   addEvent: protectedProcedure
@@ -33,7 +38,14 @@ export const eventRouter = createTRPCRouter({
           jobPositions: jobPositions
             ? {
                 createMany: {
-                  data: jobPositions,
+                  data: jobPositions.map((job) => {
+                    return {
+                      title: job.title,
+                      description: job.description,
+                      noOfEmployees: job.noOfEmployees,
+                      salary: job.salary,
+                    }
+                  }),
                 },
               }
             : undefined,
@@ -59,10 +71,52 @@ export const eventRouter = createTRPCRouter({
         id: z.coerce.number(),
       })
     )
-    .mutation(({ input, ctx }) => {
-      const { jobPositions, assets, managerImage, ...rest } = input
+    .mutation(async ({ input, ctx }) => {
+      const { jobPositions, assets, managerImage, id, ...rest } = input
 
-      const event = ctx.db.event.create({
+      const existingJobPositions = await ctx.db.jobPosition.findMany({
+        where: {
+          eventId: id,
+        },
+      })
+
+      const jobPositionsToCreate =
+        jobPositions
+          ?.filter((job) => !job.id)
+          .map((job) => {
+            return {
+              title: job.title,
+              description: job.description,
+              noOfEmployees: job.noOfEmployees,
+              salary: job.salary,
+            }
+          }) ?? []
+
+      const jobPositionsToUpdate =
+        jobPositions
+          ?.filter((job) => job.id)
+          .map((job) => {
+            return {
+              where: {
+                id: job.id as number,
+              },
+              data: {
+                title: job.title,
+                description: job.description,
+                noOfEmployees: job.noOfEmployees,
+                salary: job.salary,
+              },
+            }
+          }) ?? []
+
+      const jobPositionsToDelete = existingJobPositions
+        .map((job) => job.id)
+        .filter((id) => !(jobPositions ?? []).map((job) => job.id).includes(id))
+
+      const event = ctx.db.event.update({
+        where: {
+          id,
+        },
         data: {
           ...rest,
           assets: {
@@ -82,11 +136,16 @@ export const eventRouter = createTRPCRouter({
           jobPositions: jobPositions
             ? {
                 createMany: {
-                  data: jobPositions,
+                  data: jobPositionsToCreate,
+                },
+                updateMany: jobPositionsToUpdate,
+                deleteMany: {
+                  id: {
+                    in: jobPositionsToDelete,
+                  },
                 },
               }
             : undefined,
-          createdById: ctx.session.user.id,
         },
       })
       return event
@@ -271,4 +330,48 @@ export const eventRouter = createTRPCRouter({
         nextCursor,
       }
     }),
+
+  getEventParticipants: protectedEventProcedure.query(async ({ ctx }) => {
+    const data = await ctx.db.event.findFirst({
+      select: {
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            role: true,
+            image: true,
+          },
+        },
+        participants: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phoneNumber: true,
+            role: true,
+            image: true,
+          },
+        },
+      },
+      where: {
+        OR: [
+          {
+            participants: {
+              some: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
+          {
+            createdById: ctx.session.user.id,
+          },
+        ],
+        id: ctx.currentEvent,
+      },
+    })
+
+    return data
+  }),
 })

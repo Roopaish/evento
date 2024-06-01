@@ -3,6 +3,9 @@
 import { useCurrentEventStore } from "@/store/current-event-store"
 
 import Reminder from "../common/reminder"
+import { JobApplicationDetails } from "../job/job-application-details"
+import { Separator } from "../ui/separator"
+import EventParticipants from "./event-participants"
 import StaffTable from "./staffs"
 
 export default function EventStaffs() {
@@ -16,6 +19,9 @@ export default function EventStaffs() {
     <>
       Staffs
       <StaffTable />
+      <EventParticipants />
+      <Separator className="my-10" />
+      <JobApplicationDetails></JobApplicationDetails>
     </>
   )
 }

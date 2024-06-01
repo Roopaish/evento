@@ -39,7 +39,14 @@ export const userSideNavItems: SideNavItem[] = [
   },
   {
     title: "Account",
-    data: [{ icon: "User", label: "Profile", path: "/dashboard/profile" }],
+    data: [
+      { icon: "User", label: "Profile", path: "/dashboard/profile" },
+      {
+        icon: "Users",
+        label: "Job Board",
+        path: "/dashboard/jobboard",
+      },
+    ],
   },
 ]
 

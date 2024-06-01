@@ -56,3 +56,8 @@
     @apply overflow-x-hidden bg-background text-slate-700;
   }
 }
+
+/* TODO: Remove later */
+.nextjs-toast-errors-parent {
+  display: none !important;
+}
