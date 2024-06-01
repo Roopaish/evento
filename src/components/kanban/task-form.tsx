@@ -36,7 +36,6 @@
 //     </>
 //   )
 // }
-"use client"
 
 import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -46,6 +45,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover"
+import { useQueryClient } from "@tanstack/react-query"
+import { getQueryKey } from "@trpc/react-query"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -78,8 +79,10 @@ export default function TaskForm({
   onCancel: () => void
 }) {
   const addNewTask = api.kanban.addTask.useMutation()
+  const queryKey = getQueryKey(api.kanban.getTasks)
+  const client = useQueryClient()
 
-  const onSubmit = (values: TaskFormSchema) => {
+  const onSubmit = async (values: TaskFormSchema) => {
     // console.log({ values })
     // console.log("status", status)
     const updatedValues = {
@@ -87,7 +90,10 @@ export default function TaskForm({
       status,
     }
     // console.log({ updatedValues })
-    addNewTask.mutate(updatedValues)
+    await addNewTask.mutateAsync(updatedValues)
+    client.refetchQueries({
+      queryKey: queryKey,
+    })
     onCancel()
   }
 
