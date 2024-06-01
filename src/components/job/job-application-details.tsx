@@ -2,6 +2,12 @@ import { api } from "@/trpc/react"
 import { toast } from "sonner"
 
 import { Button } from "../ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from "../ui/dialog"
 import { Table, TableCell, TableHead, TableRow } from "../ui/table"
 import { Text } from "../ui/text"
 
@@ -71,9 +77,13 @@ export const JobApplicationDetails = () => {
                 <TableCell>
                   <Dialog>
                     <DialogTrigger>
-                      <img src={cv?.url} alt={cv?.name}></img>
+                      <img
+                        src={cv?.url}
+                        alt={cv?.name}
+                        className="h-full w-full max-w-60 object-contain"
+                      ></img>
                     </DialogTrigger>
-                    <DialogContent>
+                    <DialogContent className="w-full max-w-[800px]">
                       <DialogDescription>
                         <img src={cv?.url} alt={cv?.name}></img>
                       </DialogDescription>
