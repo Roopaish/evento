@@ -78,16 +78,15 @@ export default function TaskForm({
   onCancel: () => void
 }) {
   const addNewTask = api.kanban.addTask.useMutation()
-  // const [taskStatus, setTaskStatus] = useState<TaskStatus>(status)
 
   const onSubmit = (values: TaskFormSchema) => {
-    console.log({ values })
-    console.log("status", status)
+    // console.log({ values })
+    // console.log("status", status)
     const updatedValues = {
       ...values,
-      status: status,
+      status,
     }
-    console.log({ updatedValues })
+    // console.log({ updatedValues })
     addNewTask.mutate(updatedValues)
     onCancel()
   }

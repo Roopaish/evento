@@ -17,7 +17,7 @@ export default function KanbanBoards({ session }: { session: Session | null }) {
     return <Reminder />
   }
 
-  const { data: tasks, status: fetchStatus } = api.kanban.getTasks.useQuery()
+  const { data: tasks } = api.kanban.getTasks.useQuery()
   console.log(tasks)
   if (!tasks) {
     return <Reminder />
@@ -37,16 +37,19 @@ export default function KanbanBoards({ session }: { session: Session | null }) {
             title="Todo"
             taskNumber={pending.length}
             status={TaskStatus.PENDING}
+            tasks={pending}
           />
           <Board
             title="Doing"
             taskNumber={in_progress.length}
             status={TaskStatus.IN_PROGRESS}
+            tasks={in_progress}
           />
           <Board
             title="Done"
             taskNumber={completed.length}
             status={TaskStatus.COMPLETED}
+            tasks={completed}
           />
         </div>
       </div>

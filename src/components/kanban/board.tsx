@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { TaskStatus } from "@prisma/client"
+import type { Task, TaskStatus } from "@prisma/client"
 
 import {
   Dialog,
@@ -20,10 +20,12 @@ export default function Board({
   title,
   taskNumber,
   status,
+  tasks,
 }: {
   title: string
   taskNumber?: number
   status: TaskStatus
+  tasks: Task[]
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -68,45 +70,16 @@ export default function Board({
           </div>
 
           <div>
-            <TaskCard
-              category="Design"
-              title="task 1"
-              date="july-12 "
-              taskDescription="lightening fix "
-              assignedTo="Ram"
-            />
-            {/* <TaskCard
-              category="Staff manage"
-              title="task 2"
-              date="May-28 "
-              taskDescription="lightening fix "
-            />
-            <TaskCard
-              category="Design"
-              title="task 1"
-              date="july-12 "
-              taskDescription="lightening fix "
-              assignedTo="Ram"
-            />
-            <TaskCard
-              category="Staff manage"
-              title="task 2"
-              date="May-28 "
-              taskDescription="lightening fix "
-            />
-            <TaskCard
-              category="Design"
-              title="task 1"
-              date="july-12 "
-              taskDescription="lightening fix "
-              assignedTo="Ram"
-            />
-            <TaskCard
-              category="Staff manage"
-              title="task 2"
-              date="May-28 "
-              taskDescription="lightening fix "
-            /> */}
+            {tasks.map((task, index) => (
+              <TaskCard
+                key={index}
+                category={task.status}
+                title={task.title}
+                date={task.dueDate}
+                description={task.description}
+                // assignedTo={task.assignedTo}
+              />
+            ))}
           </div>
         </div>
       </div>

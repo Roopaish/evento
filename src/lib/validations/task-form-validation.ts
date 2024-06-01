@@ -6,7 +6,7 @@ export const taskFormSchema = z.object({
     message: "title must be at least 3 characters.",
   }),
   description: z.string(),
-  dueDate: z.coerce.date(),
+  dueDate: z.coerce.date().optional(),
   assignedTo: z.string().optional(),
   status: z.nativeEnum(TaskStatus).optional(),
 })
