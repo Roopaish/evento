@@ -185,6 +185,7 @@ model JobApplication {
     jobPosition   JobPosition @relation(fields: [jobPositionId], references: [id])
     jobPositionId Int
     cv            Asset?      @relation("JobApplication")
+    pan           String
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
