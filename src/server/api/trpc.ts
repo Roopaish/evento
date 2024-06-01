@@ -114,6 +114,24 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
   })
 })
 
+const enforceEventIsSelected = enforceUserIsAuthed.unstable_pipe(
+  ({ ctx, next }) => {
+    if (!ctx.currentEvent) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No event selected.",
+      })
+    }
+
+    return next({
+      ctx: {
+        ...ctx,
+        currentEvent: ctx.currentEvent,
+      },
+    })
+  }
+)
+
 /**
  * Protected (authenticated) procedure
  *
@@ -123,3 +141,4 @@ const enforceUserIsAuthed = t.middleware(({ ctx, next }) => {
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(enforceUserIsAuthed)
+export const protectedEventProcedure = t.procedure.use(enforceEventIsSelected)
