@@ -189,11 +189,11 @@ export const Icons = {
       />
     </svg>
   ),
-  send: (props: IconProps) => (
+  messageSendIcon: (props: IconProps) => (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 24 24"
-      fill="rgb(220,38,38)"
+      fill="rgb(22,163,74)"
       className="h-8 w-8"
       {...props}
     >

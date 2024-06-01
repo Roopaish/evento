@@ -9,6 +9,7 @@ import { type Session } from "next-auth"
 import { Textarea } from "@/components/ui/textarea"
 
 import { Icons } from "../ui/icons"
+import { ScrollArea } from "../ui/scroll-area"
 import ChatHeader from "./chat-header"
 import ChatMessages from "./chat-message"
 
@@ -43,15 +44,15 @@ export default function ChatGroup({ session }: { session: Session | null }) {
     <>
       <div className="flex h-[690px] justify-start">
         <div className="relative flex flex-auto flex-col justify-start">
-          <ChatHeader />
+          <ChatHeader chatGroup={currentGroup!} />
 
           <div className="mt-2 flex items-center justify-center text-sm">
             {new Date().toLocaleDateString()}
           </div>
 
-          <div className="flex h-screen flex-auto flex-col justify-start gap-5 overflow-y-scroll border-b-2 border-gray-200 p-5">
+          <ScrollArea className="flex h-screen flex-auto flex-col justify-start gap-4 border-b-2 border-gray-200 p-5">
             <ChatMessages session={session} chatGroup={currentGroup!} />
-          </div>
+          </ScrollArea>
 
           <div className="flex items-center justify-center gap-3 p-5">
             <Textarea
@@ -67,7 +68,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
               placeholder="Type your message here..."
             />
             <label htmlFor="send-button" className="cursor-pointer">
-              <Icons.send />
+              <Icons.messageSendIcon />
             </label>
             <input
               // disabled={!id}

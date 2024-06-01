@@ -87,7 +87,12 @@ export const chatRouter = createTRPCRouter({
         eventId: Number(eventId!),
       },
       include: {
-        event: true,
+        event: {
+          include: {
+            participants: true,
+            createdBy: true,
+          },
+        },
       },
     })
     return group
