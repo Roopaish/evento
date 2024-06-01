@@ -10,7 +10,7 @@ import { Text } from "../ui/text"
 import Board from "./board"
 import KanbanHeader from "./kanban-header"
 
-export default function KanbanBoards({ session }: { session: Session | null }) {
+export default function KanbanBoards({ session }: { session: Session }) {
   const { currentEvent } = useCurrentEventStore()
 
   if (!currentEvent) {
@@ -34,18 +34,21 @@ export default function KanbanBoards({ session }: { session: Session | null }) {
 
         <div className="flex max-h-[80vh] overflow-x-auto">
           <Board
+            session={session}
             title="Todo"
             taskNumber={pending.length}
             status={TaskStatus.PENDING}
             tasks={pending}
           />
           <Board
+            session={session}
             title="Doing"
             taskNumber={in_progress.length}
             status={TaskStatus.IN_PROGRESS}
             tasks={in_progress}
           />
           <Board
+            session={session}
             title="Done"
             taskNumber={completed.length}
             status={TaskStatus.COMPLETED}

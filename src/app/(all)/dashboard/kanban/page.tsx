@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import { redirect } from "next/navigation"
 import { getServerAuthSession } from "@/server/auth"
 
 import { siteConfig } from "@/config/site"
@@ -11,6 +12,10 @@ export const metadata: Metadata = {
 
 export default async function KanbanPage() {
   const session = await getServerAuthSession()
+
+  if (!session) {
+    redirect("/login")
+  }
   return (
     <>
       <KanbanBoards session={session} />

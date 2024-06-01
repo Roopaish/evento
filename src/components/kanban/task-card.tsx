@@ -1,5 +1,7 @@
 import { useState } from "react"
+import type { Session } from "next-auth"
 
+import { getInitials } from "@/lib/utils"
 import {
   Popover,
   PopoverContent,
@@ -20,12 +22,14 @@ import { Text } from "../ui/text"
 import TaskDetails from "./task-details"
 
 const TaskCard = ({
+  session,
   category,
   title,
   description,
   date,
   assignedTo,
 }: {
+  session: Session
   category: string
   title: string
   description: string | null
@@ -60,10 +64,16 @@ const TaskCard = ({
 
           <Avatar className="ml-10 h-6 w-6 rounded-full">
             <AvatarImage
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
-              className="object-cover"
+              src={session?.user?.image ?? ""}
+              alt={session?.user?.name ?? "avatar"}
             />
-            <AvatarFallback>ABK</AvatarFallback>
+            <AvatarFallback className="bg-primary text-white">
+              {session?.user?.name ? (
+                getInitials(session?.user?.name)
+              ) : (
+                <Icons.User className="h-4 w-4" />
+              )}
+            </AvatarFallback>
           </Avatar>
         </div>
 
