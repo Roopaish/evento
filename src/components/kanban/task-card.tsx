@@ -1,5 +1,7 @@
 import { useState } from "react"
+import type { Session } from "next-auth"
 
+import { getInitials } from "@/lib/utils"
 import {
   Popover,
   PopoverContent,
@@ -20,16 +22,18 @@ import { Text } from "../ui/text"
 import TaskDetails from "./task-details"
 
 const TaskCard = ({
+  session,
   category,
   title,
-  taskDescription,
+  description,
   date,
   assignedTo,
 }: {
+  session: Session
   category: string
   title: string
-  taskDescription: string
-  date: string
+  description: string | null
+  date: Date | null
   assignedTo?: string
 }) => {
   const [isOpen, setIsOpen] = useState(false)
@@ -55,15 +59,21 @@ const TaskCard = ({
         <div className="mt-3 flex w-full items-center justify-between text-xs font-medium text-gray-400">
           <div className="flex items-center">
             <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
-            <div className="ml-1 leading-none">{date}</div>
+            <div className="ml-1 leading-none">{date?.toDateString()}</div>
           </div>
 
           <Avatar className="ml-10 h-6 w-6 rounded-full">
             <AvatarImage
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8dXNlciUyMHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
-              className="object-cover"
+              src={session?.user?.image ?? ""}
+              alt={session?.user?.name ?? "avatar"}
             />
-            <AvatarFallback>ABK</AvatarFallback>
+            <AvatarFallback className="bg-primary text-white">
+              {session?.user?.name ? (
+                getInitials(session?.user?.name)
+              ) : (
+                <Icons.User className="h-4 w-4" />
+              )}
+            </AvatarFallback>
           </Avatar>
         </div>
 
@@ -111,8 +121,8 @@ const TaskCard = ({
           <TaskDetails
             category={category}
             title={title}
-            taskDescription={taskDescription}
-            dueDate={date}
+            description={description}
+            dueDate={date?.toDateString() ?? ""}
             assignedTo={assignedTo}
             avatarUrl={
               "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"

@@ -2,6 +2,12 @@ import { api } from "@/trpc/react"
 import { toast } from "sonner"
 
 import { Button } from "../ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTrigger,
+} from "../ui/dialog"
 import { Table, TableCell, TableHead, TableRow } from "../ui/table"
 import { Text } from "../ui/text"
 
@@ -52,7 +58,7 @@ export const JobApplicationDetails = () => {
           <TableHead>Action</TableHead>
         </TableRow>
         {data?.map(
-          ({ message, pan, status, jobPosition, updatedAt, id, user }) => {
+          ({ message, pan, status, jobPosition, updatedAt, id, user, cv }) => {
             return (
               <TableRow>
                 <TableCell>{id}</TableCell>
@@ -63,12 +69,27 @@ export const JobApplicationDetails = () => {
                     alt={user.id}
                     height={"20"}
                     width="20"
-                  ></Image> */}
+                ></Image> */}
                   {/* Image not loading */}
                   {user.name}
                 </TableCell>
                 <TableCell>{user.name}</TableCell>
-                <TableCell>CV Here</TableCell>
+                <TableCell>
+                  <Dialog>
+                    <DialogTrigger>
+                      <img
+                        src={cv?.url}
+                        alt={cv?.name}
+                        className="h-full w-full max-w-60 object-contain"
+                      ></img>
+                    </DialogTrigger>
+                    <DialogContent className="w-full max-w-[800px]">
+                      <DialogDescription>
+                        <img src={cv?.url} alt={cv?.name}></img>
+                      </DialogDescription>
+                    </DialogContent>
+                  </Dialog>
+                </TableCell>
                 <TableCell>{message}</TableCell>
                 <TableCell>{pan}</TableCell>
                 <TableCell>

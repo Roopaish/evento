@@ -47,6 +47,7 @@ export const jobRouter = createTRPCRouter({
       include: {
         jobPosition: true,
         user: true,
+        cv: true,
       },
     })
   }),

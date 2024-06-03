@@ -1,4 +1,6 @@
 import { useState } from "react"
+import type { Task, TaskStatus } from "@prisma/client"
+import type { Session } from "next-auth"
 
 import {
   Dialog,
@@ -16,11 +18,17 @@ import TaskCard from "./task-card"
 import TaskForm from "./task-form"
 
 export default function Board({
+  session,
   title,
   taskNumber,
+  status,
+  tasks,
 }: {
+  session: Session
   title: string
   taskNumber?: number
+  status: TaskStatus
+  tasks: Task[]
 }) {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -36,7 +44,7 @@ export default function Board({
                 </Text>
                 <div className="bg-primary- ml-2 h-5 w-5 items-center justify-center rounded text-primary-500">
                   <Text variant="small" semibold>
-                    {taskNumber}
+                    ({taskNumber})
                   </Text>
                 </div>
               </div>
@@ -59,51 +67,23 @@ export default function Board({
                     Add New Tasks here. Click save when you're done.
                   </DialogDescription>
                 </DialogHeader>
-                <TaskForm onCancel={() => setIsOpen(false)} />
+                <TaskForm status={status} onCancel={() => setIsOpen(false)} />
               </DialogContent>
             </Dialog>
           </div>
 
           <div>
-            <TaskCard
-              category="Design"
-              title="task 1"
-              date="july-12 "
-              taskDescription="lightening fix "
-              assignedTo="Ram"
-            />
-            <TaskCard
-              category="Staff manage"
-              title="task 2"
-              date="May-28 "
-              taskDescription="lightening fix "
-            />
-            <TaskCard
-              category="Design"
-              title="task 1"
-              date="july-12 "
-              taskDescription="lightening fix "
-              assignedTo="Ram"
-            />
-            <TaskCard
-              category="Staff manage"
-              title="task 2"
-              date="May-28 "
-              taskDescription="lightening fix "
-            />
-            <TaskCard
-              category="Design"
-              title="task 1"
-              date="july-12 "
-              taskDescription="lightening fix "
-              assignedTo="Ram"
-            />
-            <TaskCard
-              category="Staff manage"
-              title="task 2"
-              date="May-28 "
-              taskDescription="lightening fix "
-            />
+            {tasks.map((task, index) => (
+              <TaskCard
+                session={session}
+                key={index}
+                category={task.status}
+                title={task.title}
+                date={task.dueDate}
+                description={task.description}
+                // assignedTo={task.assignedTo}
+              />
+            ))}
           </div>
         </div>
       </div>

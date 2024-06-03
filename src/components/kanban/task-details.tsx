@@ -6,15 +6,15 @@ import { Text } from "../ui/text"
 export default function TaskDetails({
   category,
   title,
-  taskDescription,
+  description,
   dueDate,
   assignedTo,
   avatarUrl,
 }: {
   category: string
   title: string
-  taskDescription: string
-  dueDate: string
+  description: string | null
+  dueDate: string | null
   assignedTo?: string
   avatarUrl?: string
 }) {
@@ -41,7 +41,7 @@ export default function TaskDetails({
             </Button>
           </div>
         </div>
-        <Text variant={"medium"}>{taskDescription}</Text>
+        <Text variant={"medium"}>{description}</Text>
         <div className="mb-4 flex items-center text-sm text-gray-500">
           <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
           <span className="ml-1">{dueDate}</span>
