@@ -49,6 +49,7 @@ import {
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
 import {
@@ -77,16 +78,24 @@ export default function TaskForm({
   status: TaskStatus
   onCancel: () => void
 }) {
-  const addNewTask = api.kanban.addTask.useMutation()
+  const utils = api.useUtils()
 
-  const onSubmit = (values: TaskFormSchema) => {
-    // console.log({ values })
-    // console.log("status", status)
+  const addNewTask = api.kanban.addTask.useMutation({
+    onSuccess: () => {
+      toast.success("New task has been added.")
+      void utils.kanban.getTasks.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to add new task.", {
+        description: e.message,
+      })
+    },
+  })
+  const onSubmit = async (values: TaskFormSchema) => {
     const updatedValues = {
       ...values,
       status,
     }
-    // console.log({ updatedValues })
     addNewTask.mutate(updatedValues)
     onCancel()
   }
