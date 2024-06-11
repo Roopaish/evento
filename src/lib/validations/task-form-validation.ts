@@ -7,7 +7,7 @@ export const taskFormSchema = z.object({
   }),
   description: z.string(),
   dueDate: z.coerce.date().optional(),
-  assignedTo: z.string().optional(),
+  assignedTo: z.string().email().optional(),
   status: z.nativeEnum(TaskStatus).optional(),
 })
 

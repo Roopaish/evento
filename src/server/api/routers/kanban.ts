@@ -49,7 +49,9 @@ export const kanbanRouter = createTRPCRouter({
       const task = await ctx.db.task.create({
         data: {
           ...restInput,
-          assignedTo: assignedTo ? { connect: { id: assignedTo } } : undefined,
+          assignedTo: assignedTo
+            ? { connect: { email: assignedTo } }
+            : undefined,
           eventId: ctx.currentEvent,
           createdById: ctx.session.user.id,
         },
