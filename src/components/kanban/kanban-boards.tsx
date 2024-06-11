@@ -34,21 +34,21 @@ export default function KanbanBoards({ session }: { session: Session }) {
 
         <div className="flex max-h-[80vh] overflow-x-auto">
           <Board
-            session={session}
+            // session={session}
             title="Todo"
             taskNumber={pending.length}
             status={TaskStatus.PENDING}
             tasks={pending}
           />
           <Board
-            session={session}
+            // session={session}
             title="Doing"
             taskNumber={in_progress.length}
             status={TaskStatus.IN_PROGRESS}
             tasks={in_progress}
           />
           <Board
-            session={session}
+            // session={session}
             title="Done"
             taskNumber={completed.length}
             status={TaskStatus.COMPLETED}

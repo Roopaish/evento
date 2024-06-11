@@ -20,6 +20,7 @@ export const kanbanRouter = createTRPCRouter({
         eventId: ctx.currentEvent,
       },
       include: {
+        createdBy: true,
         assignedTo: true,
       },
     })

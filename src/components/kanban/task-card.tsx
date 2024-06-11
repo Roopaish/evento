@@ -23,14 +23,16 @@ import { Text } from "../ui/text"
 import TaskDetails from "./task-details"
 
 const TaskCard = ({
-  session,
+  // session,
+  creator,
   category,
   title,
   description,
   date,
   assignedTo,
 }: {
-  session: Session
+  // session: Session
+  creator: User
   category: string
   title: string
   description: string | null
@@ -65,12 +67,12 @@ const TaskCard = ({
 
           <Avatar className="ml-10 h-6 w-6 rounded-full">
             <AvatarImage
-              src={session?.user?.image ?? ""}
-              alt={session?.user?.name ?? "avatar"}
+              src={creator.image ?? ""}
+              alt={creator.name ?? "avatar"}
             />
             <AvatarFallback className="bg-primary text-white">
-              {session?.user?.name ? (
-                getInitials(session?.user?.name)
+              {creator.name ? (
+                getInitials(creator.name)
               ) : (
                 <Icons.User className="h-4 w-4" />
               )}
