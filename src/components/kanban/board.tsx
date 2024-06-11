@@ -1,5 +1,6 @@
 import { useState } from "react"
-import type { Task as PrismaTask, TaskStatus, User } from "@prisma/client"
+import type { Task } from "@/types"
+import type { TaskStatus } from "@prisma/client"
 import type { Session } from "next-auth"
 
 import {
@@ -16,11 +17,6 @@ import { Icons } from "../ui/icons"
 import { Text } from "../ui/text"
 import TaskCard from "./task-card"
 import TaskForm from "./task-form"
-
-type Task = PrismaTask & {
-  createdBy: User
-  assignedTo: User[]
-}
 
 export default function Board({
   // session,
@@ -81,6 +77,7 @@ export default function Board({
             {tasks.map((task, index) => (
               <TaskCard
                 key={index}
+                taskId={task.id}
                 creator={task.createdBy}
                 category={task.status}
                 title={task.title}

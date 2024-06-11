@@ -1,6 +1,8 @@
 import { useState } from "react"
+import { api } from "@/trpc/react"
 import type { User } from "@prisma/client"
 import type { Session } from "next-auth"
+import { toast } from "sonner"
 
 import { getInitials } from "@/lib/utils"
 import {
@@ -24,6 +26,7 @@ import TaskDetails from "./task-details"
 
 const TaskCard = ({
   // session,
+  taskId,
   creator,
   category,
   title,
@@ -32,6 +35,7 @@ const TaskCard = ({
   assignedTo,
 }: {
   // session: Session
+  taskId: number
   creator: User
   category: string
   title: string
@@ -40,6 +44,24 @@ const TaskCard = ({
   assignedTo?: User[]
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const utils = api.useUtils()
+
+  const deleteTask = api.kanban.deleteTask.useMutation({
+    onSuccess: () => {
+      toast.success("Task has been deleted.")
+      void utils.kanban.getTasks.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to delete task.", {
+        description: e.message,
+      })
+    },
+  })
+
+  const handleDeleteTask = () => {
+    deleteTask.mutate({ id: taskId })
+  }
 
   return (
     <>
@@ -106,6 +128,7 @@ const TaskCard = ({
               <Button
                 variant="ghost"
                 className="w-full justify-start rounded-none"
+                onClick={() => handleDeleteTask()}
               >
                 <Icons.Trash />
                 Delete Task
@@ -122,6 +145,7 @@ const TaskCard = ({
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <TaskDetails
+            taskId={taskId}
             category={category}
             title={title}
             description={description}

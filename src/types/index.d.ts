@@ -1,3 +1,5 @@
+import type { Task as PrismaTask, User } from "@prisma/client"
+
 import { type IconType } from "@/components/ui/icons"
 
 export interface NavItem {
@@ -22,4 +24,9 @@ interface APIResponse<T> {
   data: T
   success: boolean
   message: string
+}
+
+export type Task = PrismaTask & {
+  createdBy: User
+  assignedTo: User[]
 }
