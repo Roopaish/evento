@@ -1,3 +1,5 @@
+import type { User } from "@prisma/client"
+
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { Icons } from "../ui/icons"
@@ -9,14 +11,12 @@ export default function TaskDetails({
   description,
   dueDate,
   assignedTo,
-  avatarUrl,
 }: {
   category: string
   title: string
   description: string | null
   dueDate: string | null
-  assignedTo?: string
-  avatarUrl?: string
+  assignedTo?: User[]
 }) {
   return (
     <>
@@ -46,21 +46,17 @@ export default function TaskDetails({
           <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
           <span className="ml-1">{dueDate}</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Avatar className="mr-2 h-6 w-6 rounded-full">
-            <AvatarImage
-              src={
-                avatarUrl ??
-                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80"
-              }
-              className="object-cover"
-            />
-            <AvatarFallback>{assignedTo}</AvatarFallback>
-          </Avatar>
-          <Text variant={"small"} className="">
-            {assignedTo}
-          </Text>
-        </div>
+        {assignedTo?.map((user) => (
+          <div className="flex items-center gap-2">
+            <Avatar className="mr-2 h-6 w-6 rounded-full">
+              <AvatarImage src={user.image ?? ""} className="object-cover" />
+              <AvatarFallback>{user.name?.toString()}</AvatarFallback>
+            </Avatar>
+            <Text variant={"small"} className="">
+              {user.name?.toString()}
+            </Text>
+          </div>
+        ))}
       </div>
     </>
   )

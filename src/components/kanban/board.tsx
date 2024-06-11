@@ -1,5 +1,5 @@
 import { useState } from "react"
-import type { Task, TaskStatus } from "@prisma/client"
+import type { Task as PrismaTask, TaskStatus, User } from "@prisma/client"
 import type { Session } from "next-auth"
 
 import {
@@ -16,6 +16,10 @@ import { Icons } from "../ui/icons"
 import { Text } from "../ui/text"
 import TaskCard from "./task-card"
 import TaskForm from "./task-form"
+
+type Task = PrismaTask & {
+  assignedTo: User[]
+}
 
 export default function Board({
   session,
@@ -81,7 +85,7 @@ export default function Board({
                 title={task.title}
                 date={task.dueDate}
                 description={task.description}
-                // assignedTo={task.assignedTo}
+                assignedTo={task.assignedTo}
               />
             ))}
           </div>

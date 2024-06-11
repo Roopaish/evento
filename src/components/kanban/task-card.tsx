@@ -1,4 +1,5 @@
 import { useState } from "react"
+import type { User } from "@prisma/client"
 import type { Session } from "next-auth"
 
 import { getInitials } from "@/lib/utils"
@@ -34,7 +35,7 @@ const TaskCard = ({
   title: string
   description: string | null
   date: Date | null
-  assignedTo?: string
+  assignedTo?: User[]
 }) => {
   const [isOpen, setIsOpen] = useState(false)
 
@@ -124,9 +125,6 @@ const TaskCard = ({
             description={description}
             dueDate={date?.toDateString() ?? ""}
             assignedTo={assignedTo}
-            avatarUrl={
-              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
-            }
           />
         </DialogContent>
       </Dialog>

@@ -19,6 +19,9 @@ export const kanbanRouter = createTRPCRouter({
       where: {
         eventId: ctx.currentEvent,
       },
+      include: {
+        assignedTo: true,
+      },
     })
     const pending = tasks.filter((task) => task.status === TaskStatus.PENDING)
     const in_progress = tasks.filter(
