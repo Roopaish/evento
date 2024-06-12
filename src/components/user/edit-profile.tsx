@@ -1,13 +1,16 @@
 "use client"
 
-import { redirect } from "next/navigation"
+import { useEffect } from "react"
 import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { Session } from "next-auth"
 import { useForm } from "react-hook-form"
-import { type z } from "zod"
+import { toast } from "sonner"
 
-import { editProfileFormSchema } from "@/lib/validations/edit-profile-validation"
+import {
+  editProfileFormSchema,
+  type EditProfileForm,
+} from "@/lib/validations/edit-profile-validation"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -23,25 +26,40 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "../ui/textarea"
 
 export default function ProfileForm({ session }: { session: Session | null }) {
-  const form = useForm<z.infer<typeof editProfileFormSchema>>({
+  const form = useForm<EditProfileForm>({
     resolver: zodResolver(editProfileFormSchema),
     defaultValues: {},
   })
 
-  const editMutation = api.user.editProfile.useMutation()
+  // const { data: user } = api.user.getUser.useQuery()
 
-  const onSubmit = async (values: z.infer<typeof editProfileFormSchema>) => {
-    // console.log("Form values", values)
-    if (!session?.user) {
-      redirect("/")
-    }
-    const result = await editMutation.mutateAsync(values)
-    if (result) {
-      alert("Profile updated successfully")
-      form.reset()
-      // redirect("/dashboard/profile")
-    }
+  const utils = api.useUtils()
+
+  const editMutation = api.user.editProfile.useMutation({
+    onSuccess: () => {
+      toast.success("Profile has been edited.")
+      void utils.user.getUser.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to edit Profile.", {
+        description: e.message,
+      })
+    },
+  })
+
+  const onSubmit = (values: EditProfileForm) => {
+    editMutation.mutate(values)
   }
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset({
+        name: "",
+        address: "",
+        bio: "",
+      })
+    }
+  }, [form.formState])
 
   return (
     <Form {...form}>
