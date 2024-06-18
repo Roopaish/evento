@@ -7,6 +7,7 @@ import { z } from "zod"
 
 interface ChatMessageProps extends ChatMessage {
   user: User
+  seenBy: User[]
 }
 
 export const chatRouter = createTRPCRouter({
@@ -63,24 +64,61 @@ export const chatRouter = createTRPCRouter({
     })
   }),
 
-  findAllMessage: protectedProcedure
-    .input(z.object({ id: z.number() }))
+  getUserMessage: protectedProcedure
+    .input(
+      z.object({
+        cursor: z.date().nullish(),
+        take: z.number().min(1).max(50).nullish(),
+        // id: z.number(),
+      })
+    )
     .query(async ({ ctx, input }) => {
-      const chatMessage = await ctx.db.chatMessage.findMany({
+      const take = input.take ?? 20
+      const cursor = input.cursor
+
+      const eventId = ctx.currentEvent
+
+      const chatGroup = await ctx.db.chatGroup.findUnique({
         where: {
-          chatGroupId: input.id,
+          eventId: Number(eventId),
+        },
+      })
+
+      const page = await ctx.db.chatMessage.findMany({
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          chatGroupId: chatGroup!.id,
         },
         include: {
           user: true,
+          seenBy: {
+            where: {
+              NOT: {
+                id: ctx.session.user.id,
+              },
+            },
+          },
         },
-        orderBy: {
-          createdAt: "asc",
-        },
+        cursor: cursor ? { createdAt: cursor } : undefined,
+        take: take + 1,
+        skip: 0,
       })
-      return chatMessage
+
+      const items = page.reverse()
+      let nextCursor: typeof cursor | null = null
+      if (items.length > take) {
+        const prev = items.shift()
+        nextCursor = prev!.createdAt
+      }
+      return {
+        items,
+        nextCursor,
+      }
     }),
 
-  findGroupByEventId: protectedProcedure.query(async ({ ctx, input }) => {
+  findGroupByEventId: protectedProcedure.query(async ({ ctx }) => {
     const eventId = ctx.currentEvent
     const group = await ctx.db.chatGroup.findUnique({
       where: {
@@ -98,32 +136,40 @@ export const chatRouter = createTRPCRouter({
     return group
   }),
 
-  seenBy: protectedProcedure
-    .input(z.object({ id: z.number() }))
-    .mutation(async ({ ctx, input }) => {
-      const chatMessages = await ctx.db.chatMessage.findMany({
-        where: {
-          chatGroupId: input.id,
+  seenBy: protectedProcedure.mutation(async ({ ctx }) => {
+    // Get the current user ID
+    const userId = ctx.session?.user?.id
+    const eventId = ctx.currentEvent
+
+    const chatGroup = await ctx.db.chatGroup.findUnique({
+      where: {
+        eventId: Number(eventId),
+      },
+    })
+
+    const chatMessages = await ctx.db.chatMessage.findMany({
+      where: {
+        chatGroupId: chatGroup!.id,
+        NOT: {
+          userId: userId,
         },
-      })
+      },
+    })
 
-      // Get the current user ID
-      const userId = ctx.session.user.id
-
-      // Update the seenBy field for each chat message
-      for (const message of chatMessages) {
-        await ctx.db.chatMessage.update({
-          where: {
-            id: message.id,
-          },
-          data: {
-            seenBy: {
-              connect: {
-                id: userId,
-              },
+    // Update the seenBy field for each chat message
+    for (const message of chatMessages) {
+      await ctx.db.chatMessage.update({
+        where: {
+          id: message.id,
+        },
+        data: {
+          seenBy: {
+            connect: {
+              id: userId,
             },
           },
-        })
-      }
-    }),
+        },
+      })
+    }
+  }),
 })

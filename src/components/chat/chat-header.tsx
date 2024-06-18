@@ -4,29 +4,20 @@ import { type ChatGroup, type Event, type User } from "@prisma/client"
 import { getInitials } from "@/lib/utils"
 import {
   Command,
-  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-} from "../ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog"
 import { Icons } from "../ui/icons"
 
 import "@/components/ui/command"
 
-import { Button } from "../ui/button"
 import { ScrollArea } from "../ui/scroll-area"
 
 interface ChatGroupProps extends ChatGroup {
@@ -49,16 +40,14 @@ export default function ChatHeader({
   }
 
   return (
-    <div className="flex items-center  justify-between border-b-2 border-gray-200 p-4">
+    <div className="flex items-center  justify-between border-b-2 border-gray-200 p-3">
       <Dialog>
         <DialogTrigger>
           <div
             onClick={showBorder}
-            className={`flex items-center gap-1 rounded-lg border-[1.5px] p-1.5 transition delay-100 hover:border-[1.5px] hover:border-[rgb(22,163,74)] ${
-              borderColor ? "border-[rgb(22,163,74)]" : null
-            }`}
+            className="flex items-center gap-2 rounded-lg border-[1.5px] p-1.5 transition delay-100 hover:border-[1.5px] hover:border-[rgb(22,163,74)]"
           >
-            <div className="flex w-[80px] cursor-pointer -space-x-2 overflow-hidden">
+            <div className="flex max-w-[80px] cursor-pointer -space-x-2 overflow-hidden">
               <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                 <AvatarImage
                   src={chatGroup?.event.createdBy.image ?? ""}
@@ -72,7 +61,10 @@ export default function ChatHeader({
               {chatGroup?.event.participants
                 .filter((item, index) => index < 2)
                 .map((user) => (
-                  <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
+                  <Avatar
+                    key={user?.id}
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100"
+                  >
                     <AvatarImage src={user.image!} alt="user image" />
                     <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
                   </Avatar>
@@ -80,7 +72,7 @@ export default function ChatHeader({
             </div>
 
             <div className="flex h-8 w-8 items-center justify-center rounded-md border-[1px] border-[rgb(22,163,74)] font-semibold ring-slate-100">
-              {chatGroup?.event.participants.length}+
+              {chatGroup?.event.participants.length + 1}
             </div>
           </div>
         </DialogTrigger>

@@ -218,8 +218,8 @@ model ChatMessage {
 
     seenBy User[] @relation("SeenBy")
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt DateTime @unique() @default(now())
+    updatedAt DateTime @unique() @updatedAt
 }
 
 enum Status {
