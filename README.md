@@ -1,5 +1,20 @@
 # Evento
 
+## Features
+- [X] Create Events, Edit and Publish
+- [X] Search, Find new events with filters
+- [X] Event creator can invite people to join the event as a team member
+- [X] Event creator and team can discuss event related things through chat in realtime
+- [X] Event creator can create and assign tasks to the team memebers in boards and cards
+- [X] Event creator can create job/gigs posting for event
+- [X] Job seeker can apply for the job/gigs listed in each event, event creator can view and select or reject them
+- [ ] Event creator can create a seat mapping with labels and prices
+- [ ] Buy tickets for a paid event with seat selection
+- [ ] Event recommendation system according to user preferences
+- [ ] Publish separate website with new subdomain for each event, with own branding
+- [ ] Integrate facebook and instagram apis to directly share stuffs about the event
+- [ ] Analytics of event, how many people visited, are interested, paid for tickets etc.
+
 ## How to run
 
 - `npm install -g pnpm`
