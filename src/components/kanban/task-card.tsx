@@ -1,5 +1,8 @@
 import { useState } from "react"
+import { api } from "@/trpc/react"
+import type { User } from "@prisma/client"
 import type { Session } from "next-auth"
+import { toast } from "sonner"
 
 import { getInitials } from "@/lib/utils"
 import {
@@ -22,21 +25,43 @@ import { Text } from "../ui/text"
 import TaskDetails from "./task-details"
 
 const TaskCard = ({
-  session,
+  // session,
+  taskId,
+  creator,
   category,
   title,
   description,
   date,
   assignedTo,
 }: {
-  session: Session
+  // session: Session
+  taskId: number
+  creator: User
   category: string
   title: string
   description: string | null
   date: Date | null
-  assignedTo?: string
+  assignedTo?: User[]
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+
+  const utils = api.useUtils()
+
+  const deleteTask = api.kanban.deleteTask.useMutation({
+    onSuccess: () => {
+      toast.success("Task has been deleted.")
+      void utils.kanban.getTasks.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to delete task.", {
+        description: e.message,
+      })
+    },
+  })
+
+  const handleDeleteTask = () => {
+    deleteTask.mutate({ id: taskId })
+  }
 
   return (
     <>
@@ -64,12 +89,12 @@ const TaskCard = ({
 
           <Avatar className="ml-10 h-6 w-6 rounded-full">
             <AvatarImage
-              src={session?.user?.image ?? ""}
-              alt={session?.user?.name ?? "avatar"}
+              src={creator.image ?? ""}
+              alt={creator.name ?? "avatar"}
             />
             <AvatarFallback className="bg-primary text-white">
-              {session?.user?.name ? (
-                getInitials(session?.user?.name)
+              {creator.name ? (
+                getInitials(creator.name)
               ) : (
                 <Icons.User className="h-4 w-4" />
               )}
@@ -103,6 +128,7 @@ const TaskCard = ({
               <Button
                 variant="ghost"
                 className="w-full justify-start rounded-none"
+                onClick={() => handleDeleteTask()}
               >
                 <Icons.Trash />
                 Delete Task
@@ -119,14 +145,12 @@ const TaskCard = ({
             <DialogDescription></DialogDescription>
           </DialogHeader>
           <TaskDetails
+            taskId={taskId}
             category={category}
             title={title}
             description={description}
             dueDate={date?.toDateString() ?? ""}
             assignedTo={assignedTo}
-            avatarUrl={
-              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
-            }
           />
         </DialogContent>
       </Dialog>

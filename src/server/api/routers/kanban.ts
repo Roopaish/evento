@@ -19,6 +19,10 @@ export const kanbanRouter = createTRPCRouter({
       where: {
         eventId: ctx.currentEvent,
       },
+      include: {
+        createdBy: true,
+        assignedTo: true,
+      },
     })
     const pending = tasks.filter((task) => task.status === TaskStatus.PENDING)
     const in_progress = tasks.filter(
@@ -45,7 +49,9 @@ export const kanbanRouter = createTRPCRouter({
       const task = await ctx.db.task.create({
         data: {
           ...restInput,
-          assignedTo: assignedTo ? { connect: { id: assignedTo } } : undefined,
+          assignedTo: assignedTo
+            ? { connect: { email: assignedTo } }
+            : undefined,
           eventId: ctx.currentEvent,
           createdById: ctx.session.user.id,
         },

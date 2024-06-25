@@ -1,5 +1,6 @@
 import { useState } from "react"
-import type { Task, TaskStatus } from "@prisma/client"
+import type { Task } from "@/types"
+import type { TaskStatus } from "@prisma/client"
 import type { Session } from "next-auth"
 
 import {
@@ -18,13 +19,13 @@ import TaskCard from "./task-card"
 import TaskForm from "./task-form"
 
 export default function Board({
-  session,
+  // session,
   title,
   taskNumber,
   status,
   tasks,
 }: {
-  session: Session
+  // session: Session
   title: string
   taskNumber?: number
   status: TaskStatus
@@ -75,13 +76,14 @@ export default function Board({
           <div>
             {tasks.map((task, index) => (
               <TaskCard
-                session={session}
                 key={index}
+                taskId={task.id}
+                creator={task.createdBy}
                 category={task.status}
                 title={task.title}
                 date={task.dueDate}
                 description={task.description}
-                // assignedTo={task.assignedTo}
+                assignedTo={task.assignedTo}
               />
             ))}
           </div>

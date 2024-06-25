@@ -9,3 +9,5 @@ export const editProfileFormSchema = z.object({
   lng: z.string().optional(),
   bio: z.string().optional(),
 })
+
+export type EditProfileForm = z.infer<typeof editProfileFormSchema>
