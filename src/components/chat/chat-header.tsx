@@ -4,29 +4,20 @@ import { type ChatGroup, type Event, type User } from "@prisma/client"
 import { getInitials } from "@/lib/utils"
 import {
   Command,
-  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
-  CommandShortcut,
 } from "@/components/ui/command"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogFooter,
-  DialogTrigger,
-} from "../ui/dialog"
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog"
 import { Icons } from "../ui/icons"
 
 import "@/components/ui/command"
 
-import { Button } from "../ui/button"
 import { ScrollArea } from "../ui/scroll-area"
 
 interface ChatGroupProps extends ChatGroup {
@@ -65,7 +56,10 @@ export default function ChatHeader({
                   alt="user image"
                 />
                 <AvatarFallback>
-                  {getInitials(chatGroup?.event?.createdBy.name)}
+                  {getInitials(
+                    chatGroup?.event?.createdBy.name ??
+                      chatGroup?.event?.createdBy.email
+                  )}
                 </AvatarFallback>
               </Avatar>
 
@@ -74,7 +68,9 @@ export default function ChatHeader({
                 .map((user) => (
                   <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                     <AvatarImage src={user.image!} alt="user image" />
-                    <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+                    <AvatarFallback>
+                      {getInitials(user?.name ?? user?.email)}
+                    </AvatarFallback>
                   </Avatar>
                 ))}
             </div>
@@ -98,7 +94,10 @@ export default function ChatHeader({
                       alt="user image"
                     />
                     <AvatarFallback>
-                      {getInitials(chatGroup?.event?.createdBy.name)}
+                      {getInitials(
+                        chatGroup?.event?.createdBy.name ??
+                          chatGroup?.event?.createdBy.email
+                      )}
                     </AvatarFallback>
                   </Avatar>
                   <div>{chatGroup?.event?.createdBy.name}</div>
@@ -114,7 +113,7 @@ export default function ChatHeader({
                       <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                         <AvatarImage src={user.image!} alt="user image" />
                         <AvatarFallback>
-                          {getInitials(user?.name)}
+                          {getInitials(user?.name ?? user?.email)}
                         </AvatarFallback>
                       </Avatar>
                       <div>{user?.name}</div>

@@ -119,6 +119,14 @@ Table Event {
   chatGroup ChatGroup
   invitations Invitation [not null]
   tasks Task [not null]
+  tags Tag [not null]
+  category String [not null]
+}
+
+Table Tag {
+  id Int [pk, increment]
+  name String [unique, not null]
+  events Event [not null]
 }
 
 Table JobPosition {
@@ -205,11 +213,11 @@ Enum UserRole {
 }
 
 Enum EventType {
-  WEDDING
   CONFERENCE
   SEMINAR
   WORKSHOP
   PARTY
+  CONCERT
   OTHER
 }
 

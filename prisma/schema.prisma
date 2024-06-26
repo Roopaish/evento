@@ -125,11 +125,11 @@ model User {
 }
 
 enum EventType {
-    WEDDING
     CONFERENCE
     SEMINAR
     WORKSHOP
     PARTY
+    CONCERT
     OTHER
 }
 
@@ -163,8 +163,16 @@ model Event {
 
     invitations Invitation[]
     tasks       Task[]
+    tags        Tag[]        @relation("EventTags")
+    category    String
 
     @@index([title, address])
+}
+
+model Tag {
+    id     Int     @id @default(autoincrement())
+    name   String  @unique
+    events Event[] @relation("EventTags")
 }
 
 model JobPosition {

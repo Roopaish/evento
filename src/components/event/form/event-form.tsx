@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useMemo } from "react"
 import { useRouter } from "next/navigation"
 import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -17,6 +17,7 @@ import { useFieldArray, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { type z } from "zod"
 
+import { eventCategories, eventTags, eventTagsList } from "@/config/constants"
 import { uploadFiles } from "@/lib/requests/upload-file"
 import { cn } from "@/lib/utils"
 import { eventFormSchemaClient } from "@/lib/validations/event-form-validation-client"
@@ -28,6 +29,14 @@ import {
 } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger,
+} from "@/components/ui/extension/multi-select"
 import {
   Form,
   FormControl,
@@ -187,6 +196,14 @@ export default function EventForm({ id }: { id?: number }) {
     }
   }
 
+  const category = form.watch("category")
+
+  const eventTagsData = useMemo(() => {
+    return category
+      ? eventTags[category as keyof typeof eventTags]
+      : eventTagsList
+  }, [category])
+
   return (
     <Form {...form}>
       <Text variant={"h5"} semibold className="mb-4 mt-5 text-center">
@@ -286,6 +303,72 @@ export default function EventForm({ id }: { id?: number }) {
                     </PopoverContent>
                   </Popover>
                 </div>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <FormField
+            control={form.control}
+            name="category"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Category</FormLabel>
+                <FormControl>
+                  <Select
+                    {...field}
+                    onValueChange={field.onChange}
+                    defaultValue={field.value as never as string}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-full">
+                        <SelectValue
+                          placeholder="Select category"
+                          className="w-full"
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {eventCategories?.map((category, index) => (
+                        <SelectItem value={category} key={index}>
+                          {category}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="tags"
+            render={({ field }) => (
+              <FormItem className="lg:col-span-2">
+                <FormLabel>Tags</FormLabel>
+                <FormControl>
+                  <MultiSelector
+                    onValuesChange={field.onChange}
+                    values={field.value!}
+                  >
+                    <MultiSelectorTrigger>
+                      <MultiSelectorInput placeholder="Select event tags" />
+                    </MultiSelectorTrigger>
+                    <MultiSelectorContent>
+                      <MultiSelectorList>
+                        {eventTagsData.map((tag) => (
+                          <MultiSelectorItem key={tag} value={tag}>
+                            {tag}
+                          </MultiSelectorItem>
+                        ))}
+                      </MultiSelectorList>
+                    </MultiSelectorContent>
+                  </MultiSelector>
+                </FormControl>
                 <FormMessage />
               </FormItem>
             )}

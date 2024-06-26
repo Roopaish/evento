@@ -4,6 +4,7 @@ import { api } from "@/trpc/server"
 
 import { formatPrice, getInitials } from "@/lib/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
@@ -48,6 +49,10 @@ export default async function EventDetails({
               medium
               className="text-2xl font-bold text-gray-800"
             >
+              {data?.category && (
+                <Badge className="mb-2 block max-w-max">{data?.category}</Badge>
+              )}
+
               {data?.title}
             </Text>
             <Text variant="medium" medium className="mt-4 text-gray-700">
@@ -123,9 +128,9 @@ export default async function EventDetails({
                 <h3 className="text-lg font-medium">{data?.address}</h3>
                 {/* <p>{data?.lat}</p> */}
               </div>
-              <div className="flex h-64 items-center justify-center rounded-lg bg-gray-300">
+              {/* <div className="flex h-64 items-center justify-center rounded-lg bg-gray-300">
                 <span className="text-gray-700">Map Here </span>
-              </div>
+              </div> */}
             </div>
 
             {isCreatedByMe && (
@@ -147,6 +152,22 @@ export default async function EventDetails({
             <div className="mt-5">
               <ShareEvent />
             </div>
+
+            {data?.tags?.length > 0 && (
+              <div className="mt-10">
+                <h2 className="text-xl font-semibold">Tags</h2>
+                <div className="mt-2 flex flex-wrap gap-2">
+                  {data?.tags?.map((tag) => (
+                    <span
+                      key={tag.id}
+                      className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600 hover:bg-primary-100"
+                    >
+                      {tag.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
