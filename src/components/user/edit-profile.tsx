@@ -10,7 +10,7 @@ import { toast } from "sonner"
 import {
   editProfileFormSchema,
   type EditProfileForm,
-} from "@/lib/validations/edit-profile-validation"
+} from "@/lib/validations/user-schema"
 import { Button } from "@/components/ui/button"
 import {
   Form,

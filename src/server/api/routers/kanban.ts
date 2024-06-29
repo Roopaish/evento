@@ -46,11 +46,27 @@ export const kanbanRouter = createTRPCRouter({
       }
       const { assignedTo, ...restInput } = input
 
+      // Check if the assignedTo email exists in the database
+      if (assignedTo) {
+        try {
+          const assignedToExists = await ctx.db.user.findMany({
+            where: {
+              email: { in: assignedTo },
+            },
+          })
+          if (assignedToExists.length < assignedTo.length) {
+            throw new Error("One or more assigned users not found")
+          }
+        } catch (error) {
+          throw error
+        }
+      }
+
       const task = await ctx.db.task.create({
         data: {
           ...restInput,
           assignedTo: assignedTo
-            ? { connect: { email: assignedTo } }
+            ? { connect: assignedTo.map((mail) => ({ email: mail })) }
             : undefined,
           eventId: ctx.currentEvent,
           createdById: ctx.session.user.id,
@@ -67,17 +83,60 @@ export const kanbanRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, assignedTo, ...restInput } = input
+      const { id, assignedTo, dueDate, ...restInput } = input
+
+      // Check if the assignedTo email exists in the database
+      if (assignedTo) {
+        try {
+          const assignedToExists = await ctx.db.user.findMany({
+            where: {
+              email: { in: assignedTo },
+            },
+          })
+          if (assignedToExists.length < assignedTo.length) {
+            throw new Error("One or more assigned users not found")
+          }
+        } catch (error) {
+          throw error
+        }
+      }
 
       const task = await ctx.db.task.update({
         where: {
           id,
         },
+        include: {
+          assignedTo: true,
+        },
         data: {
           ...restInput,
-          assignedTo: assignedTo ? { connect: { id: assignedTo } } : undefined,
+          dueDate: dueDate || null,
+          assignedTo: assignedTo
+            ? { connect: assignedTo.map((mail) => ({ email: mail })) }
+            : undefined,
         },
       })
+
+      // check if assignedTo and task.assignedTo.email are same or not
+      // if not same, then disconnect the old assignedTo
+      const assignedToEmails = task.assignedTo.map((user) => user.email)
+      const newAssignedToEmails = assignedTo || []
+      const emailsToDisconnect = assignedToEmails.filter(
+        (email) => !newAssignedToEmails.includes(email)
+      )
+
+      if (emailsToDisconnect.length > 0) {
+        await ctx.db.task.update({
+          where: {
+            id,
+          },
+          data: {
+            assignedTo: {
+              disconnect: emailsToDisconnect.map((email) => ({ email })),
+            },
+          },
+        })
+      }
 
       return task
     }),

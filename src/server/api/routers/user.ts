@@ -1,4 +1,7 @@
-import { editProfileFormSchema } from "@/lib/validations/edit-profile-validation"
+import {
+  editProfileFormSchema,
+  userIdSchema,
+} from "@/lib/validations/user-schema"
 
 import { createTRPCRouter, protectedProcedure } from "../trpc"
 
@@ -11,6 +14,22 @@ export const userRouter = createTRPCRouter({
     })
     return user
   }),
+
+  getAllUsers: protectedProcedure.query(async ({ ctx }) => {
+    const users = await ctx.db.user.findMany()
+    return users
+  }),
+
+  getUserById: protectedProcedure
+    .input(userIdSchema)
+    .query(async ({ ctx, input }) => {
+      const user = await ctx.db.user.findUnique({
+        where: {
+          id: input.id,
+        },
+      })
+      return user
+    }),
 
   editProfile: protectedProcedure
     .input(editProfileFormSchema)

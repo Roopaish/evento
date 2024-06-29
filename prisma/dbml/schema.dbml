@@ -69,8 +69,8 @@ Table Asset {
 
 Table User {
   id String [pk]
-  name String
-  email String [unique]
+  name String [not null]
+  email String [unique, not null]
   emailVerified DateTime
   image String
   bio String
