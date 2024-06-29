@@ -129,7 +129,7 @@ const TaskCard = ({ task }: { task: Task }) => {
                     </DialogHeader>
                     <TaskForm
                       status={task.status}
-                      onCancel={() => setIsOpen(false)}
+                      onCancel={() => setIsEditOpen(false)}
                       task={task}
                     />
                   </DialogContent>
