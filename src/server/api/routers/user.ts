@@ -1,4 +1,4 @@
-import { editProfileFormSchema } from "@/lib/validations/edit-profile-validation"
+import { editProfileFormSchema } from "@/lib/validations/user-schema"
 
 import { createTRPCRouter, protectedProcedure } from "../trpc"
 
