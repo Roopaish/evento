@@ -27,6 +27,7 @@ import TaskForm from "./task-form"
 
 const TaskCard = ({ task }: { task: Task }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
 
   const utils = api.useUtils()
 
@@ -51,7 +52,10 @@ const TaskCard = ({ task }: { task: Task }) => {
       <div
         className="group relative m-3 flex cursor-pointer flex-col items-start rounded-lg bg-gray-100  p-4 hover:bg-opacity-100"
         draggable="true"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true)
+          setIsEditOpen(true)
+        }}
       >
         <Text
           variant={"small"}
@@ -103,7 +107,10 @@ const TaskCard = ({ task }: { task: Task }) => {
           >
             <div className="divide-y-2">
               <div className="flex h-full flex-col gap-4 overflow-y-auto">
-                <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+                <Dialog
+                  open={isEditOpen}
+                  onOpenChange={(open) => setIsEditOpen(open)}
+                >
                   <DialogTrigger asChild>
                     <Button
                       variant={"ghost"}
@@ -142,17 +149,15 @@ const TaskCard = ({ task }: { task: Task }) => {
         </Popover>
       </div>
 
-      {/* <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
+      <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle></DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <TaskDetails
-            task={task}
-          />
+          <TaskDetails task={task} />
         </DialogContent>
-      </Dialog> */}
+      </Dialog>
     </>
   )
 }
