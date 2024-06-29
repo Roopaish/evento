@@ -48,12 +48,17 @@ export const kanbanRouter = createTRPCRouter({
 
       // Check if the assignedTo email exists in the database
       if (assignedTo) {
-        const assignedToExists = await ctx.db.user.findUnique({
-          where: { email: assignedTo },
-        })
-
-        if (!assignedToExists) {
-          throw new Error(`AssignedTo ID ${assignedTo} not found.`)
+        try {
+          const assignedToExists = await ctx.db.user.findMany({
+            where: {
+              email: { in: assignedTo },
+            },
+          })
+          if (assignedToExists.length < assignedTo.length) {
+            throw new Error("One or more assigned users not found")
+          }
+        } catch (error) {
+          throw error
         }
       }
 
@@ -61,7 +66,7 @@ export const kanbanRouter = createTRPCRouter({
         data: {
           ...restInput,
           assignedTo: assignedTo
-            ? { connect: { email: assignedTo } }
+            ? { connect: assignedTo.map((mail) => ({ email: mail })) }
             : undefined,
           eventId: ctx.currentEvent,
           createdById: ctx.session.user.id,
@@ -82,12 +87,17 @@ export const kanbanRouter = createTRPCRouter({
 
       // Check if the assignedTo email exists in the database
       if (assignedTo) {
-        const assignedToExists = await ctx.db.user.findUnique({
-          where: { email: assignedTo },
-        })
-
-        if (!assignedToExists) {
-          throw new Error(`AssignedTo ID ${assignedTo} not found.`)
+        try {
+          const assignedToExists = await ctx.db.user.findMany({
+            where: {
+              email: { in: assignedTo },
+            },
+          })
+          if (assignedToExists.length < assignedTo.length) {
+            throw new Error("One or more assigned users not found")
+          }
+        } catch (error) {
+          throw error
         }
       }
 
@@ -95,10 +105,13 @@ export const kanbanRouter = createTRPCRouter({
         where: {
           id,
         },
+        include: {
+          assignedTo: true,
+        },
         data: {
           ...restInput,
           assignedTo: assignedTo
-            ? { connect: { email: assignedTo } }
+            ? { connect: assignedTo.map((mail) => ({ email: mail })) }
             : undefined,
         },
       })

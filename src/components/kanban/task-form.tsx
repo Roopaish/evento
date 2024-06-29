@@ -47,14 +47,17 @@ export default function TaskForm({
         title: task?.title || "",
         description: task?.description || "",
         dueDate: task?.dueDate || undefined,
-        assignedTo: task?.assignedTo[0]?.email || undefined,
+        assignedTo:
+          task?.assignedTo.length > 0
+            ? task.assignedTo.map((assignUser) => assignUser.email)
+            : null,
         status: task?.status,
       }
     : ({
         title: "",
         description: "",
         dueDate: undefined,
-        assignedTo: undefined,
+        assignedTo: null,
         status,
       } as TaskFormSchema)
 
@@ -87,8 +90,16 @@ export default function TaskForm({
   })
 
   const onSubmit = async (values: TaskFormSchema) => {
-    if (!task) addNewTask.mutate(values)
-    else editTask.mutate({ id: task.id, ...values })
+    console.log("values", values)
+    const assignedTo = values.assignedTo
+      ? values.assignedTo.map((email) => email).join(", ")
+      : null
+    const newValues = {
+      ...values,
+      assignedTo,
+    }
+    if (!task) addNewTask.mutate(newValues)
+    else editTask.mutate({ id: task.id, ...newValues })
     onCancel()
   }
 
