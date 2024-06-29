@@ -1,5 +1,5 @@
 import { api } from "@/trpc/react"
-import type { User } from "@prisma/client"
+import type { Task } from "@/types"
 import { toast } from "sonner"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
@@ -7,21 +7,7 @@ import { Button } from "../ui/button"
 import { Icons } from "../ui/icons"
 import { Text } from "../ui/text"
 
-export default function TaskDetails({
-  taskId,
-  category,
-  title,
-  description,
-  dueDate,
-  assignedTo,
-}: {
-  taskId: number
-  category: string
-  title: string
-  description: string | null
-  dueDate: string | null
-  assignedTo?: User[]
-}) {
+export default function TaskDetails({ task }: { task: Task }) {
   const utils = api.useUtils()
 
   const deleteTask = api.kanban.deleteTask.useMutation({
@@ -37,7 +23,7 @@ export default function TaskDetails({
   })
 
   const handleDeleteTask = () => {
-    deleteTask.mutate({ id: taskId })
+    deleteTask.mutate({ id: task.id })
   }
   return (
     <>
@@ -47,11 +33,11 @@ export default function TaskDetails({
           semibold
           className=" flex h-6  max-w-max items-center rounded-full bg-pink-100 px-3  text-pink-500"
         >
-          {category}
+          {task.status}
         </Text>
         <div className="flex items-center justify-between">
           <Text variant={"medium"} semibold>
-            {title}
+            {task.title}
           </Text>
           <div className="flex space-x-2">
             <Button variant={"ghost"}>
@@ -62,12 +48,12 @@ export default function TaskDetails({
             </Button>
           </div>
         </div>
-        <Text variant={"medium"}>{description}</Text>
+        <Text variant={"medium"}>{task.description}</Text>
         <div className="mb-4 flex items-center text-sm text-gray-500">
           <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
-          <span className="ml-1">{dueDate}</span>
+          <span className="ml-1">{task.dueDate?.toDateString()}</span>
         </div>
-        {assignedTo?.map((user) => (
+        {task.assignedTo?.map((user) => (
           <div className="flex items-center gap-2">
             <Avatar className="mr-2 h-6 w-6 rounded-full">
               <AvatarImage src={user.image ?? ""} className="object-cover" />
