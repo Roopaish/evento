@@ -83,7 +83,7 @@ export const kanbanRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, assignedTo, ...restInput } = input
+      const { id, assignedTo, dueDate, ...restInput } = input
 
       // Check if the assignedTo email exists in the database
       if (assignedTo) {
@@ -110,11 +110,33 @@ export const kanbanRouter = createTRPCRouter({
         },
         data: {
           ...restInput,
+          dueDate: dueDate || null,
           assignedTo: assignedTo
             ? { connect: assignedTo.map((mail) => ({ email: mail })) }
             : undefined,
         },
       })
+
+      // check if assignedTo and task.assignedTo.email are same or not
+      // if not same, then disconnect the old assignedTo
+      const assignedToEmails = task.assignedTo.map((user) => user.email)
+      const newAssignedToEmails = assignedTo || []
+      const emailsToDisconnect = assignedToEmails.filter(
+        (email) => !newAssignedToEmails.includes(email)
+      )
+
+      if (emailsToDisconnect.length > 0) {
+        await ctx.db.task.update({
+          where: {
+            id,
+          },
+          data: {
+            assignedTo: {
+              disconnect: emailsToDisconnect.map((email) => ({ email })),
+            },
+          },
+        })
+      }
 
       return task
     }),
