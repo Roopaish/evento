@@ -71,7 +71,7 @@ export default function Board({
           </div>
 
           <div>
-            {tasks.map((task, index) => (
+            {tasks.map((task) => (
               <TaskCard task={task} />
             ))}
           </div>

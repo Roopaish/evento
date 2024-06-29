@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { api } from "@/trpc/react"
 import type { Task } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { TaskStatus } from "@prisma/client"
+import type { TaskStatus } from "@prisma/client"
 import {
   Popover,
   PopoverContent,
@@ -44,9 +44,9 @@ export default function TaskForm({
 }) {
   const taskFormValues: TaskFormSchema = task
     ? {
-        title: task?.title || "",
-        description: task?.description || "",
-        dueDate: task?.dueDate || undefined,
+        title: task?.title ?? "",
+        description: task?.description ?? "",
+        dueDate: task?.dueDate ?? undefined,
         assignedTo:
           task?.assignedTo.length > 0
             ? task.assignedTo.map((assignUser) => assignUser.email)
@@ -61,7 +61,7 @@ export default function TaskForm({
         status,
       } as TaskFormSchema)
 
-  const [newTaskState, setNewTaskState] = useState(taskFormValues)
+  const [newTaskState] = useState(taskFormValues)
 
   const utils = api.useUtils()
 
@@ -181,7 +181,7 @@ recharge the batteries a little."
                   <PopoverContent className="w-auto bg-white p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value || undefined}
+                      selected={field.value ?? undefined}
                       onSelect={field.onChange}
                       disabled={(date: Date) => date < new Date()}
                       initialFocus
@@ -203,7 +203,7 @@ recharge the batteries a little."
                 <Input
                   placeholder="e.g. test@example.com"
                   {...field}
-                  value={field.value || undefined}
+                  value={field.value ?? undefined}
                 />
               </FormControl>
               <FormDescription></FormDescription>
