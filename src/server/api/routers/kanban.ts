@@ -46,6 +46,17 @@ export const kanbanRouter = createTRPCRouter({
       }
       const { assignedTo, ...restInput } = input
 
+      // Check if the assignedTo email exists in the database
+      if (assignedTo) {
+        const assignedToExists = await ctx.db.user.findUnique({
+          where: { email: assignedTo },
+        })
+
+        if (!assignedToExists) {
+          throw new Error(`AssignedTo ID ${assignedTo} not found.`)
+        }
+      }
+
       const task = await ctx.db.task.create({
         data: {
           ...restInput,
@@ -69,13 +80,26 @@ export const kanbanRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const { id, assignedTo, ...restInput } = input
 
+      // Check if the assignedTo email exists in the database
+      if (assignedTo) {
+        const assignedToExists = await ctx.db.user.findUnique({
+          where: { email: assignedTo },
+        })
+
+        if (!assignedToExists) {
+          throw new Error(`AssignedTo ID ${assignedTo} not found.`)
+        }
+      }
+
       const task = await ctx.db.task.update({
         where: {
           id,
         },
         data: {
           ...restInput,
-          assignedTo: assignedTo ? { connect: { id: assignedTo } } : undefined,
+          assignedTo: assignedTo
+            ? { connect: { email: assignedTo } }
+            : undefined,
         },
       })
 
