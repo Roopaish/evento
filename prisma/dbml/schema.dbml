@@ -229,8 +229,8 @@ Enum Status {
 
 Enum TaskStatus {
   PENDING
-  COMPLETED
   IN_PROGRESS
+  COMPLETED
 }
 
 Ref: Post.createdById > User.id

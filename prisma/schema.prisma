@@ -258,8 +258,8 @@ model Invitation {
 
 enum TaskStatus {
     PENDING
-    COMPLETED
     IN_PROGRESS
+    COMPLETED
 }
 
 model Task {

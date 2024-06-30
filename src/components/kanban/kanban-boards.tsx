@@ -22,6 +22,24 @@ export default function KanbanBoards() {
   }
   const { pending, in_progress, completed } = tasks
 
+  const boards = [
+    {
+      title: "Todo",
+      status: TaskStatus.PENDING,
+      tasks: pending,
+    },
+    {
+      title: "Doing",
+      status: TaskStatus.IN_PROGRESS,
+      tasks: in_progress,
+    },
+    {
+      title: "Done",
+      status: TaskStatus.COMPLETED,
+      tasks: completed,
+    },
+  ]
+
   return (
     <>
       <div className="container m-6 flex flex-col gap-5 px-4">
@@ -30,24 +48,15 @@ export default function KanbanBoards() {
         </Text>
 
         <div className="flex max-h-[80vh] overflow-x-auto">
-          <Board
-            title="Todo"
-            taskNumber={pending.length}
-            status={TaskStatus.PENDING}
-            tasks={pending}
-          />
-          <Board
-            title="Doing"
-            taskNumber={in_progress.length}
-            status={TaskStatus.IN_PROGRESS}
-            tasks={in_progress}
-          />
-          <Board
-            title="Done"
-            taskNumber={completed.length}
-            status={TaskStatus.COMPLETED}
-            tasks={completed}
-          />
+          {boards.map((board, index) => (
+            <Board
+              key={index}
+              title={board.title}
+              taskNumber={board.tasks.length}
+              status={board.status}
+              tasks={board.tasks}
+            />
+          ))}
         </div>
       </div>
     </>

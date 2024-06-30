@@ -69,8 +69,8 @@ const TaskCard = ({ task }: { task: Task }) => {
             </div>
           </div>
 
-          {task.assignedTo?.map((user) => (
-            <div className="flex items-end">
+          {task.assignedTo?.map((user, index) => (
+            <div key={index} className="flex items-end">
               <Avatar className="ml-4 h-8 w-8 rounded-full">
                 <AvatarImage
                   src={user.image ?? ""}
