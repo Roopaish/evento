@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { api } from "@/trpc/react"
 import type { Task } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
-import type { TaskStatus } from "@prisma/client"
+import { TaskStatus } from "@prisma/client"
 import {
   Popover,
   PopoverContent,
@@ -19,6 +19,13 @@ import {
   type TaskFormSchema,
 } from "@/lib/validations/task-form-validation"
 import { Calendar } from "@/components/ui/calendar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Form,
   FormControl,
@@ -219,7 +226,39 @@ recharge the batteries a little."
             <FormItem>
               <FormLabel>Task Status</FormLabel>
               <FormControl>
-                <Input {...field} placeholder={status} readOnly />
+                {task === undefined ? (
+                  <Button
+                    variant="outline"
+                    className="w-full text-left"
+                    disabled
+                  >
+                    {field.value}
+                  </Button>
+                ) : (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" className="w-full text-left">
+                        {field.value}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuGroup>
+                        {Object.values(TaskStatus)
+                          .filter((status) => status !== field.value)
+                          .map((status) => (
+                            <DropdownMenuItem
+                              key={status}
+                              onClick={() => {
+                                field.onChange(status)
+                              }}
+                            >
+                              {status}
+                            </DropdownMenuItem>
+                          ))}
+                      </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                )}
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
