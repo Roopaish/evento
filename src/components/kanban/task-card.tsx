@@ -57,38 +57,35 @@ const TaskCard = ({ task }: { task: Task }) => {
           setIsEditOpen(true)
         }}
       >
-        <Text
-          variant={"small"}
-          semibold
-          className="flex h-6 items-center rounded-full bg-pink-100 px-3  text-pink-500"
-        >
-          {task.status}
-        </Text>
         <Text variant={"medium"} className="mt-3 text-sm">
           {task.title}
         </Text>
 
-        <div className="mt-3 flex w-full items-center justify-between text-xs font-medium text-gray-400">
-          <div className="flex items-center">
-            <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
+        <div className="mt-3 flex text-xs font-medium text-gray-400">
+          <div className="mr-20 flex items-center">
+            <Icons.CalendarDays className="h-6 w-6 fill-current text-gray-300" />
             <div className="ml-1 leading-none">
               {task.dueDate?.toDateString()}
             </div>
           </div>
 
-          <Avatar className="ml-10 h-6 w-6 rounded-full">
-            <AvatarImage
-              src={task.createdBy.image ?? ""}
-              alt={task.createdBy.name ?? "avatar"}
-            />
-            <AvatarFallback className="bg-primary text-white">
-              {task.createdBy.name ? (
-                getInitials(task.createdBy.name)
-              ) : (
-                <Icons.User className="h-4 w-4" />
-              )}
-            </AvatarFallback>
-          </Avatar>
+          {task.assignedTo?.map((user) => (
+            <div className="flex items-end">
+              <Avatar className="ml-4 h-8 w-8 rounded-full">
+                <AvatarImage
+                  src={user.image ?? ""}
+                  alt={user.name ?? "avatar"}
+                />
+                <AvatarFallback className="bg-primary text-white">
+                  {user.name ? (
+                    getInitials(user.name)
+                  ) : (
+                    <Icons.User className="h-4 w-4" />
+                  )}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          ))}
         </div>
 
         <Popover>

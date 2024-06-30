@@ -7,7 +7,6 @@ import { TaskStatus } from "@prisma/client"
 import Reminder from "../common/reminder"
 import { Text } from "../ui/text"
 import Board from "./board"
-import KanbanHeader from "./kanban-header"
 
 export default function KanbanBoards() {
   const { currentEvent } = useCurrentEventStore()
@@ -26,7 +25,6 @@ export default function KanbanBoards() {
   return (
     <>
       <div className="container m-6 flex flex-col gap-5 px-4">
-        <KanbanHeader />
         <Text variant={"h1"} bold className="text-2xl">
           Team Project Board
         </Text>
