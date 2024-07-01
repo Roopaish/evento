@@ -159,6 +159,7 @@ model Event {
 
     invitations Invitation[]
     tasks       Task[]
+    Ticket      Ticket[]
 
     @@index([title, address])
 }
@@ -265,6 +266,19 @@ model Task {
     event   Event? @relation(fields: [eventId], references: [id])
     eventId Int?
 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Ticket {
+    id        Int      @id @default(autoincrement())
+    grid      Int
+    position  Int
+    color     String
+    price     String
+    label     String
+    event     Event    @relation(fields: [eventId], references: [id])
+    eventId   Int
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

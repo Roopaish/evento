@@ -7,6 +7,7 @@ import { eventRouter } from "./routers/event"
 import { invitationRouter } from "./routers/invitations"
 import { jobRouter } from "./routers/job"
 import { kanbanRouter } from "./routers/kanban"
+import { ticketRouter } from "./routers/tickets"
 
 /**
  * This is the primary router for your server.
@@ -21,6 +22,7 @@ export const appRouter = createTRPCRouter({
   kanban: kanbanRouter,
   asset: assetRouter,
   invitation: invitationRouter,
+  ticket: ticketRouter,
 })
 
 // export type definition of API
