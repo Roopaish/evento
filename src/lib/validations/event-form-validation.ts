@@ -28,4 +28,6 @@ export const eventFormSchema = z.object({
       })
     )
     .optional(),
+  category: z.string(),
+  tags: z.array(z.string()).optional(),
 })

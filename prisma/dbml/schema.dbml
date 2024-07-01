@@ -69,10 +69,14 @@ Table Asset {
 
 Table User {
   id String [pk]
-  name String
-  email String [unique]
+  name String [not null]
+  email String [unique, not null]
   emailVerified DateTime
   image String
+  bio String
+  address String
+  lat String
+  lng String
   role UserRole [not null, default: 'USER']
   phoneNumber String[] [not null]
   accounts Account [not null]
@@ -116,6 +120,14 @@ Table Event {
   invitations Invitation [not null]
   tasks Task [not null]
   Ticket Ticket [not null]
+  tags Tag [not null]
+  category String [not null]
+}
+
+Table Tag {
+  id Int [pk, increment]
+  name String [unique, not null]
+  events Event [not null]
 }
 
 Table JobPosition {
@@ -215,11 +227,11 @@ Enum UserRole {
 }
 
 Enum EventType {
-  WEDDING
   CONFERENCE
   SEMINAR
   WORKSHOP
   PARTY
+  CONCERT
   OTHER
 }
 

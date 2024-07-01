@@ -16,11 +16,23 @@ export const eventRouter = createTRPCRouter({
   addEvent: protectedProcedure
     .input(eventFormSchema)
     .mutation(({ input, ctx }) => {
-      const { jobPositions, assets, managerImage, ...rest } = input
+      const { jobPositions, assets, managerImage, tags, ...rest } = input
 
       const event = ctx.db.event.create({
         data: {
           ...rest,
+          tags: {
+            connectOrCreate: tags?.map((tag) => {
+              return {
+                where: {
+                  name: tag,
+                },
+                create: {
+                  name: tag,
+                },
+              }
+            }),
+          },
           assets: {
             connect: assets?.map(({ id }) => {
               return {
@@ -72,7 +84,7 @@ export const eventRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ input, ctx }) => {
-      const { jobPositions, assets, managerImage, id, ...rest } = input
+      const { jobPositions, assets, managerImage, id, tags, ...rest } = input
 
       const existingJobPositions = await ctx.db.jobPosition.findMany({
         where: {
@@ -98,7 +110,7 @@ export const eventRouter = createTRPCRouter({
           .map((job) => {
             return {
               where: {
-                id: job.id as number,
+                id: job.id!,
               },
               data: {
                 title: job.title,
@@ -119,6 +131,18 @@ export const eventRouter = createTRPCRouter({
         },
         data: {
           ...rest,
+          tags: {
+            connectOrCreate: tags?.map((tag) => {
+              return {
+                where: {
+                  name: tag,
+                },
+                create: {
+                  name: tag,
+                },
+              }
+            }),
+          },
           assets: {
             connect: assets?.map(({ id }) => {
               return {
@@ -250,6 +274,7 @@ export const eventRouter = createTRPCRouter({
           jobPositions: true,
           managerImage: true,
           createdBy: true,
+          tags: true,
         },
       })
       if (!event) {
@@ -273,6 +298,7 @@ export const eventRouter = createTRPCRouter({
           jobPositions: true,
           managerImage: true,
           createdBy: true,
+          tags: true,
         },
       })
       if (!event) {

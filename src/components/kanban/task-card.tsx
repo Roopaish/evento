@@ -1,5 +1,7 @@
 import { useState } from "react"
-import type { Session } from "next-auth"
+import { api } from "@/trpc/react"
+import type { Task } from "@/types"
+import { toast } from "sonner"
 
 import { getInitials } from "@/lib/utils"
 import {
@@ -16,60 +18,72 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "../ui/dialog"
 import { Icons } from "../ui/icons"
 import { Text } from "../ui/text"
 import TaskDetails from "./task-details"
+import TaskForm from "./task-form"
 
-const TaskCard = ({
-  session,
-  category,
-  title,
-  description,
-  date,
-  assignedTo,
-}: {
-  session: Session
-  category: string
-  title: string
-  description: string | null
-  date: Date | null
-  assignedTo?: string
-}) => {
+const TaskCard = ({ task }: { task: Task }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+
+  const utils = api.useUtils()
+
+  const deleteTask = api.kanban.deleteTask.useMutation({
+    onSuccess: () => {
+      toast.success("Task has been deleted.")
+      void utils.kanban.getTasks.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to delete task.", {
+        description: e.message,
+      })
+    },
+  })
+
+  const handleDeleteTask = () => {
+    deleteTask.mutate({ id: task.id })
+  }
 
   return (
     <>
       <div
         className="group relative m-3 flex cursor-pointer flex-col items-start rounded-lg bg-gray-100  p-4 hover:bg-opacity-100"
         draggable="true"
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          setIsOpen(true)
+          setIsEditOpen(true)
+        }}
       >
         <Text
           variant={"small"}
           semibold
           className="flex h-6 items-center rounded-full bg-pink-100 px-3  text-pink-500"
         >
-          {category}
+          {task.status}
         </Text>
         <Text variant={"medium"} className="mt-3 text-sm">
-          {title}
+          {task.title}
         </Text>
 
         <div className="mt-3 flex w-full items-center justify-between text-xs font-medium text-gray-400">
           <div className="flex items-center">
             <Icons.CalendarDays className="h-4 w-4 fill-current text-gray-300" />
-            <div className="ml-1 leading-none">{date?.toDateString()}</div>
+            <div className="ml-1 leading-none">
+              {task.dueDate?.toDateString()}
+            </div>
           </div>
 
           <Avatar className="ml-10 h-6 w-6 rounded-full">
             <AvatarImage
-              src={session?.user?.image ?? ""}
-              alt={session?.user?.name ?? "avatar"}
+              src={task.createdBy.image ?? ""}
+              alt={task.createdBy.name ?? "avatar"}
             />
             <AvatarFallback className="bg-primary text-white">
-              {session?.user?.name ? (
-                getInitials(session?.user?.name)
+              {task.createdBy.name ? (
+                getInitials(task.createdBy.name)
               ) : (
                 <Icons.User className="h-4 w-4" />
               )}
@@ -92,17 +106,40 @@ const TaskCard = ({
             onClick={(e) => e.stopPropagation()}
           >
             <div className="divide-y-2">
-              <Button
-                variant={"ghost"}
-                className="w-full justify-start rounded-none"
-              >
-                <Icons.Pencil />
-                Edit Task
-              </Button>
+              <div className="flex h-full flex-col gap-4 overflow-y-auto">
+                <Dialog
+                  open={isEditOpen}
+                  onOpenChange={(open) => setIsEditOpen(open)}
+                >
+                  <DialogTrigger asChild>
+                    <Button
+                      variant={"ghost"}
+                      className="w-full justify-start rounded-none"
+                    >
+                      <Icons.Pencil />
+                      Edit Task
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle></DialogTitle>
+                      <DialogDescription>
+                        Edit Task here. Click save when you're done.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <TaskForm
+                      status={task.status}
+                      onCancel={() => setIsEditOpen(false)}
+                      task={task}
+                    />
+                  </DialogContent>
+                </Dialog>
+              </div>
 
               <Button
                 variant="ghost"
                 className="w-full justify-start rounded-none"
+                onClick={() => handleDeleteTask()}
               >
                 <Icons.Trash />
                 Delete Task
@@ -118,16 +155,7 @@ const TaskCard = ({
             <DialogTitle></DialogTitle>
             <DialogDescription></DialogDescription>
           </DialogHeader>
-          <TaskDetails
-            category={category}
-            title={title}
-            description={description}
-            dueDate={date?.toDateString() ?? ""}
-            assignedTo={assignedTo}
-            avatarUrl={
-              "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjB8fHByb2ZpbGV8ZW58MHx8MHx8fDA%3D"
-            }
-          />
+          <TaskDetails task={task} />
         </DialogContent>
       </Dialog>
     </>

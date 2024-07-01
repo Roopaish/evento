@@ -54,7 +54,10 @@ export default function ChatHeader({
                   alt="user image"
                 />
                 <AvatarFallback>
-                  {getInitials(chatGroup?.event?.createdBy.name)}
+                  {getInitials(
+                    chatGroup?.event?.createdBy.name ??
+                      chatGroup?.event?.createdBy.email
+                  )}
                 </AvatarFallback>
               </Avatar>
 
@@ -66,7 +69,9 @@ export default function ChatHeader({
                     className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100"
                   >
                     <AvatarImage src={user.image!} alt="user image" />
-                    <AvatarFallback>{getInitials(user?.name)}</AvatarFallback>
+                    <AvatarFallback>
+                      {getInitials(user?.name ?? user?.email)}
+                    </AvatarFallback>
                   </Avatar>
                 ))}
             </div>
@@ -90,7 +95,10 @@ export default function ChatHeader({
                       alt="user image"
                     />
                     <AvatarFallback>
-                      {getInitials(chatGroup?.event?.createdBy.name)}
+                      {getInitials(
+                        chatGroup?.event?.createdBy.name ??
+                          chatGroup?.event?.createdBy.email
+                      )}
                     </AvatarFallback>
                   </Avatar>
                   <div>{chatGroup?.event?.createdBy.name}</div>
@@ -106,7 +114,7 @@ export default function ChatHeader({
                       <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                         <AvatarImage src={user.image!} alt="user image" />
                         <AvatarFallback>
-                          {getInitials(user?.name)}
+                          {getInitials(user?.name ?? user?.email)}
                         </AvatarFallback>
                       </Avatar>
                       <div>{user?.name}</div>

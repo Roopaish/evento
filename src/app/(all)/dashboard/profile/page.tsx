@@ -1,9 +1,12 @@
+import { getServerAuthSession } from "@/server/auth"
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Text } from "@/components/ui/text"
 import EditProfileForm from "@/components/user/edit-profile"
 
-export default function Profile() {
+export default async function Profile() {
+  const session = await getServerAuthSession()
   return (
     <>
       <div className="flex flex-col gap-4">
@@ -22,7 +25,7 @@ export default function Profile() {
             <Button variant={"outline"}>Remove</Button>
           </div>
         </div>
-        <EditProfileForm />
+        <EditProfileForm session={session} />
       </div>
     </>
   )

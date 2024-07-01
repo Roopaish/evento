@@ -1,10 +1,16 @@
 "use client"
 
+import { useEffect } from "react"
+import { api } from "@/trpc/react"
 import { zodResolver } from "@hookform/resolvers/zod"
+import type { Session } from "next-auth"
 import { useForm } from "react-hook-form"
-import { type z } from "zod"
+import { toast } from "sonner"
 
-import { editProfileFormSchema } from "@/lib/validations/edit-profile-validation"
+import {
+  editProfileFormSchema,
+  type EditProfileForm,
+} from "@/lib/validations/user-schema"
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -19,17 +25,41 @@ import { Input } from "@/components/ui/input"
 
 import { Textarea } from "../ui/textarea"
 
-export default function EditProfileForm() {
-  const form = useForm<z.infer<typeof editProfileFormSchema>>({
+export default function ProfileForm({ session }: { session: Session | null }) {
+  const form = useForm<EditProfileForm>({
     resolver: zodResolver(editProfileFormSchema),
     defaultValues: {},
   })
 
-  function onSubmit(values: z.infer<typeof editProfileFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  // const { data: user } = api.user.getUser.useQuery()
+
+  const utils = api.useUtils()
+
+  const editMutation = api.user.editProfile.useMutation({
+    onSuccess: () => {
+      toast.success("Profile has been edited.")
+      void utils.user.getUser.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to edit Profile.", {
+        description: e.message,
+      })
+    },
+  })
+
+  const onSubmit = (values: EditProfileForm) => {
+    editMutation.mutate(values)
   }
+
+  useEffect(() => {
+    if (form.formState.isSubmitSuccessful) {
+      form.reset({
+        name: "",
+        address: "",
+        bio: "",
+      })
+    }
+  }, [form.formState])
 
   return (
     <Form {...form}>

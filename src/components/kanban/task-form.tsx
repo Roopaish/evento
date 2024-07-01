@@ -1,43 +1,6 @@
-// import { Button } from "../ui/button"
-// import { Input } from "../ui/input"
-// import { Label } from "../ui/label"
-
-// export default function TaskForm({ onCancel }: { onCancel: () => void }) {
-//   const onSubmit = (values: string) => {
-//     onCancel()
-//     console.log({ values })
-//   }
-
-//   return (
-//     <>
-//       {/* <div className="grid gap-4 py-4">
-//         <div className="grid grid-cols-4 items-center gap-4">
-//           <Label htmlFor="title" className="text-right">
-//             Task Title
-//           </Label>
-//           <Input id="title" className="col-span-3" />
-//         </div>
-//         <div className="grid grid-cols-4 items-center gap-4">
-//           <Label htmlFor="taskDetails" className="text-right">
-//             Task Description
-//           </Label>
-//           <Input id="taskDetails" className="col-span-3" />
-//         </div>
-//         <div className="grid grid-cols-4 items-center gap-4">
-//           <Label htmlFor="assignedTo" className="text-right">
-//             Assigned to
-//           </Label>
-//           <Input id="assignedTo" className="col-span-3" />
-//         </div>
-//       </div>
-//       <Button type="button" onClick={() => onSubmit("d")}>
-//         Save changes
-//       </Button> */}
-//     </>
-//   )
-// }
-
+import { useEffect, useState } from "react"
 import { api } from "@/trpc/react"
+import type { Task } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import type { TaskStatus } from "@prisma/client"
 import {
@@ -45,11 +8,10 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover"
-import { useQueryClient } from "@tanstack/react-query"
-import { getQueryKey } from "@trpc/react-query"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
+import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
 import {
@@ -74,26 +36,70 @@ import { Textarea } from "../ui/textarea"
 export default function TaskForm({
   status,
   onCancel,
+  task,
 }: {
   status: TaskStatus
   onCancel: () => void
+  task?: Task
 }) {
-  const addNewTask = api.kanban.addTask.useMutation()
-  const queryKey = getQueryKey(api.kanban.getTasks)
-  const client = useQueryClient()
+  const taskFormValues: TaskFormSchema = task
+    ? {
+        title: task?.title ?? "",
+        description: task?.description ?? "",
+        dueDate: task?.dueDate ?? undefined,
+        assignedTo:
+          task?.assignedTo.length > 0
+            ? task.assignedTo.map((assignUser) => assignUser.email)
+            : null,
+        status: task?.status,
+      }
+    : ({
+        title: "",
+        description: "",
+        dueDate: undefined,
+        assignedTo: null,
+        status,
+      } as TaskFormSchema)
+
+  const [newTaskState] = useState(taskFormValues)
+
+  const utils = api.useUtils()
+
+  const addNewTask = api.kanban.addTask.useMutation({
+    onSuccess: () => {
+      toast.success("New task has been added.")
+      void utils.kanban.getTasks.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to add new task.", {
+        description: e.message,
+      })
+    },
+  })
+
+  const editTask = api.kanban.editTask.useMutation({
+    onSuccess: () => {
+      toast.success("Task has been updated.")
+      void utils.kanban.getTasks.refetch() // <= here
+    },
+    onError: (e) => {
+      toast.error("Failed to update task.", {
+        description: e.message,
+      })
+    },
+  })
 
   const onSubmit = async (values: TaskFormSchema) => {
-    // console.log({ values })
-    // console.log("status", status)
-    const updatedValues = {
+    console.log("values", values)
+    const assignedTo = values.assignedTo
+      ? values.assignedTo.map((email) => email).join(", ")
+      : null
+    const newValues = {
       ...values,
-      status,
+      assignedTo,
     }
-    // console.log({ updatedValues })
-    await addNewTask.mutateAsync(updatedValues)
-    client.refetchQueries({
-      queryKey: queryKey,
-    })
+    if (!task) addNewTask.mutate(newValues)
+    else editTask.mutate({ id: task.id, ...newValues })
     onCancel()
   }
 
@@ -101,6 +107,13 @@ export default function TaskForm({
     resolver: zodResolver(taskFormSchema),
     defaultValues: {},
   })
+
+  // Use useEffect to update the form state when newTaskState changes
+  useEffect(() => {
+    if (newTaskState) {
+      form.reset(newTaskState) // Update the form with newTaskState
+    }
+  }, [newTaskState, form])
 
   return (
     <Form {...form}>
@@ -112,7 +125,7 @@ export default function TaskForm({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input placeholder="e.g. Take coffee break" {...field} />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
@@ -127,7 +140,11 @@ export default function TaskForm({
             <FormItem>
               <FormLabel>Task Description</FormLabel>
               <FormControl>
-                <Textarea placeholder="" {...field} />
+                <Textarea
+                  placeholder="e.g. It’s always good to take a break. This 15 minute break will 
+recharge the batteries a little."
+                  {...field}
+                />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
@@ -164,7 +181,7 @@ export default function TaskForm({
                   <PopoverContent className="w-auto bg-white p-0" align="start">
                     <Calendar
                       mode="single"
-                      selected={field.value}
+                      selected={field.value ?? undefined}
                       onSelect={field.onChange}
                       disabled={(date: Date) => date < new Date()}
                       initialFocus
@@ -183,7 +200,11 @@ export default function TaskForm({
             <FormItem>
               <FormLabel>Task assign to</FormLabel>
               <FormControl>
-                <Input placeholder="" {...field} />
+                <Input
+                  placeholder="e.g. test@example.com"
+                  {...field}
+                  value={field.value ?? undefined}
+                />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
@@ -193,18 +214,12 @@ export default function TaskForm({
         <FormField
           control={form.control}
           name="status"
+          defaultValue={status}
           render={({ field }) => (
             <FormItem>
               <FormLabel>Task Status</FormLabel>
               <FormControl>
-                <Input
-                  {...field}
-                  placeholder={status}
-                  value={status}
-                  // required={false}
-                  readOnly
-                  // className="mx-1 inline-block cursor-pointer rounded border-none bg-blue-500 px-4 py-2 text-center text-lg text-white no-underline transition-all duration-200"
-                />
+                <Input {...field} placeholder={status} readOnly />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
