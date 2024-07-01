@@ -1,5 +1,4 @@
 import { useState } from "react"
-import { type ChatGroup, type Event, type User } from "@prisma/client"
 
 import { getInitials } from "@/lib/utils"
 import {
@@ -18,21 +17,11 @@ import { Icons } from "../ui/icons"
 
 import "@/components/ui/command"
 
+import type { Event } from "@/types"
+
 import { ScrollArea } from "../ui/scroll-area"
 
-interface ChatGroupProps extends ChatGroup {
-  event: ChatEventProps
-}
-
-interface ChatEventProps extends Event {
-  participants: User[]
-  createdBy: User
-}
-export default function ChatHeader({
-  chatGroup,
-}: {
-  chatGroup: ChatGroupProps
-}) {
+export default function KanbanMembers({ event }: { event?: Event }) {
   const [borderColor, setBorderColor] = useState(false)
 
   function showBorder() {
@@ -52,18 +41,15 @@ export default function ChatHeader({
             <div className="flex w-[80px] cursor-pointer -space-x-2 overflow-hidden">
               <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                 <AvatarImage
-                  src={chatGroup?.event.createdBy.image ?? ""}
+                  src={event?.createdBy.image ?? ""}
                   alt="user image"
                 />
                 <AvatarFallback>
-                  {getInitials(
-                    chatGroup?.event?.createdBy.name ??
-                      chatGroup?.event?.createdBy.email
-                  )}
+                  {getInitials(event?.createdBy.name ?? event?.createdBy.email)}
                 </AvatarFallback>
               </Avatar>
 
-              {chatGroup?.event.participants
+              {event?.participants
                 .filter((item, index) => index < 2)
                 .map((user) => (
                   <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
@@ -76,7 +62,7 @@ export default function ChatHeader({
             </div>
 
             <div className="flex h-8 w-8 items-center justify-center rounded-md border-[1px] border-[rgb(22,163,74)] font-semibold ring-slate-100">
-              {chatGroup?.event.participants.length}+
+              {event?.participants.length}+
             </div>
           </div>
         </DialogTrigger>
@@ -90,25 +76,24 @@ export default function ChatHeader({
                 <CommandItem className="flex gap-5">
                   <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                     <AvatarImage
-                      src={chatGroup?.event.createdBy.image ?? ""}
+                      src={event?.createdBy.image ?? ""}
                       alt="user image"
                     />
                     <AvatarFallback>
                       {getInitials(
-                        chatGroup?.event?.createdBy.name ??
-                          chatGroup?.event?.createdBy.email
+                        event?.createdBy.name ?? event?.createdBy.email
                       )}
                     </AvatarFallback>
                   </Avatar>
-                  <div>{chatGroup?.event?.createdBy.name}</div>
-                  <div>{chatGroup?.event?.createdBy.email}</div>
+                  <div>{event?.createdBy.name}</div>
+                  <div>{event?.createdBy.email}</div>
                 </CommandItem>
               </CommandGroup>
               <CommandSeparator />
 
               <CommandGroup heading="members">
                 <ScrollArea className="h-[300px]">
-                  {chatGroup?.event.participants.map((user) => (
+                  {event?.participants.map((user) => (
                     <CommandItem key={user?.id} className="flex gap-4">
                       <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                         <AvatarImage src={user.image!} alt="user image" />
@@ -127,7 +112,7 @@ export default function ChatHeader({
         </DialogContent>
       </Dialog>
 
-      <div className="font-extrabold capitalize">{chatGroup?.event.title}</div>
+      <div className="font-extrabold capitalize">{event?.title}</div>
       <div>
         <Icons.threeDots />
       </div>

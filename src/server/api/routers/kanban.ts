@@ -20,8 +20,22 @@ export const kanbanRouter = createTRPCRouter({
         eventId: ctx.currentEvent,
       },
       include: {
-        createdBy: true,
-        assignedTo: true,
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+        assignedTo: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
       },
     })
     const pending = tasks.filter((task) => task.status === TaskStatus.PENDING)
@@ -33,6 +47,43 @@ export const kanbanRouter = createTRPCRouter({
     )
 
     return { pending, in_progress, completed }
+  }),
+
+  findMembersFromEvent: protectedProcedure.query(async ({ ctx }) => {
+    if (!ctx.currentEvent) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No event found in context",
+      })
+    }
+
+    const event = await ctx.db.event.findUnique({
+      where: {
+        id: ctx.currentEvent,
+      },
+      select: {
+        id: true,
+        title: true,
+        participants: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+        createdBy: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+          },
+        },
+      },
+    })
+
+    return event ?? undefined
   }),
 
   addTask: protectedProcedure

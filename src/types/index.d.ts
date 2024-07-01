@@ -26,7 +26,21 @@ interface APIResponse<T> {
   message: string
 }
 
+interface IUser {
+  id: string
+  name: string
+  email: string
+  image: string | null
+}
+
 export type Task = PrismaTask & {
-  createdBy: User
-  assignedTo: User[]
+  createdBy: IUser
+  assignedTo: IUser[]
+}
+
+export type Event = {
+  id: number
+  title: string
+  participants: IUser[]
+  createdBy: IUser
 }

@@ -97,7 +97,7 @@ model Asset {
 model User {
     id            String        @id @default(cuid())
     name          String
-    email         String       @unique
+    email         String        @unique
     emailVerified DateTime?
     image         String?
     bio           String?
@@ -274,8 +274,8 @@ model Task {
     createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
     createdById String
 
-    event   Event? @relation(fields: [eventId], references: [id])
-    eventId Int?
+    event   Event @relation(fields: [eventId], references: [id])
+    eventId Int   @unique
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
