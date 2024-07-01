@@ -89,7 +89,10 @@ export default function ChatMessages({
       {messages?.map((message) => (
         <>
           {message.userId === session?.user.id ? (
-            <div className="flex flex-wrap items-start justify-end gap-2">
+            <div
+              key={message.user.id}
+              className="flex flex-wrap items-start justify-end gap-2"
+            >
               <div className="flex max-w-60 flex-col flex-wrap gap-1">
                 <div className="flex items-center justify-end">
                   <span className="text-sm font-normal text-gray-500 dark:text-gray-400">
@@ -111,7 +114,10 @@ export default function ChatMessages({
               </div>
             </div>
           ) : (
-            <div className="flex flex-wrap items-start gap-2">
+            <div
+              key={message.user.id}
+              className="flex flex-wrap items-start gap-2"
+            >
               <Avatar className="h-8 w-8 rounded-full">
                 <AvatarImage src={message.user.image!} alt="user image" />
                 <AvatarFallback>

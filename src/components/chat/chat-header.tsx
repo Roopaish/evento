@@ -66,7 +66,10 @@ export default function ChatHeader({
               {chatGroup?.event.participants
                 .filter((item, index) => index < 2)
                 .map((user) => (
-                  <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
+                  <Avatar
+                    key={user?.id}
+                    className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100"
+                  >
                     <AvatarImage src={user.image!} alt="user image" />
                     <AvatarFallback>
                       {getInitials(user?.name ?? user?.email)}
