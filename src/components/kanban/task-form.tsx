@@ -65,9 +65,9 @@ export default function TaskForm({
         dueDate: task?.dueDate ?? undefined,
         assignedTo:
           task?.assignedTo.length > 0
-            ? task.assignedTo.map((user) => user.id)
+            ? task.assignedTo.map((user) => user.email)
             : [],
-        // assignedTo: task?.assignedTo ?? [],
+        // assignedTo: task?.assignedTo ?? [], // was trying to pass the User interface for multi-select.tsx | multi-user-select.tsx
         status: task?.status,
       }
     : ({
@@ -163,8 +163,8 @@ export default function TaskForm({
                   placeholder="e.g. Take coffee break"
                   {...field}
                   onChange={(e) => {
-                    console.log("onChange")
-                    console.log("e.target.value", e.target.value)
+                    // console.log("onChange")
+                    // console.log("e.target.value", e.target.value)
                     field.onChange(e)
                     setNewTaskState({
                       ...newTaskState,
@@ -191,8 +191,8 @@ export default function TaskForm({
 recharge the batteries a little."
                   {...field}
                   onBlur={(e) => {
-                    console.log("onBlur")
-                    console.log("e.target.value", e.target.value)
+                    // console.log("onBlur")
+                    // console.log("e.target.value", e.target.value)
                     field.onBlur()
                     setNewTaskState({
                       ...newTaskState,
@@ -272,25 +272,27 @@ recharge the batteries a little."
                       {assignedToData.map((participant) => (
                         <MultiSelectorItem
                           key={participant.id}
-                          value={participant.id}
+                          value={participant.email}
                           onClick={() => {
                             setNewTaskState({
                               ...newTaskState,
-                              assignedTo: field.value.includes(participant.id)
+                              assignedTo: field.value.includes(
+                                participant.email
+                              )
                                 ? field.value.filter(
-                                    (id) => id !== participant.id
+                                    (email) => email !== participant.email
                                   )
-                                : [...field.value, participant.id],
+                                : [...field.value, participant.email],
                             })
                             const isSelected = field.value.includes(
-                              participant.id
+                              participant.email
                             )
                             field.onChange(
                               isSelected
                                 ? field.value.filter(
-                                    (id) => id !== participant.id
+                                    (email) => email !== participant.email
                                   )
-                                : [...field.value, participant.id]
+                                : [...field.value, participant.email]
                             )
                           }}
                         >

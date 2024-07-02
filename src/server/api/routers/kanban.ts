@@ -108,7 +108,7 @@ export const kanbanRouter = createTRPCRouter({
         try {
           const assignedToExists = await ctx.db.user.findMany({
             where: {
-              id: { in: assignedTo },
+              email: { in: assignedTo },
             },
           })
           if (assignedToExists.length < assignedTo.length) {
@@ -124,7 +124,7 @@ export const kanbanRouter = createTRPCRouter({
           ...restInput,
           assignedTo:
             assignedTo.length > 0
-              ? { connect: assignedTo.map((id) => ({ id })) }
+              ? { connect: assignedTo.map((email) => ({ email })) }
               : undefined,
           eventId: ctx.currentEvent,
           createdById: ctx.session.user.id,
@@ -153,7 +153,7 @@ export const kanbanRouter = createTRPCRouter({
         try {
           const assignedToExists = await ctx.db.user.findMany({
             where: {
-              id: { in: assignedTo },
+              email: { in: assignedTo },
             },
           })
           if (assignedToExists.length < assignedTo.length) {
@@ -176,27 +176,27 @@ export const kanbanRouter = createTRPCRouter({
           dueDate: dueDate ?? null,
           assignedTo:
             assignedTo.length > 0
-              ? { connect: assignedTo.map((id) => ({ id })) }
+              ? { connect: assignedTo.map((email) => ({ email })) }
               : undefined,
         },
       })
 
       // check if assignedTo and task.assignedTo.email are same or not
       // if not same, then disconnect the old assignedTo
-      const assignedToIds = task.assignedTo.map((user) => user.id)
-      const newAssignedToIds = assignedTo ?? []
-      const idsToDisconnect = assignedToIds.filter(
-        (id) => !newAssignedToIds.includes(id)
+      const assignedTos = task.assignedTo.map((user) => user.email)
+      const newAssignedTos = assignedTo ?? []
+      const toDisconnect = assignedTos.filter(
+        (p) => !newAssignedTos.includes(p)
       )
 
-      if (idsToDisconnect.length > 0) {
+      if (toDisconnect.length > 0) {
         await ctx.db.task.update({
           where: {
             id,
           },
           data: {
             assignedTo: {
-              disconnect: idsToDisconnect.map((id) => ({ id })),
+              disconnect: toDisconnect.map((email) => ({ email })),
             },
           },
         })

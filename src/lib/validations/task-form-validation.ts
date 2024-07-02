@@ -9,10 +9,11 @@ export const taskFormSchema = z.object({
   }),
   description: z.string(),
   dueDate: z.coerce.date().nullish(),
-  assignedTo: z.array(
-    z.string().refine((id) => isValidCUID(id), "Invalid User ID")
-  ),
-  // assignedTo: userSchema.array(),
+  assignedTo: z.array(z.string().email()),
+  // assignedTo: z.array(
+  //   z.string().refine((id) => isValidCUID(id), "Invalid User ID")
+  // ),
+  // assignedTo: userSchema.array(), // was trying to pass the User interface for multi-select.tsx | multi-user-select.tsx
   status: z.nativeEnum(TaskStatus).optional(),
 })
 
