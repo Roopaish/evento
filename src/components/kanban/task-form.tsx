@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { api } from "@/trpc/react"
 import type { Task } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -13,7 +13,7 @@ import { CalendarIcon } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-import { cn } from "@/lib/utils"
+import { cn, getInitials } from "@/lib/utils"
 import {
   taskFormSchema,
   type TaskFormSchema,
@@ -27,6 +27,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger,
+} from "@/components/ui/extension/multi-select"
+import {
   Form,
   FormControl,
   FormDescription,
@@ -36,6 +44,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import { Input } from "../ui/input"
 import { Textarea } from "../ui/textarea"
@@ -56,19 +65,20 @@ export default function TaskForm({
         dueDate: task?.dueDate ?? undefined,
         assignedTo:
           task?.assignedTo.length > 0
-            ? task.assignedTo.map((assignUser) => assignUser.email)
-            : null,
+            ? task.assignedTo.map((user) => user.id)
+            : [],
+        // assignedTo: task?.assignedTo ?? [],
         status: task?.status,
       }
     : ({
         title: "",
         description: "",
         dueDate: undefined,
-        assignedTo: null,
+        assignedTo: [],
         status,
       } as TaskFormSchema)
 
-  const [newTaskState] = useState(taskFormValues)
+  const [newTaskState, setNewTaskState] = useState(taskFormValues)
 
   const utils = api.useUtils()
 
@@ -96,17 +106,25 @@ export default function TaskForm({
     },
   })
 
+  const { data: event } = api.kanban.findMembersFromEvent.useQuery()
+  // new variable with event members as aggregate createdBy and participants
+  const eventMembers = event
+    ? event.participants.length > 0
+      ? [event.createdBy, ...event.participants]
+      : [event.createdBy]
+    : []
+
   const onSubmit = async (values: TaskFormSchema) => {
     console.log("values", values)
-    const assignedTo = values.assignedTo
-      ? values.assignedTo.map((email) => email).join(", ")
-      : null
-    const newValues = {
-      ...values,
-      assignedTo,
-    }
-    if (!task) addNewTask.mutate(newValues)
-    else editTask.mutate({ id: task.id, ...newValues })
+    // const assignedTo = values.assignedTo
+    //   ? values.assignedTo.map((email) => email).join(", ")
+    //   : null
+    // const newValues = {
+    //   ...values,
+    //   assignedTo,
+    // }
+    if (!task) addNewTask.mutate(values)
+    else editTask.mutate({ id: task.id, ...values })
     onCancel()
   }
 
@@ -122,6 +140,15 @@ export default function TaskForm({
     }
   }, [newTaskState, form])
 
+  const assignedToData = useMemo(() => {
+    return eventMembers.map((participant) => ({
+      id: participant.id,
+      name: participant.name,
+      email: participant.email,
+      image: participant.image,
+    }))
+  }, [eventMembers])
+
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
@@ -132,7 +159,19 @@ export default function TaskForm({
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="e.g. Take coffee break" {...field} />
+                <Input
+                  placeholder="e.g. Take coffee break"
+                  {...field}
+                  onChange={(e) => {
+                    console.log("onChange")
+                    console.log("e.target.value", e.target.value)
+                    field.onChange(e)
+                    setNewTaskState({
+                      ...newTaskState,
+                      title: e.target.value,
+                    })
+                  }}
+                />
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />
@@ -151,6 +190,15 @@ export default function TaskForm({
                   placeholder="e.g. It’s always good to take a break. This 15 minute break will 
 recharge the batteries a little."
                   {...field}
+                  onBlur={(e) => {
+                    console.log("onBlur")
+                    console.log("e.target.value", e.target.value)
+                    field.onBlur()
+                    setNewTaskState({
+                      ...newTaskState,
+                      description: e.target.value,
+                    })
+                  }}
                 />
               </FormControl>
               <FormDescription></FormDescription>
@@ -207,11 +255,63 @@ recharge the batteries a little."
             <FormItem>
               <FormLabel>Task assign to</FormLabel>
               <FormControl>
-                <Input
+                {/* <Input
                   placeholder="e.g. test@example.com"
                   {...field}
                   value={field.value ?? undefined}
-                />
+                /> */}
+                <MultiSelector
+                  onValuesChange={field.onChange}
+                  values={field.value}
+                >
+                  <MultiSelectorTrigger>
+                    <MultiSelectorInput placeholder="Select members" />
+                  </MultiSelectorTrigger>
+                  <MultiSelectorContent>
+                    <MultiSelectorList>
+                      {assignedToData.map((participant) => (
+                        <MultiSelectorItem
+                          key={participant.id}
+                          value={participant.id}
+                          onClick={() => {
+                            setNewTaskState({
+                              ...newTaskState,
+                              assignedTo: field.value.includes(participant.id)
+                                ? field.value.filter(
+                                    (id) => id !== participant.id
+                                  )
+                                : [...field.value, participant.id],
+                            })
+                            const isSelected = field.value.includes(
+                              participant.id
+                            )
+                            field.onChange(
+                              isSelected
+                                ? field.value.filter(
+                                    (id) => id !== participant.id
+                                  )
+                                : [...field.value, participant.id]
+                            )
+                          }}
+                        >
+                          <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
+                            <AvatarImage
+                              src={participant.image!}
+                              alt="user image"
+                            />
+                            <AvatarFallback>
+                              {getInitials(
+                                participant?.name ?? participant?.email
+                              )}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div>{participant?.name}</div>
+                          <div>{participant?.email}</div>
+                        </MultiSelectorItem>
+                      ))}
+                    </MultiSelectorList>
+                  </MultiSelectorContent>
+                </MultiSelector>
               </FormControl>
               <FormDescription></FormDescription>
               <FormMessage />

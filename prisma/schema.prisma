@@ -275,7 +275,7 @@ model Task {
     createdById String
 
     event   Event @relation(fields: [eventId], references: [id])
-    eventId Int   @unique
+    eventId Int
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

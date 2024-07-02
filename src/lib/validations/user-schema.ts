@@ -1,6 +1,6 @@
 import * as z from "zod"
 
-function isValidCUID(cuid: string): boolean {
+export function isValidCUID(cuid: string): boolean {
   // Basic validation to check if the cuid is a string of 25 characters starting with 'c'
   const cuidPattern = /^c[a-zA-Z0-9]{24}$/
   return cuidPattern.test(cuid)
@@ -20,5 +20,13 @@ export const userIdSchema = z.object({
   id: z.string().refine((id) => isValidCUID(id), "Invalid User ID"),
 })
 
+export const userSchema = z.object({
+  id: z.string().refine((id) => isValidCUID(id), "Invalid User ID"),
+  name: z.string(),
+  email: z.string().email(),
+  image: z.string().nullable(),
+})
+
 export type EditProfileForm = z.infer<typeof editProfileFormSchema>
-export type UserId = z.infer<typeof userIdSchema>
+export type UserIdInputType = z.infer<typeof userIdSchema>
+export type UserInputType = z.infer<typeof userSchema>
