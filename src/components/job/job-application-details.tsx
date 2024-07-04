@@ -2,6 +2,14 @@ import { api } from "@/trpc/react"
 import { toast } from "sonner"
 
 import { Button } from "../ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog"
 import { Table, TableCell, TableHead, TableRow } from "../ui/table"
 import { Text } from "../ui/text"
 
