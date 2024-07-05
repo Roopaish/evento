@@ -1,4 +1,3 @@
-import { connect } from "http2"
 import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 
@@ -6,6 +5,9 @@ import { subdomainSchema } from "@/lib/validations/subdomain-validation"
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
 
+const route = z.object({
+  url: z.string(),
+})
 export const subdomainRouter = createTRPCRouter({
   addSubDomain: protectedProcedure
     .input(subdomainSchema)
@@ -18,7 +20,7 @@ export const subdomainRouter = createTRPCRouter({
       }
 
       const { route, TemplateChosen } = input
-      const subdomain = ctx.db.subDomain.create({
+      const subdomain = await ctx.db.subDomain.create({
         data: {
           route: route,
           templateChosen: TemplateChosen,
@@ -30,11 +32,11 @@ export const subdomainRouter = createTRPCRouter({
     }),
 
   checkAvailable: protectedProcedure
-    .input(subdomainSchema)
+    .input(route)
     .query(async ({ input, ctx }) => {
-      const { route } = input
-      const search = ctx.db.subDomain.findFirst({
-        where: { route: route },
+      const { url } = input
+      const search = await ctx.db.subDomain.findFirst({
+        where: { route: url },
       })
 
       if (search == null) {
@@ -47,7 +49,7 @@ export const subdomainRouter = createTRPCRouter({
   getSubDomains: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.subDomain.findMany({
       where: {
-        userId: ctx.session.user.id,
+        userId: await ctx.session.user.id,
       },
     })
   }),
