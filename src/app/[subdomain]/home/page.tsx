@@ -18,7 +18,7 @@ export default async function HomeDomain() {
     return <div>Invalid Route</div>
   }
   const data = await api.subdomain.checkAvailable.query({
-    url: subdomain ?? "",
+    url: subdomain,
   })
   console.log(data)
   if (data) {

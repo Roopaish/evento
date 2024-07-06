@@ -21,13 +21,12 @@ const getValidSubdomain = (host?: string | null) => {
 // const PUBLIC_FILE = /\.(.*)$/ // Files
 
 export async function middleware(req: NextRequest) {
-  console.log("Reached Here 1")
   // Clone the URL
   const url = req.nextUrl.clone()
 
   // Skip public files
   if (url.pathname.includes("_next")) return
-  console.log("Reached Here 2")
+
   const host = req.headers.get("host")
   const subdomain = getValidSubdomain(host)
   if (subdomain) {
