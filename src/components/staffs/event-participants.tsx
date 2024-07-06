@@ -37,10 +37,10 @@ export default function EventParticipants() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-xs font-semibold">
+                    <h3 className="text-lg font-semibold">
                       {participant.name ?? participant.email?.split("@")[0]}
                     </h3>
-                    <p className="text-xs text-gray-500">{participant.email}</p>
+                    <p className="text-sm text-gray-500">{participant.email}</p>
                   </div>
                 </div>
               </div>
