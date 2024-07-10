@@ -9,11 +9,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 export default function TeamTabs() {
   const router = useRouter()
   const pathname = usePathname()
-  const [value, setValue] = useState("staffs")
+  const [value, setValue] = useState("team")
 
   useEffect(() => {
-    if (pathname.includes("staffs")) {
-      setValue("staffs")
+    if (pathname.includes("team")) {
+      setValue("team")
     } else if (pathname.includes("tasks")) {
       setValue("tasks")
     } else if (pathname.includes("chats")) {
@@ -24,12 +24,16 @@ export default function TeamTabs() {
   return (
     <Tabs
       defaultValue={value}
-      onValueChange={(value) => router.push(`/dashboard/team/${value}`)}
+      onValueChange={(value) =>
+        router.push(
+          value === "team" ? "/dashboard/team" : `/dashboard/team/${value}`
+        )
+      }
     >
       <TabsList>
-        <TabsTrigger value="staffs">
+        <TabsTrigger value="team">
           <Icons.Users className="h-4 w-4" />
-          Staffs
+          Team
         </TabsTrigger>
         <TabsTrigger value="tasks">
           <Icons.ClipboardCheck className="h-4 w-4" />

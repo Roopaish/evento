@@ -1,4 +1,4 @@
-import TeamTabs from "./tabs"
+import TicketsTabs from "./tabs"
 
 export default async function Layout({
   children,
@@ -7,7 +7,7 @@ export default async function Layout({
 }) {
   return (
     <div>
-      <TeamTabs />
+      <TicketsTabs />
       <div className="mt-4">{children}</div>
     </div>
   )
