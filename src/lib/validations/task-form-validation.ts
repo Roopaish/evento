@@ -1,8 +1,6 @@
 import { TaskStatus } from "@prisma/client"
 import * as z from "zod"
 
-import { isValidCUID, userSchema } from "./user-schema"
-
 export const taskFormSchema = z.object({
   title: z.string().min(2, {
     message: "title must be at least 3 characters.",

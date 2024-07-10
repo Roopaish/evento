@@ -1,17 +1,17 @@
 import { type Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
-import EventStaffs from "@/components/staffs/event-staffs"
+import KanbanBoards from "@/components/kanban/kanban-boards"
 
 export const metadata: Metadata = {
-  title: "Staffs | " + siteConfig.name,
+  title: "Tasks | " + siteConfig.name,
   description: siteConfig.description,
 }
 
-export default function StaffsPage() {
+export default async function KanbanPage() {
   return (
     <>
-      <EventStaffs />
+      <KanbanBoards />
     </>
   )
 }

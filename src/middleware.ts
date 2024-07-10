@@ -1,5 +1,5 @@
-import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
+import { NextResponse } from "next/server"
 
 const getValidSubdomain = (host?: string | null) => {
   let subdomain: string | null = null

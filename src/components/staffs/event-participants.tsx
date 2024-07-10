@@ -13,9 +13,10 @@ export default function EventParticipants() {
 
   return (
     <>
-      <Text variant={"h6"} className="mb-4" medium>
+      <Text variant={"medium"} className="mb-4" medium>
         Event Participants
       </Text>
+
       <div className="flex flex-wrap gap-4">
         {[data?.createdBy, ...(data?.participants ?? [])]?.map(
           (participant) => {
@@ -37,7 +38,7 @@ export default function EventParticipants() {
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h3 className="text-xs font-semibold">
+                    <h3 className="text-lg">
                       {participant.name ?? participant.email?.split("@")[0]}
                     </h3>
                     <p className="text-xs text-gray-500">{participant.email}</p>

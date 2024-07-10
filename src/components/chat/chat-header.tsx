@@ -14,11 +14,11 @@ import {
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Dialog, DialogClose, DialogContent, DialogTrigger } from "../ui/dialog"
-import { Icons } from "../ui/icons"
 
 import "@/components/ui/command"
 
 import { ScrollArea } from "../ui/scroll-area"
+import { Text } from "../ui/text"
 
 interface ChatGroupProps extends ChatGroup {
   event: ChatEventProps
@@ -40,7 +40,13 @@ export default function ChatHeader({
   }
 
   return (
-    <div className="flex items-center  justify-between border-b-2 border-gray-200 p-4">
+    <div className="flex items-center justify-between border-b-2 border-gray-200 p-4">
+      <div>
+        <Text variant={"medium"} semibold>
+          Chat with Team
+        </Text>
+      </div>
+
       <Dialog>
         <DialogTrigger>
           <div
@@ -79,7 +85,7 @@ export default function ChatHeader({
             </div>
 
             <div className="flex h-8 w-8 items-center justify-center rounded-md border-[1px] border-[rgb(22,163,74)] font-semibold ring-slate-100">
-              {chatGroup?.event.participants.length}+
+              {chatGroup?.event.participants.length + 1}+
             </div>
           </div>
         </DialogTrigger>
@@ -89,7 +95,7 @@ export default function ChatHeader({
             <CommandInput placeholder="Find members" />
             <CommandList className="overflow-hidden">
               <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="manager">
+              <CommandGroup heading="Manager">
                 <CommandItem className="flex gap-5">
                   <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                     <AvatarImage
@@ -109,7 +115,7 @@ export default function ChatHeader({
               </CommandGroup>
               <CommandSeparator />
 
-              <CommandGroup heading="members">
+              <CommandGroup heading="Members">
                 <ScrollArea className="h-[300px]">
                   {chatGroup?.event.participants.map((user) => (
                     <CommandItem key={user?.id} className="flex gap-4">
@@ -129,11 +135,6 @@ export default function ChatHeader({
           </Command>
         </DialogContent>
       </Dialog>
-
-      <div className="font-extrabold capitalize">{chatGroup?.event.title}</div>
-      <div>
-        <Icons.threeDots />
-      </div>
     </div>
   )
 }
