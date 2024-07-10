@@ -123,6 +123,7 @@ Table Event {
   tags Tag [not null]
   category String [not null]
   SubDomain SubDomain [not null]
+  EmailInvitation EmailInvitation [not null]
 }
 
 Table Tag {
@@ -220,6 +221,14 @@ Table Task {
   updatedAt DateTime [not null]
 }
 
+Table EmailInvitation {
+  id Int [pk, increment]
+  sendTo String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  event Event [not null]
+  eventId Int [not null]
+}
+
 Enum UserRole {
   ADMIN
   MANAGER
@@ -293,3 +302,5 @@ Ref: SubDomain.eventId > Event.id
 Ref: Task.createdById > User.id
 
 Ref: Task.eventId > Event.id
+
+Ref: EmailInvitation.eventId > Event.id

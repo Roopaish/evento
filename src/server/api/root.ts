@@ -7,6 +7,7 @@ import { eventRouter } from "./routers/event"
 import { invitationRouter } from "./routers/invitations"
 import { jobRouter } from "./routers/job"
 import { kanbanRouter } from "./routers/kanban"
+import { marketingRouter } from "./routers/marketing"
 import { subdomainRouter } from "./routers/subdomain"
 import { userRouter } from "./routers/user"
 
@@ -25,6 +26,7 @@ export const appRouter = createTRPCRouter({
   asset: assetRouter,
   invitation: invitationRouter,
   subdomain: subdomainRouter,
+  marketing: marketingRouter,
 })
 
 // export type definition of API
