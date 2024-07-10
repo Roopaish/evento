@@ -1,6 +1,17 @@
 import { api } from "@/trpc/react"
 import { type RouterOutputs } from "@/trpc/shared"
 
+import { Button } from "../ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "../ui/dialog"
+import { SubdomainSelector } from "./subdomain-selector"
+import { WebsiteTemplate } from "./website-template"
+
 export const SubdomainDetails = ({
   data,
 }: {
@@ -8,17 +19,30 @@ export const SubdomainDetails = ({
 }) => {
   return (
     <div>
-      <div className="rounded-md border-2 border-lime-200 p-4">
+      <div className="flex flex-1  rounded-md border-2 border-lime-200 p-4">
         <div className="">
-          You Already Have Registerd a Website for this Event
+          <div className="">
+            You Already Have Registerd a Website for this Event
+          </div>
+          <div className="flex space-x-5">
+            <span>
+              <b>Subdomain:</b> {data?.route}.localhost:3000/home
+            </span>
+            <span>
+              <b>Theme:</b> {data?.templateChosen}
+            </span>
+          </div>
         </div>
-        <div className="flex space-x-5">
-          <span>
-            <b>Subdomain:</b> {data?.route}.localhost:3000/home
-          </span>
-          <span>
-            <b>Theme:</b> {data?.templateChosen}
-          </span>
+        <div>
+          <Dialog>
+            <DialogTrigger>Edit</DialogTrigger>
+            <DialogContent>
+              <DialogHeader>Change Subdomain Details</DialogHeader>
+              <DialogDescription>
+                <SubdomainSelector type="update"></SubdomainSelector>
+              </DialogDescription>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
       <div>
@@ -50,9 +74,7 @@ const SubdomainPreview = ({ subdomain }: { subdomain?: string }) => {
 
   return (
     <div>
-      {
-        //Website Tempate here
-      }
+      <WebsiteTemplate data={eventDetails}></WebsiteTemplate>
     </div>
   )
 }
