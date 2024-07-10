@@ -26,39 +26,22 @@ import {
   SelectValue,
 } from "../ui/select"
 
-export const SubdomainSelector = ({ type = "default" }: { type?: string }) => {
-  const util = api.useUtils()
-  const { mutateAsync: createSubdomain, isLoading } =
-    api.subdomain.addSubDomain.useMutation({
-      onSuccess() {
-        void util.subdomain.getEventDomain.refetch()
-        toast.success("Website Generated")
-      },
-      onError: (e) => {
-        toast.error(e.message ?? "Something went wrong")
-      },
-    })
-
-  const { mutateAsync: updateSubdomain, isLoading: updateLoading } =
-    api.subdomain.updateSubdomain.useMutation({
-      onSuccess() {
-        void util.subdomain.getEventDomain.refetch()
-        toast.success("Website Domain Updated")
-      },
-      onError: (e) => {
-        toast.error(e.message ?? "Something went wrong")
-      },
-    })
+export const SubdomainSelector = () => {
+  const { mutateAsync, isLoading } = api.subdomain.addSubDomain.useMutation({
+    onSuccess() {
+      toast.success("Website Generated")
+    },
+    onError: (e) => {
+      toast.error(e.message ?? "Something went wrong")
+    },
+  })
   const form = useForm<z.infer<typeof subdomainSchema>>({
     resolver: zodResolver(subdomainSchema),
     defaultValues: {},
   })
   async function onSubmit(values: z.infer<typeof subdomainSchema>) {
-    if (type == "default") {
-      await createSubdomain({ ...values })
-    } else {
-      await updateSubdomain({ ...values })
-    }
+    console.log("Reached Here")
+    await mutateAsync({ ...values })
   }
   return (
     <Form {...form}>
@@ -115,9 +98,7 @@ export const SubdomainSelector = ({ type = "default" }: { type?: string }) => {
           }}
         ></FormField>
         <Button className="mt-4" type="submit">
-          {(isLoading || updateLoading) && (
-            <Icons.spinner className="h-4 w-4 animate-spin" />
-          )}
+          {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
           Generate
         </Button>
       </form>

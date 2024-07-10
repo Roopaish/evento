@@ -20,6 +20,7 @@ export const WebsitePanel = () => {
         <div>
           <div>
             <SubdomainSelector></SubdomainSelector>
+            <button>Generate Website</button>
           </div>
         </div>
       )
