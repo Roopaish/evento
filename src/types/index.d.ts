@@ -1,4 +1,4 @@
-import type { Task as PrismaTask, User } from "@prisma/client"
+import type { Task as PrismaTask } from "@prisma/client"
 
 import { type IconType } from "@/components/ui/icons"
 

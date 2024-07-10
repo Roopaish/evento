@@ -1,10 +1,8 @@
-import { connect } from "http2"
 import { TRPCError } from "@trpc/server"
-import { z } from "zod"
 
 import { subdomainSchema } from "@/lib/validations/subdomain-validation"
 
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
+import { createTRPCRouter, protectedProcedure } from "../trpc"
 
 export const subdomainRouter = createTRPCRouter({
   addSubDomain: protectedProcedure

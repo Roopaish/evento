@@ -1,4 +1,3 @@
-import { TemplateChosen } from "@prisma/client"
 import { z } from "zod"
 
 export const subdomainSchema = z.object({
