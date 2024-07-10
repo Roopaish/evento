@@ -80,7 +80,7 @@ export const chatRouter = createTRPCRouter({
       return chatMessage
     }),
 
-  findGroupByEventId: protectedProcedure.query(async ({ ctx, input }) => {
+  findGroupByEventId: protectedProcedure.query(async ({ ctx }) => {
     const eventId = ctx.currentEvent
     const group = await ctx.db.chatGroup.findUnique({
       where: {
