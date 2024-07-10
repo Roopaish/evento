@@ -20,6 +20,14 @@ export const subdomainRouter = createTRPCRouter({
       }
 
       const { route, TemplateChosen } = input
+      if (
+        (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
+      ) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Already Exists",
+        })
+      }
       const subdomain = await ctx.db.subDomain.create({
         data: {
           route: route,
@@ -86,7 +94,15 @@ export const subdomainRouter = createTRPCRouter({
   addSubdomain: protectedProcedure
     .input(subdomainSchema)
     .mutation(async ({ input, ctx }) => {
-      const { route, TemplateChosen, eventId } = input
+      const { route, TemplateChosen } = input
+      const eventId = ctx.currentEvent
+
+      if (eventId == null) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Event not selected",
+        })
+      }
 
       if (
         (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
@@ -101,7 +117,7 @@ export const subdomainRouter = createTRPCRouter({
           route: route,
           templateChosen: TemplateChosen,
           userId: ctx.session.user.id,
-          eventId: eventId,
+          eventId,
         },
       })
       return subdomain

@@ -35,7 +35,6 @@ export const userSideNavItems: SideNavItem[] = [
       { icon: "Users", label: "Staffs", path: "/dashboard/staffs" },
       { icon: "CalendarCheck", label: "Kanban", path: "/dashboard/kanban" },
       { icon: "MessagesSquare", label: "Chats", path: "/dashboard/chats" },
-      { icon: "DollarSign", label: "Marketing", path: "/dashboard/marketing" },
     ],
   },
   {
@@ -48,6 +47,10 @@ export const userSideNavItems: SideNavItem[] = [
         path: "/dashboard/jobboard",
       },
     ],
+  },
+  {
+    title: "Marketing",
+    data: [{ icon: "Computer", label: "Website", path: "/dashboard/website" }],
   },
 ]
 
