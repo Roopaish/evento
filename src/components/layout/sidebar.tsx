@@ -35,7 +35,15 @@ export default function Sidebar({
 
                 return (
                   <Button
-                    variant={pathname === path ? "default" : "ghost"}
+                    variant={
+                      (
+                        path === "/dashboard"
+                          ? pathname === path
+                          : pathname.includes(path)
+                      )
+                        ? "default"
+                        : "ghost"
+                    }
                     className="w-full justify-start"
                     onClick={() => {
                       router.push(path)
