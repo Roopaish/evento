@@ -80,6 +80,8 @@ export default function EmailsCampaign() {
         </div>
 
         <p className="m-4 text-lg font-semibold">Email Campaigns</p>
+        {emailsLoading && <div>Loading Emails</div>}
+
         <div className="overflow-hidden rounded-lg bg-white shadow-sm">
           <table className="min-w-full leading-normal">
             <thead>
@@ -92,6 +94,7 @@ export default function EmailsCampaign() {
                 </th>
               </tr>
             </thead>
+
             <tbody>
               {sentEmailData?.map((data) => (
                 <tr key={data.id}>
