@@ -41,7 +41,8 @@ export default function ChatMessages({
   const sendMessage = api.chat.sendMessage.useMutation()
 
   function setMessage() {
-    if (value == "") {
+    if (value.trim() === "") {
+      setValue("")
       return
     }
     sendMessage.mutate(
@@ -167,7 +168,8 @@ export default function ChatMessages({
             data-testid="loadMore"
             onClick={() => fetchNextPage()}
             disabled={!hasNextPage || isFetchingNextPage}
-            className="m-4 rounded bg-[rgb(22,163,74)] px-4 py-2 text-white disabled:opacity-40"
+            className={`m-4 rounded bg-[rgb(22,163,74)] px-4 py-2 text-white disabled:opacity-40
+           ${messages?.length != 0 ? "" : "hidden"}`}
           >
             {isFetchingNextPage
               ? "Loading more..."

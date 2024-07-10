@@ -19,7 +19,9 @@ const config = {
     },
     extend: {
       gridTemplateColumns: {
-        "25": "repeat(25, minmax(0, 1fr))",
+        "30": "repeat(25, minmax(0, 30px))",
+        "10g": "repeat(10, minmax(0, 50px))",
+        "20g": "repeat(20, minmax(0, 50px))",
       },
       colors: {
         border: "hsl(var(--border))",

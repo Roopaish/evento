@@ -8,27 +8,26 @@ import { Button } from "@/components/ui/button"
 import { Icons } from "../ui/icons"
 
 export default function TicketGrid({
-  grid,
+  length,
+  width,
   label,
   color,
   price,
-  eventId,
-  onCancel,
-  ticketInfo,
+  ticketsInfo,
 }: {
-  grid: number
+  length: number
+  width: number
   label: string
   color: string
   price: number
-  eventId: number
-  ticketInfo: {
+  ticketsInfo: {
     position: string
     color: string
     label: string
     price: number
   }[]
-  onCancel: () => void
 }) {
+  const useUtils = api.useUtils()
   const [dragging, setDragging] = useState(false)
   const [initial, setInitial] = useState(0)
   const [ticketPositions, setTicketPositions] = useState<
@@ -155,11 +154,11 @@ export default function TicketGrid({
   }, [startPos, endPos, setTicketPositions])
 
   useEffect(() => {
-    if (ticketInfo?.length === 0) return
+    if (ticketsInfo?.length === 0) return
     if (initial === 0) {
-      setTicketPositions(ticketInfo)
+      setTicketPositions(ticketsInfo)
     }
-  }, [ticketInfo])
+  }, [ticketsInfo])
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {
@@ -170,20 +169,22 @@ export default function TicketGrid({
 
   // console.log("startPos", startPos)
   // console.log("endPos", endPos)
-  // console.log("seedPositions", ticketPositions)
+  console.log("seedPositions", ticketPositions)
 
   // if (grid === 0) return
   const { mutate: saveData, isLoading } = api.ticket.create.useMutation()
   function saveTicket() {
     saveData({
-      eventId: Number(eventId),
-      grid,
+      length,
+      width,
       ticketInfo: ticketPositions,
     })
+    // setInitial(0)
+    void useUtils.ticket.getTicketByEventId.refetch()
   }
   return (
     <>
-      <div className="box-border flex items-center justify-center gap-4">
+      <div className="mt-8 box-border flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-5">
         <Button
           variant={mode === "remove" ? "destructive" : "default"}
           onClick={() => {
@@ -202,7 +203,7 @@ export default function TicketGrid({
             setTicketPositions(
               Array.from(
                 {
-                  length: grid * grid,
+                  length: length * width,
                 },
                 (_, index) => ({
                   position: `${index + 1}`,
@@ -226,7 +227,16 @@ export default function TicketGrid({
         </Button>
       </div>
       <div
-        className={`mt-10 grid grid-cols-25 gap-[4px] rounded-lg`}
+        style={
+          {
+            // gridTemplateColumns: `repeat(${length > 30 ? 30 : length},${
+            //   length > 20 ? "30px" : "50px"
+            // })`,
+            // gridTemplateRows: `repeat(${width},${length > 20 ? "30px" : "50px"})`,
+          }
+        }
+        className={`mb-10 mt-10 grid grid-cols-8 justify-center gap-[4px] rounded-lg  sm:grid-cols-10g md:grid-cols-20g lg:grid-cols-30
+          `}
         ref={gridRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -235,7 +245,7 @@ export default function TicketGrid({
       >
         {Array.from(
           {
-            length: grid * grid,
+            length: length * width,
           },
           (_, index) => {
             const containerId = `${index + 1}`
@@ -252,7 +262,7 @@ export default function TicketGrid({
                       : undefined,
                   }}
                   className={cn(
-                    `transistion flex h-full cursor-pointer flex-col items-center justify-around gap-2 rounded-[8px] bg-slate-800 text-white duration-200 ease-in-out selection:bg-transparent`,
+                    `transistion flex h-full cursor-pointer flex-col items-center justify-around gap-2 rounded-[8px] bg-slate-800 text-xs text-white duration-200 ease-in-out selection:bg-transparent`,
                     {
                       "hover:bg-red-800": !isSelected,
                       "bg-slate-800": !isSelected,
@@ -297,9 +307,6 @@ export default function TicketGrid({
         <Button variant="default" onClick={saveTicket}>
           {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
           Save Changes
-        </Button>
-        <Button variant="outline" onClick={onCancel}>
-          Cancel
         </Button>
       </div>
     </>

@@ -11,7 +11,6 @@ import { Text } from "@/components/ui/text"
 import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
-import MapTickets from "@/components/event/map-tickets"
 import ShareEvent from "@/components/event/share-event"
 import JobPositionsDetail from "@/components/job/job-positions-details"
 
@@ -145,11 +144,17 @@ export default async function EventDetails({
                 </div>
 
                 <div className="my-2">
-                  <MapTickets eventId={params.id} />
-                </div>
-
-                <div className="my-2">
                   <InviteMembersButton eventId={params.id} />
+                </div>
+              </>
+            )}
+
+            {!isCreatedByMe && (
+              <>
+                <div className="my-2">
+                  <Link href={`/events/${data?.id}/book`}>
+                    <Button className="w-full">Get Tickets</Button>
+                  </Link>
                 </div>
               </>
             )}

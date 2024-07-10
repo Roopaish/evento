@@ -120,8 +120,9 @@ model User {
 
     seenMessages ChatMessage[] @relation("SeenBy")
 
-    assignedTasks Task[] @relation("AssignedTo")
-    createdTasks  Task[] @relation("CreatedBy")
+    assignedTasks Task[]   @relation("AssignedTo")
+    createdTasks  Task[]   @relation("CreatedBy")
+    Ticket        Ticket[]
 }
 
 enum EventType {
@@ -282,15 +283,42 @@ model Task {
     updatedAt DateTime @updatedAt
 }
 
+model TicketInfo {
+    id         Int    @id @default(autoincrement())
+    eventId    Int
+    ticketType String
+    price      Int
+    color      String
+}
+
 model Ticket {
+    id               Int              @id @default(autoincrement())
+    length           Int
+    width            Int
+    position         Int
+    color            String
+    price            String
+    label            String
+    isSelectedByUser Boolean?
+    bookingUserId    Int?
+    bookingUser      BookingUserInfo?
+    isBooked         Boolean?
+    user             User?            @relation(fields: [bookedByID], references: [id])
+    bookedByID       String?
+    event            Event            @relation(fields: [eventId], references: [id])
+    eventId          Int
+    createdAt        DateTime         @default(now())
+    updatedAt        DateTime         @updatedAt
+}
+
+model BookingUserInfo {
     id        Int      @id @default(autoincrement())
-    grid      Int
-    position  Int
-    color     String
-    price     String
-    label     String
-    event     Event    @relation(fields: [eventId], references: [id])
-    eventId   Int
+    firstName String
+    lastName  String
+    email     String
+    phone     Int
+    ticket    Ticket   @relation(fields: [ticketId], references: [id])
+    ticketId  Int      @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

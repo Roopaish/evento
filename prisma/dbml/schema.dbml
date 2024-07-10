@@ -91,6 +91,7 @@ Table User {
   seenMessages ChatMessage [not null]
   assignedTasks Task [not null]
   createdTasks Task [not null]
+  Ticket Ticket [not null]
 }
 
 Table Event {
@@ -207,15 +208,42 @@ Table Task {
   updatedAt DateTime [not null]
 }
 
+Table TicketInfo {
+  id Int [pk, increment]
+  eventId Int [not null]
+  ticketType String [not null]
+  price Int [not null]
+  color String [not null]
+}
+
 Table Ticket {
   id Int [pk, increment]
-  grid Int [not null]
+  length Int [not null]
+  width Int [not null]
   position Int [not null]
   color String [not null]
   price String [not null]
   label String [not null]
+  isSelectedByUser Boolean
+  bookingUserId Int
+  bookingUser BookingUserInfo
+  isBooked Boolean
+  user User
+  bookedByID String
   event Event [not null]
   eventId Int [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+}
+
+Table BookingUserInfo {
+  id Int [pk, increment]
+  firstName String [not null]
+  lastName String [not null]
+  email String [not null]
+  phone Int [not null]
+  ticket Ticket [not null]
+  ticketId Int [unique, not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -285,4 +313,8 @@ Ref: Task.createdById > User.id
 
 Ref: Task.eventId > Event.id
 
+Ref: Ticket.bookedByID > User.id
+
 Ref: Ticket.eventId > Event.id
+
+Ref: BookingUserInfo.ticketId - Ticket.id
