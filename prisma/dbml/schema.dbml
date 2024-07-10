@@ -91,7 +91,7 @@ Table User {
   seenMessages ChatMessage [not null]
   assignedTasks Task [not null]
   createdTasks Task [not null]
-  Ticket Ticket [not null]
+  SubDomain SubDomain [not null]
 }
 
 Table Event {
@@ -123,6 +123,7 @@ Table Event {
   Ticket Ticket [not null]
   tags Tag [not null]
   category String [not null]
+  SubDomain SubDomain [not null]
 }
 
 Table Tag {
@@ -193,6 +194,18 @@ Table Invitation {
   updatedAt DateTime [not null]
 }
 
+Table SubDomain {
+  id Int [pk, increment]
+  route String [not null]
+  templateChosen TemplateChosen [default: 'Template1']
+  owner User [not null]
+  createdAt DateTime [default: `now()`, not null]
+  updatedAt DateTime [not null]
+  userId String [not null]
+  event Event [not null]
+  eventId Int [not null]
+}
+
 Table Task {
   id Int [pk, increment]
   title String [not null]
@@ -202,8 +215,8 @@ Table Task {
   assignedTo User [not null]
   createdBy User [not null]
   createdById String [not null]
-  event Event
-  eventId Int
+  event Event [not null]
+  eventId Int [not null]
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [not null]
 }
@@ -271,8 +284,13 @@ Enum Status {
 
 Enum TaskStatus {
   PENDING
-  COMPLETED
   IN_PROGRESS
+  COMPLETED
+}
+
+Enum TemplateChosen {
+  Template1
+  Template2
 }
 
 Ref: Post.createdById > User.id
@@ -308,6 +326,10 @@ Ref: ChatMessage.userId > User.id
 Ref: Invitation.senderId > User.id
 
 Ref: Invitation.eventId > Event.id
+
+Ref: SubDomain.userId > User.id
+
+Ref: SubDomain.eventId > Event.id
 
 Ref: Task.createdById > User.id
 

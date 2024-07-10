@@ -152,7 +152,6 @@ export default function ChatMessages({
         scrollToBottomOfList()
       }, 400)
       return () => clearTimeout(timeoutId)
-      seenBy.mutate()
     },
     onError(err) {
       console.error("Subscription error:", err)

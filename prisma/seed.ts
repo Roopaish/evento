@@ -42,9 +42,8 @@ async function createUsers() {
     const data: Prisma.UserCreateManyAndReturnArgs["data"] =
       emailsToCreateAccountFor.map((email) => ({
         email,
-        name: email.split("@")[0],
+        name: email.split("@")[0] ?? "User Name",
         address: faker.location.streetAddress(),
-        bio: faker.lorem.paragraph(),
         emailVerified: new Date(),
         image: faker.image.avatar(),
         role: "USER",
@@ -66,7 +65,15 @@ async function createProperties(
   try {
     const data: Prisma.EventCreateArgs["data"][] = []
 
-    for (let i = 0; i < 100; i++) {
+    const types = [
+      "CONFERENCE",
+      "SEMINAR",
+      "WORKSHOP",
+      "PARTY",
+      "CONCERT",
+      "OTHER",
+    ]
+    for (let i = 0; i < 30; i++) {
       const categoryKeys = Object.keys(eventTags)
       const randomCategory = categoryKeys[
         Math.floor(Math.random() * categoryKeys.length)
@@ -79,9 +86,26 @@ async function createProperties(
         .sort(() => 0.5 - Math.random())
         .slice(0, Math.floor(Math.random() * 3) + 3)
 
+      const assets = []
+
+      for (let i = 0; i < 10; i++) {
+        for (let j = 0; j < 4; j++) {
+          assets.push({
+            id: (i + j + Math.random() * 10000).toString(),
+            name: faker.lorem.word(),
+            url: faker.image.urlLoremFlickr({ category: "house" }),
+            thumbnailUrl: faker.image.url(),
+            size: 22,
+            createdAt: faker.date.past(),
+            updatedAt: faker.date.recent(),
+            userId: user!.id,
+          })
+        }
+      }
+
       data.push({
         title: faker.company.catchPhrase(),
-        type: "OTHER",
+        type: types[Math.floor(Math.random() * types.length)] as "OTHER",
         category: randomCategory,
         date: faker.date.future(),
         address: faker.location.streetAddress(),
@@ -96,13 +120,11 @@ async function createProperties(
         managerEmail: faker.internet.email(),
         managerImage: {
           create: {
-            id: faker.number.int().toString(),
+            id: faker.string.uuid(),
             name: faker.lorem.word(),
             url: faker.image.avatar(),
             thumbnailUrl: faker.image.url(),
             size: 22,
-            createdAt: faker.date.past(),
-            updatedAt: faker.date.recent(),
             user: {
               connect: {
                 id: user!.id,
@@ -120,28 +142,16 @@ async function createProperties(
           })),
         },
         assets: {
-          create: {
-            id: faker.number.int().toString(),
-            name: faker.lorem.slug(),
-            url: faker.image.urlLoremFlickr({ category: randomCategory }),
-            thumbnailUrl: faker.image.url(),
-            size: 22,
-            createdAt: faker.date.past(),
-            updatedAt: faker.date.recent(),
-            user: {
-              connect: {
-                id: user!.id,
-              },
-            },
+          createMany: {
+            data: assets,
           },
         },
-
         jobPositions: {
           create: {
             title: faker.person.jobTitle(),
             description: faker.lorem.paragraph(),
-            salary: Number(faker.commerce.price()),
-            noOfEmployees: faker.number.int(),
+            salary: Number(faker.commerce.price({ min: 1000, max: 10000 })),
+            noOfEmployees: faker.number.int({ min: 1, max: 50 }),
           },
         },
       }),

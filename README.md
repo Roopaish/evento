@@ -110,6 +110,8 @@ Ways to create prostgres database to work on
 
 ## Code snippets
 
-```
-
+```bash
+# Delete all data and seed the database
+# Only in development
+npx prisma db push --force-reset && npx prisma db seed
 ```

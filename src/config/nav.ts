@@ -32,10 +32,14 @@ export const userSideNavItems: SideNavItem[] = [
         label: "Dashboard",
         path: "/dashboard",
       },
-      { icon: "Users", label: "Staffs", path: "/dashboard/staffs" },
-      { icon: "CalendarCheck", label: "Kanban", path: "/dashboard/kanban" },
-      { icon: "MessagesSquare", label: "Chats", path: "/dashboard/chats" },
+      { icon: "Users", label: "Team", path: "/dashboard/team" },
       { icon: "Ticket", label: "Tickets", path: "/dashboard/tickets" },
+      { icon: "Globe", label: "Marketing", path: "/dashboard/marketing" },
+      {
+        icon: "BarChartBig",
+        label: "Analytics",
+        path: "/dashboard/analytics",
+      },
     ],
   },
   {
@@ -43,9 +47,9 @@ export const userSideNavItems: SideNavItem[] = [
     data: [
       { icon: "User", label: "Profile", path: "/dashboard/profile" },
       {
-        icon: "Users",
-        label: "Job Board",
-        path: "/dashboard/jobboard",
+        icon: "ListChecks",
+        label: "Applied Jobs",
+        path: "/dashboard/applied-jobs",
       },
     ],
   },

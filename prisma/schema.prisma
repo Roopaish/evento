@@ -120,9 +120,10 @@ model User {
 
     seenMessages ChatMessage[] @relation("SeenBy")
 
-    assignedTasks Task[]   @relation("AssignedTo")
-    createdTasks  Task[]   @relation("CreatedBy")
+    assignedTasks Task[]      @relation("AssignedTo")
+    createdTasks  Task[]      @relation("CreatedBy")
     Ticket        Ticket[]
+    SubDomain     SubDomain[]
 }
 
 enum EventType {
@@ -167,6 +168,7 @@ model Event {
     Ticket      Ticket[]
     tags        Tag[]        @relation("EventTags")
     category    String
+    SubDomain   SubDomain[]
 
     @@index([title, address])
 }
@@ -260,8 +262,28 @@ model Invitation {
 
 enum TaskStatus {
     PENDING
-    COMPLETED
     IN_PROGRESS
+    COMPLETED
+}
+
+enum TemplateChosen {
+    Template1
+    Template2
+}
+
+model SubDomain {
+    id    Int    @id @default(autoincrement())
+    route String
+
+    templateChosen TemplateChosen? @default(Template1)
+
+    owner User @relation(fields: [userId], references: [id])
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+    userId    String
+    event     Event    @relation(fields: [eventId], references: [id])
+    eventId   Int
 }
 
 model Task {
@@ -276,8 +298,8 @@ model Task {
     createdBy   User   @relation("CreatedBy", fields: [createdById], references: [id])
     createdById String
 
-    event   Event? @relation(fields: [eventId], references: [id])
-    eventId Int?
+    event   Event @relation(fields: [eventId], references: [id])
+    eventId Int
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

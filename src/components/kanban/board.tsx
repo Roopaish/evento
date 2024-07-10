@@ -32,9 +32,9 @@ export default function Board({
 
   return (
     <>
-      <div className="max-h-[80vh] min-w-96">
+      <div className="h-[80vh] min-w-96 rounded-sm border">
         <div className="flex h-full flex-col gap-4 overflow-y-auto">
-          <div className="mt-4 flex space-x-6 px-10">
+          <div className="flex items-center space-x-6 border-b px-10 py-2">
             <div className="flex w-full items-center">
               <div className="flex h-10 items-center px-2">
                 <Text variant="small" semibold>
@@ -71,8 +71,8 @@ export default function Board({
           </div>
 
           <div>
-            {tasks.map((task) => (
-              <TaskCard task={task} />
+            {tasks.map((task, index) => (
+              <TaskCard key={index} task={task} />
             ))}
           </div>
         </div>

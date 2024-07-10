@@ -3,14 +3,18 @@
 import { api } from "@/trpc/react"
 
 import { Table, TableCell, TableHead, TableRow } from "../ui/table"
+import { Text } from "../ui/text"
 
 export const AppliedJobTable = () => {
   const { data } = api.jobs.getAppliedApplications.useQuery()
-  console.log(data)
+
   return (
     <div className="container">
-      <Table>
-        {/* <TableCaption>Job Applications</TableCaption> */}
+      <Text variant={"medium"} className="mb-4" medium>
+        Applied Jobs
+      </Text>
+
+      <Table className="rounded-sm border">
         <TableRow>
           <TableHead>Id</TableHead>
           <TableHead>Position</TableHead>
@@ -18,6 +22,15 @@ export const AppliedJobTable = () => {
           <TableHead>Status</TableHead>
           <TableHead>Applied at</TableHead>
         </TableRow>
+
+        {data?.length === 0 && (
+          <TableRow>
+            <TableCell colSpan={5} className="text-center">
+              No job applications found
+            </TableCell>
+          </TableRow>
+        )}
+
         {data?.map(({ id, status, jobPosition, createdAt }) => {
           return (
             <TableRow>

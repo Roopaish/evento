@@ -33,7 +33,7 @@ export const postRouter = createTRPCRouter({
       return post
     }),
 
-  getLatest: publicProcedure.subscription(({ ctx }) => {
+  getLatest: publicProcedure.subscription(({}) => {
     return observable<Post>((emit) => {
       const onAdd = (data: Post) => {
         emit.next(data)
@@ -53,7 +53,7 @@ export const postRouter = createTRPCRouter({
         msg: z.string(),
       })
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(({ input }) => {
       try {
         ee.emit("msg-p", input.msg)
         console.log(input.msg)
@@ -86,7 +86,7 @@ export const postRouter = createTRPCRouter({
         msg: z.string(),
       })
     )
-    .mutation(({ ctx, input }) => {
+    .mutation(({ input }) => {
       ee.emit("msg", input.msg)
     }),
 

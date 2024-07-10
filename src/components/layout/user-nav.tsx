@@ -27,6 +27,7 @@ export default function UserNav({ session }: { session: Session | null }) {
   const router = useRouter()
   const pathname = usePathname()
   const [isLoggingOut, setIsLoggingOut] = useState(false)
+  const [open, setOpen] = useState(false)
 
   const signOutUser = async () => {
     setIsLoggingOut(true)
@@ -48,7 +49,7 @@ export default function UserNav({ session }: { session: Session | null }) {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={(open) => setOpen(open)}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-9 w-9">
@@ -66,22 +67,46 @@ export default function UserNav({ session }: { session: Session | null }) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56" align="end" forceMount>
+
+      <DropdownMenuContent
+        className="max-h-[75vh] w-64 overflow-y-auto md:w-80"
+        align="end"
+        forceMount
+      >
         <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+          <div className="flex flex-col items-center justify-center">
+            <Avatar className="h-16 w-16">
+              <AvatarImage
+                src={session?.user?.image ?? ""}
+                alt={session?.user?.name ?? "avatar"}
+              />
+              <AvatarFallback>
+                {session?.user?.name ? (
+                  getInitials(session?.user?.name)
+                ) : (
+                  <Icons.User className="h-4 w-4" />
+                )}
+              </AvatarFallback>
+            </Avatar>
+            <p className="mt-4 text-base font-normal leading-none">
               {session?.user?.name}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="mt-2 text-base leading-none text-slate-700">
               {session?.user?.email}
             </p>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator
           className={cn(dashboardRoutes.includes(pathname) ? "lg:hidden" : "")}
         />
         <DropdownMenuGroup
-          className={cn(dashboardRoutes.includes(pathname) ? "lg:hidden" : "")}
+          className={cn(
+            dashboardRoutes.some((p) => pathname.includes(p))
+              ? "lg:hidden"
+              : "",
+            "overflow-auto p-2"
+          )}
         >
           {profileDropdownItems.map(({ path, label, icon }) => {
             const Icon = !!icon ? (Icons[icon] as LucideIcon) : "div"
@@ -91,10 +116,11 @@ export default function UserNav({ session }: { session: Session | null }) {
                 key={path}
                 onClick={() => {
                   router.push(path)
+                  setOpen(false)
                 }}
                 className={cn(
-                  "cursor-pointer",
-                  pathname === path ? "text-primary" : ""
+                  "hover:bg-primary-50 focus:bg-primary-50 flex cursor-pointer items-center gap-2 rounded-sm px-4 py-2 hover:scale-105 hover:text-primary focus:text-primary active:scale-100",
+                  pathname === path ? "bg-primary-50 text-primary" : ""
                 )}
               >
                 <Icon className="mr-2 h-4 w-4" />
@@ -106,8 +132,9 @@ export default function UserNav({ session }: { session: Session | null }) {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
-          className="cursor-pointer"
+          className="flex w-full cursor-pointer items-center gap-2 rounded-sm px-6 py-3 hover:scale-105 hover:bg-red-50 hover:text-red-600 focus:bg-red-50 focus:text-red-600 active:scale-100"
           onClick={async () => {
+            setOpen(false)
             await signOutUser()
           }}
         >

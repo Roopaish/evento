@@ -18,7 +18,8 @@
     "db:studio": "prisma studio",
     "migrate-dev": "prisma migrate dev",
     "postinstall": "prisma generate",
-    "lint": "next lint",
+    "lint": "eslint . --ext .ts,.tsx",
+    "format": "prettier --write .",
     "start": "cross-env NODE_ENV=production node dist/server/ws-prod-server.js"
   },
   "prisma": {

@@ -2,7 +2,6 @@
 
 import { useCurrentEventStore } from "@/store/current-event-store"
 import { api } from "@/trpc/react"
-import { type ChatGroup } from "@prisma/client"
 import { type Session } from "next-auth"
 
 import ChatHeader from "./chat-header"
@@ -18,7 +17,7 @@ export default function ChatGroup({ session }: { session: Session | null }) {
 
   return (
     <>
-      <div className="flex h-[690px] justify-start">
+      <div className="flex h-[80vh] justify-start rounded-sm border">
         <div className="relative flex flex-auto flex-col justify-start">
           <ChatHeader chatGroup={currentGroup!} />
 

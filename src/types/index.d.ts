@@ -1,4 +1,4 @@
-import type { Task as PrismaTask, User } from "@prisma/client"
+import type { Task as PrismaTask } from "@prisma/client"
 
 import { type IconType } from "@/components/ui/icons"
 
@@ -26,7 +26,21 @@ interface APIResponse<T> {
   message: string
 }
 
+export interface IUser {
+  id: string
+  name: string
+  email: string
+  image: string | null
+}
+
 export type Task = PrismaTask & {
-  createdBy: User
-  assignedTo: User[]
+  createdBy: IUser
+  assignedTo: IUser[]
+}
+
+export type Event = {
+  id: number
+  title: string
+  participants: IUser[]
+  createdBy: IUser
 }
