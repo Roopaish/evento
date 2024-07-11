@@ -169,7 +169,8 @@ model Event {
     category        String
     SubDomain       SubDomain[]
     EmailInvitation EmailInvitation[]
-    Ticket      Ticket[]
+    Ticket          Ticket[]
+
     @@index([title, address])
 }
 
@@ -283,7 +284,7 @@ model SubDomain {
     updatedAt DateTime @updatedAt
     userId    String
     event     Event    @relation(fields: [eventId], references: [id])
-    eventId   Int
+    eventId   Int      @unique
 }
 
 model Task {

@@ -12,7 +12,7 @@ export const SubdomainDetails = ({
     <div>
       <div className="rounded-md border-2 border-lime-200 p-4">
         <div className="">
-          You Already Have Registered a Website for this Event
+          You Already Have Added a subdomain for this Event
         </div>
         <div className="flex space-x-5">
           <span>

@@ -40,20 +40,25 @@ export default async function EventDetails({
   }
 
   return (
-    <div className="pb-10 pt-10">
-      <div className="container">
-        {event?.templateChosen !== TemplateChosen.Template1 ? (
-          <EventCarousel assets={data?.assets ?? []} title={data?.title} />
-        ) : (
-          <div className="w-full overflow-hidden rounded-md bg-bar p-4">
+    <div className="pb-10">
+      {event?.templateChosen === TemplateChosen.Template2 && (
+        <div className="container grid grid-cols-2 place-content-center gap-2">
+          {data?.assets?.map(({ url }) => (
             <Image
-              src={data?.assets[0]?.url ?? ""}
+              key={url}
+              src={url}
               alt={data?.title}
-              width={1920}
-              height={1080}
-              className="max-h-[500px] w-full object-contain"
+              width={500}
+              height={500}
+              className="h-auto w-full rounded-lg"
             />
-          </div>
+          ))}
+        </div>
+      )}
+
+      <div className="container">
+        {event?.templateChosen === TemplateChosen.Template1 && (
+          <EventCarousel assets={data?.assets ?? []} title={data?.title} />
         )}
 
         <div className="grid grid-cols-3 gap-4">

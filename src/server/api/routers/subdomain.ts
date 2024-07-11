@@ -8,6 +8,7 @@ import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
 const route = z.object({
   url: z.string(),
 })
+
 export const subdomainRouter = createTRPCRouter({
   addSubDomain: protectedProcedure
     .input(subdomainSchema)
@@ -20,14 +21,36 @@ export const subdomainRouter = createTRPCRouter({
       }
 
       const { route, TemplateChosen } = input
+
+      const existingSubdomain = await ctx.db.subDomain.findUnique({
+        where: {
+          eventId: ctx.currentEvent,
+        },
+      })
+
       if (
-        (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
+        (await ctx.db.subDomain.findFirst({ where: { route: route } })) !=
+          null &&
+        existingSubdomain?.route !== route
       ) {
         throw new TRPCError({
           code: "CONFLICT",
           message: "Already Exists",
         })
       }
+
+      if (existingSubdomain) {
+        return ctx.db.subDomain.update({
+          where: {
+            id: existingSubdomain.id,
+          },
+          data: {
+            templateChosen: TemplateChosen,
+            route: route,
+          },
+        })
+      }
+
       const subdomain = await ctx.db.subDomain.create({
         data: {
           route: route,
@@ -36,6 +59,7 @@ export const subdomainRouter = createTRPCRouter({
           eventId: ctx.currentEvent,
         },
       })
+
       return subdomain
     }),
 
@@ -92,37 +116,5 @@ export const subdomainRouter = createTRPCRouter({
       })
 
       return event
-    }),
-
-  addSubdomain: protectedProcedure
-    .input(subdomainSchema)
-    .mutation(async ({ input, ctx }) => {
-      const { route, TemplateChosen } = input
-      const eventId = ctx.currentEvent
-
-      if (eventId == null) {
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Event not selected",
-        })
-      }
-
-      if (
-        (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
-      ) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Already Exists",
-        })
-      }
-      const subdomain = await ctx.db.subDomain.create({
-        data: {
-          route: route,
-          templateChosen: TemplateChosen,
-          userId: ctx.session.user.id,
-          eventId,
-        },
-      })
-      return subdomain
     }),
 })
