@@ -1,4 +1,5 @@
 import fs from "fs"
+import path from "path"
 import { postRouter } from "@/server/api/routers/post"
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc"
 import { Parser } from "@json2csv/plainjs"
@@ -53,15 +54,31 @@ export const appRouter = createTRPCRouter({
       const csvData = json2csvParser.parse(eventDatas)
       // console.log("csvData", csvData)
 
-      fs.writeFile("src/server/csv/events.csv", csvData, (err) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-        console.log("File has been created")
-      })
+      // const directoryPath = path.join(__dirname, "src", "server", "csv") // at compile time __dirname join as .next directory
+      const directoryPath = path.join("src", "server", "csv")
+      const filePath = path.join(directoryPath, "events.csv")
 
-      return { message: "File has been created" }
+      try {
+        // Ensure the directory exists
+        fs.mkdir(directoryPath, { recursive: true }, (err) => {
+          if (err) {
+            return console.error(err)
+          }
+
+          fs.writeFile(filePath, csvData, (err) => {
+            if (err) {
+              console.error(err)
+              return
+            }
+            console.log("Csv File was written successfully")
+          })
+        })
+      } catch (error) {
+        console.error(error)
+        return error
+      }
+
+      return { message: "Csv File was written successfully" }
     } catch (error) {
       console.error(error)
       return error
