@@ -121,11 +121,11 @@ Table Event {
   chatGroup ChatGroup
   invitations Invitation [not null]
   tasks Task [not null]
-  Ticket Ticket [not null]
   tags Tag [not null]
   category String [not null]
   SubDomain SubDomain [not null]
   EmailInvitation EmailInvitation [not null]
+  Ticket Ticket [not null]
 }
 
 Table Tag {
@@ -223,6 +223,13 @@ Table Task {
   updatedAt DateTime [not null]
 }
 
+Table EmailInvitation {
+  id Int [pk, increment]
+  sendTo String [not null]
+  createdAt DateTime [default: `now()`, not null]
+  event Event [not null]
+  eventId Int [not null]
+}
 
 Table TicketInfo {
   id Int [pk, increment]
@@ -339,6 +346,7 @@ Ref: Task.createdById > User.id
 Ref: Task.eventId > Event.id
 
 Ref: EmailInvitation.eventId > Event.id
+
 Ref: Ticket.bookedByID > User.id
 
 Ref: Ticket.eventId > Event.id

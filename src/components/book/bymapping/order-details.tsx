@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import Image from "next/image"
 import { type EventType, type Ticket } from "@prisma/client"
 
 import { Separator } from "@/components/ui/separator"
@@ -36,7 +36,7 @@ export default function OrderDetails({
           positions: [],
         }
       }
-      groupedData[label].positions.push(Number(position))
+      groupedData[label]?.positions.push(Number(position))
     })
 
     return Object.values(groupedData).map(({ label, price, positions }) => [
@@ -53,9 +53,11 @@ export default function OrderDetails({
     <div className="m-2 p-2">
       <div>
         {bookedTicketData && (
-          <img
+          <Image
             className="rounded-lg"
-            src={bookedTicketData[0]?.event?.assets[0]?.url}
+            src={bookedTicketData[0]?.event?.assets[0]?.url ?? ""}
+            width={300}
+            height={300}
             alt="ticket"
           />
         )}
@@ -71,7 +73,7 @@ export default function OrderDetails({
           </div>
           {groupedByLabelWithPositions.map(([positions, label, price]) => (
             <div key={Number(label)}>
-              <div className="flex items-center justify-center justify-around gap-2">
+              <div className="flex items-center justify-around gap-2">
                 <div>{label}</div>
                 <div className="flex w-[80px] flex-wrap items-center justify-center gap-2">
                   {Array.isArray(positions) &&
@@ -96,7 +98,7 @@ export default function OrderDetails({
           <div className="font-medium text-gray-900">
             Rs.{" "}
             {groupedByLabelWithPositions.reduce(
-              (acc, [positions, label, price]) =>
+              (acc, [positions, , price]) =>
                 acc + Number(price) * positions!.length,
               0
             )}

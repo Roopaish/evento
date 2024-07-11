@@ -1,3 +1,4 @@
+import Image from "next/image"
 import { type RouterOutputs } from "@/trpc/shared"
 
 import { Separator } from "@/components/ui/separator"
@@ -15,7 +16,13 @@ export default function OrderDetails({
     <div className="m-2 p-2">
       <div>
         {bookedTicketData && (
-          <img className="rounded-lg" src={imageUrl} alt="ticket" />
+          <Image
+            className="rounded-lg"
+            src={imageUrl}
+            width={300}
+            height={300}
+            alt="ticket"
+          />
         )}
       </div>
       <div className="mt-5">

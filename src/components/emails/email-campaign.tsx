@@ -1,7 +1,5 @@
 "use client"
 
-import { useState } from "react"
-import { useCurrentEventStore } from "@/store/current-event-store"
 import { api } from "@/trpc/react"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
