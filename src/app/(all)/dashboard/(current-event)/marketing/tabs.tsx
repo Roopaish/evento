@@ -33,11 +33,11 @@ export default function MarketingTabs() {
       <TabsList>
         <TabsTrigger value="marketing">
           <Icons.Globe className="h-4 w-4" />
-          Marketing
+          Your Web Domain
         </TabsTrigger>
         <TabsTrigger value="emails">
           <Icons.ClipboardCheck className="h-4 w-4" />
-          Emails
+          Email Campaign
         </TabsTrigger>
       </TabsList>
     </Tabs>

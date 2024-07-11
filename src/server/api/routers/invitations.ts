@@ -48,9 +48,9 @@ export const invitationRouter = createTRPCRouter({
       })
 
       if (invitedMembers) {
-        await Promise.all([
-          ...invitedMembers.map(async (member) => {
-            await sendEmail({
+        await Promise.all(
+          invitedMembers.map((member) => {
+            void sendEmail({
               identifier: member.email,
               subject: `You have been invited to an event`,
               template: {
@@ -66,8 +66,8 @@ export const invitationRouter = createTRPCRouter({
                 }),
               },
             })
-          }),
-        ])
+          })
+        )
       }
 
       return invitedMembers
