@@ -51,11 +51,9 @@ export default function ChatHeader({
         <DialogTrigger>
           <div
             onClick={showBorder}
-            className={`flex items-center gap-1 rounded-lg border-[1.5px] p-1.5 transition delay-100 hover:border-[1.5px] hover:border-[rgb(22,163,74)] ${
-              borderColor ? "border-[rgb(22,163,74)]" : null
-            }`}
+            className="flex items-center gap-2 rounded-lg border-[1.5px] p-1.5 transition delay-100 hover:border-[1.5px] hover:border-[rgb(22,163,74)]"
           >
-            <div className="flex w-[80px] cursor-pointer -space-x-2 overflow-hidden">
+            <div className="flex max-w-[80px] cursor-pointer -space-x-2 overflow-hidden">
               <Avatar className="inline-block h-8 w-8 rounded-full ring-2 ring-slate-100">
                 <AvatarImage
                   src={chatGroup?.event.createdBy.image ?? ""}
@@ -85,7 +83,7 @@ export default function ChatHeader({
             </div>
 
             <div className="flex h-8 w-8 items-center justify-center rounded-md border-[1px] border-[rgb(22,163,74)] font-semibold ring-slate-100">
-              {chatGroup?.event.participants.length + 1}+
+              {chatGroup?.event.participants.length + 1}
             </div>
           </div>
         </DialogTrigger>

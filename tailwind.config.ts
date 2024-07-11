@@ -11,6 +11,11 @@ export default {
   prefix: "",
   theme: {
     extend: {
+      gridTemplateColumns: {
+        "30": "repeat(25, minmax(0, 30px))",
+        "10g": "repeat(10, minmax(0, 50px))",
+        "20g": "repeat(20, minmax(0, 50px))",
+      },
       container: {
         center: true,
         padding: {

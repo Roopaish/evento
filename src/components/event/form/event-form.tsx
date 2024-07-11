@@ -211,7 +211,7 @@ export default function EventForm({ id }: { id?: number }) {
       </Text>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-8 rounded-2xl bg-background px-6 py-8 shadow-container transition-all"
+        className="shadow-container space-y-8 rounded-2xl bg-background px-6 py-8 transition-all"
       >
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FormField
