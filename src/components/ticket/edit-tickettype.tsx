@@ -1,6 +1,5 @@
-"use client"
-
 import { useState } from "react"
+import { type RouterOutputs } from "@/trpc/shared"
 
 import {
   Dialog,
@@ -8,13 +7,14 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTrigger,
-} from "@/components/ui/dialog"
-
-import { Button } from "../ui/button"
+} from "../ui/dialog"
 import { Icons } from "../ui/icons"
-import TicketForm from "./ticket-form"
+import EditTicketForm from "./edit-tickettype-form"
 
-export default function AddTicketTypes() {
+export default function EditTicket(
+  props: RouterOutputs["ticket"]["getTicketInfoBySessionEventId"][0]
+) {
+  // const { id, ticketType, price, color } = props
   const [isOpen, setIsOpen] = useState(false)
 
   function onCancel() {
@@ -23,11 +23,8 @@ export default function AddTicketTypes() {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-        <DialogTrigger className="mt-5 p-2">
-          <Button size="default">
-            <Icons.Plus />
-            Add Ticket Type
-          </Button>
+        <DialogTrigger>
+          <Icons.Edit className="h-4 w-4" />
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
@@ -36,7 +33,7 @@ export default function AddTicketTypes() {
               Add Ticket Type here. Click save when you're done.
             </DialogDescription>
           </DialogHeader>
-          <TicketForm onCancel={onCancel} />
+          <EditTicketForm onCancel={onCancel} ticketInfo={props} />
         </DialogContent>
       </Dialog>
     </>

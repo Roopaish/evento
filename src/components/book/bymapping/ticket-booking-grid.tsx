@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { type EventType, type Ticket } from "@prisma/client"
 import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 
@@ -28,6 +28,20 @@ export default function TicketBookingGrid({
     { position: string }[]
   >([])
 
+  const [length, setLength] = useState<number>(1)
+  const [width, setWidth] = useState<number>(1)
+
+  useEffect(() => {
+    if (ticketData) {
+      ticketData?.map((ticket) => {
+        if (ticket.position) {
+          setLength(Number(ticket.length))
+          setWidth(Number(ticket.width))
+        }
+      })
+    }
+  }, [ticketData])
+
   return (
     <>
       <div
@@ -35,7 +49,7 @@ export default function TicketBookingGrid({
       >
         {Array.from(
           {
-            length: (ticketData[0]?.length ?? 0) * (ticketData[0]?.width ?? 0),
+            length: length * width,
           },
           (_, index) => {
             const containerId = `${index + 1}`
@@ -76,7 +90,7 @@ export default function TicketBookingGrid({
                       "hover:bg-red-800": !isSelected,
                       // "bg-slate-800": !isSelected && !isBooked,
                       "bg-green-500": isSelected,
-                      "pointer-events-none bg-gray-500 hover:bg-none": isBooked,
+                      "hover:bg-none pointer-events-none bg-gray-500": isBooked,
                       "pointer-events-none bg-slate-300": !isAvailable,
                       "pointer-events-none": isUserSelected,
                     }

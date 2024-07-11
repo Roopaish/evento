@@ -311,18 +311,18 @@ model TicketInfo {
     ticketType String
     price      Int
     color      String
+    totalSeats Int
 }
 
 model Ticket {
     id               Int              @id @default(autoincrement())
-    length           Int
-    width            Int
-    position         Int
+    length           Int?
+    width            Int?
+    position         Int?
     color            String
     price            String
     label            String
     isSelectedByUser Boolean?
-    bookingUserId    Int?
     bookingUser      BookingUserInfo?
     isBooked         Boolean?
     user             User?            @relation(fields: [bookedByID], references: [id])
@@ -338,8 +338,8 @@ model BookingUserInfo {
     firstName String
     lastName  String
     email     String
-    phone     Int
-    ticket    Ticket   @relation(fields: [ticketId], references: [id])
+    phone     String
+    ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
     ticketId  Int      @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt

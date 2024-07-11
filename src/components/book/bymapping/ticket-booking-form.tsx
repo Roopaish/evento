@@ -50,20 +50,7 @@ export default function TicketBookingForm({
 }) {
   const { mutate: bookTicket, isLoading } = api.ticket.bookTicket.useMutation()
   const { mutate: bookingUserInfo } = api.ticket.bookingUserInfo.useMutation()
-  function buyTicket() {
-    bookTicket(
-      {
-        position: bookedTicketData.map((p) => p.position),
-        eventId: Number(bookedTicketData[0]?.eventId),
-      },
-      {
-        onSuccess: () => {
-          onCancel()
-          toast.success("Ticket booked successfully")
-        },
-      }
-    )
-  }
+  // function buyTicket() {}
 
   const form = useForm<z.infer<typeof ticketBookFormSchema>>({
     resolver: zodResolver(ticketBookFormSchema),
@@ -76,13 +63,26 @@ export default function TicketBookingForm({
   })
 
   const onSubmit = async (values: z.infer<typeof ticketBookFormSchema>) => {
-    console.log(values)
+    console.log("formvalues", values)
+    bookTicket(
+      {
+        position: bookedTicketData.map((p) => Number(p.position)),
+        eventId: Number(bookedTicketData[0]?.eventId),
+      },
+      {
+        onSuccess: () => {
+          onCancel()
+          toast.success("Ticket booked successfully")
+        },
+      }
+    )
+
     bookingUserInfo({
       firstName: values.firstName,
       lastName: values.lastName,
       email: values.email,
       phoneNumber: Number(values.PhoneNumber),
-      position: bookedTicketData.map((p) => p.position),
+      position: bookedTicketData.map((p) => Number(p.position)),
       eventId: Number(bookedTicketData[0]?.eventId),
     })
   }
@@ -151,34 +151,36 @@ export default function TicketBookingForm({
                 </FormItem>
               )}
             />
+
+            <div className="mb-5 mt-5 flex flex-col gap-5">
+              <div className="text-2xl font-semibold">Pay with</div>
+              <div className="flex items-center gap-3">
+                <div className="h-20 w-20 rounded-lg bg-green-500">Esewa</div>
+                <div className="h-20 w-20 rounded-lg bg-purple-500">khalti</div>
+              </div>
+            </div>
+            <div className="mb-4 mt-3">
+              By selecting Place Order, I agree to the{" "}
+              <Link href="#" className="font-medium underline">
+                Evento Terms of Service
+              </Link>
+            </div>
+            <Button
+              // onClick={buyTicket}
+              type="submit"
+              size="default"
+              className="mb-5 mt-5 w-full"
+            >
+              {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
+              Place Order
+            </Button>
+            <div className="border-[1px] border-gray-300"></div>
+            <div className="mt-2">
+              Powered by{" "}
+              <span className="font-medium text-gray-600">Evento</span>
+            </div>
           </form>
         </Form>
-      </div>
-      <div className="mb-5 mt-5 flex flex-col gap-5">
-        <div className="text-2xl font-semibold">Pay with</div>
-        <div className="flex items-center gap-3">
-          <div className="h-20 w-20 rounded-lg bg-green-500">Esewa</div>
-          <div className="h-20 w-20 rounded-lg bg-purple-500">khalti</div>
-        </div>
-      </div>
-      <div className="mb-4 mt-3">
-        By selecting Place Order, I agree to the{" "}
-        <Link href="#" className="font-medium underline">
-          Evento Terms of Service
-        </Link>
-      </div>
-      <Button
-        onClick={buyTicket}
-        type="submit"
-        size="default"
-        className="mb-5 mt-5 w-full"
-      >
-        {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
-        Place Order
-      </Button>
-      <div className="border-[1px] border-gray-300"></div>
-      <div className="mt-2">
-        Powered by <span className="font-medium text-gray-600">Evento</span>
       </div>
     </div>
   )

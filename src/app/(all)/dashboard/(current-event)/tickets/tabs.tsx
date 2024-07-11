@@ -25,7 +25,7 @@ export default function TicketsTabs() {
       onValueChange={(value) =>
         router.push(
           value === "tickets"
-            ? `dashboard/tickets`
+            ? `/dashboard/tickets`
             : `/dashboard/tickets/${value}`
         )
       }

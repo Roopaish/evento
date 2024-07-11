@@ -29,7 +29,7 @@ export const ticketRouter = createTRPCRouter({
       // Create a map for quick lookup of existing tickets by position
       const savedDataMap = new Map<number, (typeof savedData)[0]>()
       savedData.forEach((data) => {
-        savedDataMap.set(data.position, data)
+        savedDataMap.set(Number(data.position), data)
       })
 
       // Positions in the new ticket info
@@ -146,7 +146,14 @@ export const ticketRouter = createTRPCRouter({
   // }),
 
   createTicketInfo: protectedProcedure
-    .input(z.object({ type: z.string(), price: z.number(), color: z.string() }))
+    .input(
+      z.object({
+        type: z.string(),
+        price: z.number(),
+        color: z.string(),
+        totalSeats: z.number(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const eventId = ctx.currentEvent
       await ctx.db.ticketInfo.create({
@@ -155,6 +162,63 @@ export const ticketRouter = createTRPCRouter({
           ticketType: input.type,
           price: input.price,
           color: input.color,
+          totalSeats: input.totalSeats,
+        },
+      })
+    }),
+
+  updateTicketInfo: protectedProcedure
+    .input(
+      z.object({
+        type: z.string(),
+        price: z.number(),
+        color: z.string(),
+        ticketId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // const eventId = ctx.currentEvent
+      const previousData = await ctx.db.ticketInfo.findUnique({
+        where: {
+          id: input.ticketId,
+        },
+      })
+      await ctx.db.ticketInfo.update({
+        where: {
+          id: input.ticketId,
+        },
+        data: {
+          ticketType: input.type,
+          price: input.price,
+          color: input.color,
+        },
+      })
+
+      await ctx.db.ticket.updateMany({
+        where: {
+          label: previousData?.ticketType,
+        },
+        data: {
+          label: input.type,
+          price: input.price.toString(),
+          color: input.color,
+        },
+      })
+    }),
+
+  deleteTicketInfo: protectedProcedure
+    .input(z.object({ ticketId: z.number() }))
+    .mutation(async ({ ctx, input }) => {
+      // const eventId = ctx.currentEvent
+      const ticket = await ctx.db.ticketInfo.delete({
+        where: {
+          id: input.ticketId,
+        },
+      })
+
+      await ctx.db.ticket.deleteMany({
+        where: {
+          label: ticket.ticketType,
         },
       })
     }),
@@ -167,8 +231,18 @@ export const ticketRouter = createTRPCRouter({
       },
     })
   }),
-
   getTicketInfo: protectedProcedure
+    .input(z.object({ eventId: z.number() }))
+    .query(async ({ ctx, input }) => {
+      const ticketInfo = await ctx.db.ticketInfo.findMany({
+        where: {
+          eventId: input.eventId,
+        },
+      })
+      return ticketInfo
+    }),
+
+  getSavedTicketInfo: protectedProcedure
     .input(z.object({ eventId: z.number() }))
     .query(async ({ ctx, input }) => {
       // return await ctx.db.ticketInfo.findMany({
@@ -232,6 +306,48 @@ export const ticketRouter = createTRPCRouter({
           },
         })
       })
+    }),
+
+  bookTicketByForm: protectedProcedure
+    .input(
+      z.object({
+        seats: z.number(),
+        id: z.number(),
+        ticketType: z.string(),
+        price: z.number(),
+        eventId: z.number(),
+        color: z.string(),
+        totalSeats: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const userId = ctx.session.user.id
+      const ticketId = []
+
+      for (let i = 0; i < input.seats; i++) {
+        const ticket = await ctx.db.ticket.create({
+          data: {
+            eventId: input.eventId,
+            label: input.ticketType,
+            price: input.price.toString(),
+            color: input.color,
+            isBooked: true,
+            bookedByID: userId,
+          },
+        })
+        ticketId.push(ticket.id)
+      }
+
+      await ctx.db.ticketInfo.update({
+        where: {
+          id: input.id,
+        },
+        data: {
+          totalSeats: input.totalSeats - input.seats,
+        },
+      })
+
+      return ticketId
     }),
 
   getBookedTickets: protectedProcedure.query(async ({ ctx }) => {
@@ -310,8 +426,8 @@ export const ticketRouter = createTRPCRouter({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      console.log(input.position)
-      const ticketId: number[] = []
+      // console.log(input.position)
+      // const ticketId: number[] = []
       input.position.map(async (p) => {
         const ticket = await ctx.db.ticket.findFirst({
           where: {
@@ -325,15 +441,53 @@ export const ticketRouter = createTRPCRouter({
             ],
           },
         })
-        if (ticket) ticketId.push(ticket?.id)
-      })
-      ticketId.map(async (id) => {
+
         await ctx.db.bookingUserInfo.create({
           data: {
             firstName: input.firstName,
             lastName: input.lastName,
             email: input.email,
-            phone: input.phoneNumber,
+            phone: input.phoneNumber.toString(),
+            ticketId: Number(ticket?.id),
+          },
+        })
+      })
+    }),
+
+  bookingUserByFormInfo: protectedProcedure
+    .input(
+      z.object({
+        firstName: z.string(),
+        lastName: z.string(),
+        email: z.string(),
+        phoneNumber: z.number(),
+        ids: z.number().array(),
+        eventId: z.number(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      // console.log(input.position)
+      // const ticketId: number[] = []
+      input.ids.map(async (id) => {
+        // const ticket = await ctx.db.ticket.findFirst({
+        //   where: {
+        //     AND: [
+        //       {
+        //         position: Number(p),
+        //       },
+        //       {
+        //         eventId: input.eventId,
+        //       },
+        //     ],
+        //   },
+        // })
+
+        await ctx.db.bookingUserInfo.create({
+          data: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            email: input.email,
+            phone: input.phoneNumber.toString(),
             ticketId: id,
           },
         })

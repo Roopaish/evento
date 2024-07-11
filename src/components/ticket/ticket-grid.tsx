@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type MouseEventHandler } from "react"
 import { api } from "@/trpc/react"
 import { AspectRatio } from "@radix-ui/react-aspect-ratio"
+import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -13,6 +14,7 @@ export default function TicketGrid({
   label,
   color,
   price,
+  totalSeats,
   ticketsInfo,
 }: {
   length: number
@@ -20,6 +22,7 @@ export default function TicketGrid({
   label: string
   color: string
   price: number
+  totalSeats: number
   ticketsInfo: {
     position: string
     color: string
@@ -44,7 +47,7 @@ export default function TicketGrid({
     setDragging(true)
     if (gridRef?.current === null) return
     const rect = gridRef?.current?.getBoundingClientRect?.()
-    // console.log("rect", rect)
+    console.log("rect", rect)
 
     setStartPos({
       x: e.clientX - rect.left,
@@ -54,6 +57,7 @@ export default function TicketGrid({
 
   const handleMouseMove: MouseEventHandler = (e) => {
     if (dragging) {
+      console.log("dragging")
       if (gridRef?.current === null) return
 
       const rect = gridRef?.current.getBoundingClientRect()
@@ -62,9 +66,25 @@ export default function TicketGrid({
         y: e.clientY - rect.top,
       })
     }
+    // const totalMapping = ticketPositions.filter((p) => p.label == label).length
+    // console.log("totalMapping", totalMapping)
+    // if (totalMapping >= totalSeats) {
+    //   console.log("You have exceeded the total number of seats")
+    //   handleMouseUp()
+    // }
   }
 
   const handleMouseUp = () => {
+    const filteredPositions = ticketPositions.filter((p) => p.label == label)
+    if (filteredPositions.length > totalSeats) {
+      toast.error("You have exceeded the total number of seats of this type")
+    }
+    const reducedPosition = filteredPositions.splice(0, totalSeats)
+    // ticketPositions.filter((p) => p.label !== label)
+    setTicketPositions((prev) =>
+      prev.filter((p) => p.label !== label).concat(reducedPosition)
+    )
+
     setDragging(false)
     setStartPos(null)
     setEndPos(null)
@@ -156,6 +176,7 @@ export default function TicketGrid({
   useEffect(() => {
     if (ticketsInfo?.length === 0) return
     if (initial === 0) {
+      console.log("ticketsInfo", ticketsInfo)
       setTicketPositions(ticketsInfo)
     }
   }, [ticketsInfo])
@@ -169,18 +190,26 @@ export default function TicketGrid({
 
   // console.log("startPos", startPos)
   // console.log("endPos", endPos)
+  // console.log("rect", gridRef?.current?.getBoundingClientRect())
   console.log("seedPositions", ticketPositions)
 
   // if (grid === 0) return
   const { mutate: saveData, isLoading } = api.ticket.create.useMutation()
   function saveTicket() {
-    saveData({
-      length,
-      width,
-      ticketInfo: ticketPositions,
-    })
+    saveData(
+      {
+        length,
+        width,
+        ticketInfo: ticketPositions,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Ticket type added successfully")
+          void useUtils.ticket.getTicketByEventId.refetch()
+        },
+      }
+    )
     // setInitial(0)
-    void useUtils.ticket.getTicketByEventId.refetch()
   }
   return (
     <>
@@ -262,7 +291,7 @@ export default function TicketGrid({
                       : undefined,
                   }}
                   className={cn(
-                    `transistion flex h-full cursor-pointer flex-col items-center justify-around gap-2 rounded-[8px] bg-slate-800 text-xs text-white duration-200 ease-in-out selection:bg-transparent`,
+                    `transistion flex h-full cursor-pointer select-none flex-col items-center justify-around gap-2 rounded-[8px] bg-slate-800 text-xs text-white duration-200 ease-in-out`,
                     {
                       "hover:bg-red-800": !isSelected,
                       "bg-slate-800": !isSelected,
@@ -271,6 +300,17 @@ export default function TicketGrid({
                   draggable={false}
                   key={index}
                   onClick={() => {
+                    const filtered = ticketPositions.filter(
+                      (p) => p.label == label
+                    )
+
+                    if (filtered.length >= totalSeats) {
+                      toast.error(
+                        "You have exceeded the total number of seats of this type"
+                      )
+                      return
+                    }
+
                     let positions
                     if (isSelected) {
                       positions = ticketPositions.filter(

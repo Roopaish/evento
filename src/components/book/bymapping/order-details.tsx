@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { type EventType, type Ticket } from "@prisma/client"
 
 import { Separator } from "@/components/ui/separator"
@@ -35,7 +36,7 @@ export default function OrderDetails({
           positions: [],
         }
       }
-      groupedData[label].positions.push(position)
+      groupedData[label].positions.push(Number(position))
     })
 
     return Object.values(groupedData).map(({ label, price, positions }) => [
