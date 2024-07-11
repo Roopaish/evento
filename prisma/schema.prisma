@@ -122,6 +122,7 @@ model User {
 
     assignedTasks Task[]      @relation("AssignedTo")
     createdTasks  Task[]      @relation("CreatedBy")
+    Ticket        Ticket[]
     SubDomain     SubDomain[]
 }
 
@@ -164,6 +165,7 @@ model Event {
 
     invitations Invitation[]
     tasks       Task[]
+    Ticket      Ticket[]
     tags        Tag[]        @relation("EventTags")
     category    String
     SubDomain   SubDomain[]
@@ -232,8 +234,8 @@ model ChatMessage {
 
     seenBy User[] @relation("SeenBy")
 
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
+    createdAt DateTime @unique() @default(now())
+    updatedAt DateTime @unique() @updatedAt
 }
 
 enum Status {
@@ -299,6 +301,46 @@ model Task {
     event   Event @relation(fields: [eventId], references: [id])
     eventId Int
 
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model TicketInfo {
+    id         Int    @id @default(autoincrement())
+    eventId    Int
+    ticketType String
+    price      Int
+    color      String
+    totalSeats Int
+}
+
+model Ticket {
+    id               Int              @id @default(autoincrement())
+    length           Int?
+    width            Int?
+    position         Int?
+    color            String
+    price            String
+    label            String
+    isSelectedByUser Boolean?
+    bookingUser      BookingUserInfo?
+    isBooked         Boolean?
+    user             User?            @relation(fields: [bookedByID], references: [id])
+    bookedByID       String?
+    event            Event            @relation(fields: [eventId], references: [id])
+    eventId          Int
+    createdAt        DateTime         @default(now())
+    updatedAt        DateTime         @updatedAt
+}
+
+model BookingUserInfo {
+    id        Int      @id @default(autoincrement())
+    firstName String
+    lastName  String
+    email     String
+    phone     String
+    ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+    ticketId  Int      @unique
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 }

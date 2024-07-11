@@ -149,6 +149,16 @@ export default async function EventDetails({
               </>
             )}
 
+            {!isCreatedByMe && (
+              <>
+                <div className="my-2">
+                  <Link href={`/events/${data?.id}/book`}>
+                    <Button className="w-full">Get Tickets</Button>
+                  </Link>
+                </div>
+              </>
+            )}
+
             <div className="mt-5">
               <ShareEvent />
             </div>
@@ -160,7 +170,7 @@ export default async function EventDetails({
                   {data?.tags?.map((tag) => (
                     <span
                       key={tag.id}
-                      className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600 hover:bg-primary-100"
+                      className="hover:bg-primary-100 rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600"
                     >
                       {tag.name}
                     </span>

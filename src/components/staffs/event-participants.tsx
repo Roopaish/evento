@@ -24,7 +24,7 @@ export default function EventParticipants() {
             return (
               <div key={participant.id} className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Avatar className="h-12 w-12 bg-primary-50">
+                  <Avatar className="bg-primary-50 h-12 w-12">
                     <AvatarImage
                       src={participant.image ?? ""}
                       alt={participant.name ?? "avatar"}
