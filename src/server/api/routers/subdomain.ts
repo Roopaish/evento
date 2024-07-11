@@ -1,9 +1,13 @@
 import { TRPCError } from "@trpc/server"
+import { z } from "zod"
 
 import { subdomainSchema } from "@/lib/validations/subdomain-validation"
 
-import { createTRPCRouter, protectedProcedure } from "../trpc"
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
 
+const route = z.object({
+  url: z.string(),
+})
 export const subdomainRouter = createTRPCRouter({
   addSubDomain: protectedProcedure
     .input(subdomainSchema)
@@ -16,7 +20,15 @@ export const subdomainRouter = createTRPCRouter({
       }
 
       const { route, TemplateChosen } = input
-      const subdomain = ctx.db.subDomain.create({
+      if (
+        (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
+      ) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Already Exists",
+        })
+      }
+      const subdomain = await ctx.db.subDomain.create({
         data: {
           route: route,
           templateChosen: TemplateChosen,
@@ -27,20 +39,18 @@ export const subdomainRouter = createTRPCRouter({
       return subdomain
     }),
 
-  checkAvailable: protectedProcedure
-    .input(subdomainSchema)
-    .query(async ({ input, ctx }) => {
-      const { route } = input
-      const search = ctx.db.subDomain.findFirst({
-        where: { route: route },
-      })
+  checkAvailable: publicProcedure.input(route).query(async ({ input, ctx }) => {
+    const { url } = input
+    const search = await ctx.db.subDomain.findFirst({
+      where: { route: url },
+    })
 
-      if (search == null) {
-        return true
-      } else {
-        return false
-      }
-    }),
+    if (search == null) {
+      return false
+    } else {
+      return search
+    }
+  }),
 
   getSubDomains: protectedProcedure.query(async ({ ctx }) => {
     return ctx.db.subDomain.findMany({
@@ -63,4 +73,85 @@ export const subdomainRouter = createTRPCRouter({
       },
     })
   }),
+
+  getLinkedEvent: publicProcedure
+    .input(z.object({ subdomain: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const { subdomain } = input
+      if (!subdomain) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Subdomain Invalid",
+        })
+      }
+      const event = await ctx.db.subDomain.findFirst({
+        where: { route: subdomain },
+        select: { eventId: true },
+      })
+      return event
+    }),
+
+  addSubdomain: protectedProcedure
+    .input(subdomainSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { route, TemplateChosen } = input
+      const eventId = ctx.currentEvent
+
+      if (eventId == null) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Event not selected",
+        })
+      }
+
+      if (
+        (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
+      ) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Already Exists",
+        })
+      }
+      const subdomain = await ctx.db.subDomain.create({
+        data: {
+          route: route,
+          templateChosen: TemplateChosen,
+          userId: ctx.session.user.id,
+          eventId,
+        },
+      })
+      return subdomain
+    }),
+
+  updateSubdomain: protectedProcedure
+    .input(subdomainSchema)
+    .mutation(async ({ input, ctx }) => {
+      const { TemplateChosen, route } = input
+      const eventId = ctx.currentEvent
+      if (eventId == null) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Event not found",
+        })
+      }
+      if (
+        (await ctx.db.subDomain.findFirst({ where: { route: route } })) != null
+      ) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Already Exists",
+        })
+      }
+
+      const subdomain = await ctx.db.subDomain.update({
+        where: { eventId: eventId },
+        data: {
+          route,
+          templateChosen: TemplateChosen,
+          eventId,
+          userId: ctx.session.user.id,
+        },
+      })
+      return subdomain
+    }),
 })

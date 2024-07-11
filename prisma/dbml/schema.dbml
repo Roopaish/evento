@@ -204,7 +204,7 @@ Table SubDomain {
   updatedAt DateTime [not null]
   userId String [not null]
   event Event [not null]
-  eventId Int [not null]
+  eventId Int [unique, not null]
 }
 
 Table Task {

@@ -53,6 +53,10 @@ export const userSideNavItems: SideNavItem[] = [
       },
     ],
   },
+  {
+    title: "Marketing",
+    data: [{ icon: "Computer", label: "Website", path: "/dashboard/website" }],
+  },
 ]
 
 export const profileDropdownItems = userSideNavItems.flatMap((nav) => nav.data)

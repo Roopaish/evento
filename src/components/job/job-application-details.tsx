@@ -8,6 +8,8 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "../ui/dialog"
 import { Table, TableCell, TableHead, TableRow } from "../ui/table"
