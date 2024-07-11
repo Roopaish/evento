@@ -93,7 +93,7 @@ async function createProperties(
           assets.push({
             id: (i + j + Math.random() * 10000).toString(),
             name: faker.lorem.word(),
-            url: faker.image.urlLoremFlickr({ category: "house" }),
+            url: faker.image.urlLoremFlickr({ category: "concert" }),
             thumbnailUrl: faker.image.url(),
             size: 22,
             createdAt: faker.date.past(),
@@ -152,6 +152,16 @@ async function createProperties(
             description: faker.lorem.paragraph(),
             salary: Number(faker.commerce.price({ min: 1000, max: 10000 })),
             noOfEmployees: faker.number.int({ min: 1, max: 50 }),
+          },
+        },
+        chatGroup: {
+          create: {
+            messages: {
+              create: {
+                userId: user!.id,
+                message: "Chat Group Created!",
+              },
+            },
           },
         },
       }),

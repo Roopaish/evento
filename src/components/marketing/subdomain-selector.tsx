@@ -29,32 +29,38 @@ import {
 export const SubdomainSelector = () => {
   const { mutateAsync, isLoading } = api.subdomain.addSubDomain.useMutation({
     onSuccess() {
-      toast.success("Website Generated")
+      toast.success("Subdomain has been created!")
     },
     onError: (e) => {
       toast.error(e.message ?? "Something went wrong")
     },
   })
+
   const form = useForm<z.infer<typeof subdomainSchema>>({
     resolver: zodResolver(subdomainSchema),
     defaultValues: {},
   })
+
   async function onSubmit(values: z.infer<typeof subdomainSchema>) {
-    console.log("Reached Here")
     await mutateAsync({ ...values })
   }
+
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="mx max-w-[800px] space-y-4"
+      >
         <FormField
           control={form.control}
           name="route"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Domain: </FormLabel>
+              <FormLabel>Subdomain</FormLabel>
               <FormControl>
                 <Input {...field}></Input>
               </FormControl>
+
               <FormMessage></FormMessage>
             </FormItem>
           )}

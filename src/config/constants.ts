@@ -165,3 +165,7 @@ export const eventTagsList = Object.keys(eventTags).reduce((acc, key) => {
 }, [] as string[])
 
 export const eventCategories = Object.keys(eventTags)
+
+export const WEBSITE_URL = process.env.NEXTAUTH_URL ?? "http://localhost:3000"
+export const URL_PREFIX = WEBSITE_URL.split("//")[0]!
+export const URL_ORIGIN = WEBSITE_URL.split("//")[1]!

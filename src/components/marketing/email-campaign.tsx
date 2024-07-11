@@ -47,7 +47,7 @@ export default function EmailsCampaign() {
         </p>
         <div className="mb-8 flex items-center space-x-2">
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleSend)} className="">
+            <form onSubmit={form.handleSubmit(handleSend)} className="w-full">
               <FormField
                 control={form.control}
                 name="emails"
@@ -68,10 +68,14 @@ export default function EmailsCampaign() {
                 )}
               />
               {emails.length > 0 && (
-                <Button type="submit" className="w-full">
-                  {sendingEmails && <Icons.spinner className="animate-spin" />}
-                  Send Invitation
-                </Button>
+                <div className="mt-4 text-right">
+                  <Button type="submit">
+                    {sendingEmails && (
+                      <Icons.spinner className="animate-spin" />
+                    )}
+                    Send Email
+                  </Button>
+                </div>
               )}
             </form>
           </Form>

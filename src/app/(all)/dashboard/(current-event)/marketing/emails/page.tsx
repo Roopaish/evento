@@ -1,7 +1,7 @@
 import { type Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
-import EmailsCampaign from "@/components/emails/email-campaign"
+import EmailsCampaign from "@/components/marketing/email-campaign"
 
 export const metadata: Metadata = {
   title: "Emails | " + siteConfig.name,

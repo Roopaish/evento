@@ -78,16 +78,19 @@ export const subdomainRouter = createTRPCRouter({
     .input(z.object({ subdomain: z.string() }))
     .query(async ({ input, ctx }) => {
       const { subdomain } = input
+
       if (!subdomain) {
         throw new TRPCError({
           code: "BAD_REQUEST",
           message: "Subdomain Invalid",
         })
       }
+
       const event = await ctx.db.subDomain.findFirst({
         where: { route: subdomain },
-        select: { eventId: true },
+        select: { eventId: true, templateChosen: true },
       })
+
       return event
     }),
 

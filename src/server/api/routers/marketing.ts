@@ -49,15 +49,13 @@ export const marketingRouter = createTRPCRouter({
           emailsSendTo.map((email) => {
             void sendEmail({
               identifier: email.sendTo,
-              subject: "Yssss",
+              subject: `You are invited to join event ${email.event.title}`,
               template: {
                 html: emailTemplates.campaign.html({
-                  email: email.sendTo,
                   websiteUrl: route,
                   eventName: email.event.title,
                 }),
                 text: emailTemplates.campaign.text({
-                  email: email.sendTo,
                   url: route,
                 }),
               },

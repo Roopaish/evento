@@ -94,10 +94,9 @@ const emailTemplates = {
 
   campaign: {
     html: ({
-      email,
       eventName,
       websiteUrl,
-    }: Record<"email" | "eventName" | "websiteUrl", string>) =>
+    }: Record<"eventName" | "websiteUrl", string>) =>
       `
       <body style="background: #f9f9f9;">
       <table width="100%" border="0" cellspacing="0" cellpadding="0">
@@ -113,11 +112,6 @@ const emailTemplates = {
             You have been invited to visit the website for ${eventName}
           </td>
         </tr>
-         <tr>
-          <td align="center" style="padding: 10px 0px 0px 0px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; color: #444444;">
-            You can join the event by clicking this link <a href=${websiteUrl}>${websiteUrl}</a>. <br/>You need to be logged in with <strong>${email}</strong> email.
-          </td>
-        </tr>
         <tr>
           <td align="center" style="padding: 20px 0;">
             <table border="0" cellspacing="0" cellpadding="0">
@@ -130,8 +124,8 @@ const emailTemplates = {
       </table>
       </body>
       `,
-    text: ({ email, url }: Record<"email" | "url", string>) =>
-      `You have been invited to join the event. You can join the event by clicking this link ${url}. You need to be logged in with ${email} email.`,
+    text: ({ url }: Record<"url", string>) =>
+      `You have been invited to join the event. You can join the event by clicking this link ${url}.`,
   },
 }
 

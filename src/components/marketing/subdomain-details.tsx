@@ -1,5 +1,7 @@
-import { api } from "@/trpc/react"
+import Link from "next/link"
 import { type RouterOutputs } from "@/trpc/shared"
+
+import { URL_ORIGIN, URL_PREFIX } from "@/config/constants"
 
 export const SubdomainDetails = ({
   data,
@@ -10,49 +12,24 @@ export const SubdomainDetails = ({
     <div>
       <div className="rounded-md border-2 border-lime-200 p-4">
         <div className="">
-          You Already Have Registerd a Website for this Event
+          You Already Have Registered a Website for this Event
         </div>
         <div className="flex space-x-5">
           <span>
-            <b>Subdomain:</b> {data?.route}.localhost:3000/home
+            <b>Subdomain:</b>
+            <Link
+              href={`${URL_PREFIX}//${data?.route}.${URL_ORIGIN}`}
+              className="underline"
+              target={"_blank"}
+            >
+              {data?.route}.{URL_ORIGIN}
+            </Link>
           </span>
           <span>
             <b>Theme:</b> {data?.templateChosen}
           </span>
         </div>
       </div>
-      <div>
-        <SubdomainPreview subdomain={data?.route}></SubdomainPreview>
-      </div>
-    </div>
-  )
-}
-
-const SubdomainPreview = ({ subdomain }: { subdomain?: string }) => {
-  if (subdomain == null) {
-    return <div>Invalid Domain</div>
-  }
-  const { data: event } = api.subdomain.getLinkedEvent.useQuery({
-    subdomain,
-  })
-  console.log(event)
-  const { data: eventDetails, isLoading } = api.event.getEvent.useQuery({
-    id: event?.eventId ?? 0,
-  })
-
-  if (isLoading) {
-    return <>Loading...</>
-  }
-
-  if (!eventDetails?.id) {
-    return <div>Event Doesnot Exist</div>
-  }
-
-  return (
-    <div>
-      {
-        //Website Tempate here
-      }
     </div>
   )
 }
