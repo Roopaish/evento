@@ -101,6 +101,7 @@ export default function EventForm({ id }: { id?: number }) {
   const { mutate, isLoading } = api.event.addEvent.useMutation({
     onSuccess: (data) => {
       toast.success("Event has been created")
+      router.push(`/api/trpc/exportEvents`)
       router.push(`/events/${data.id}`)
     },
     onError: (e) => {
