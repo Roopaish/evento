@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
@@ -510,4 +511,30 @@ export const ticketRouter = createTRPCRouter({
       })
       return bookedTickets
     }),
+
+  getTicketSaleDate: protectedProcedure.query(({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "Event doesnot exist",
+      })
+    }
+
+    const sales = ctx.db.bookingUserInfo.findMany({
+      where: {
+        ticket: {
+          eventId: eventId,
+        },
+      },
+      select: {
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      distinct: "createdAt",
+    })
+    return sales
+  }),
 })

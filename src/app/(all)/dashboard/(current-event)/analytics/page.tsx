@@ -1,8 +1,7 @@
 import { type Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Icons } from "@/components/ui/icons"
+import { TicketChart } from "@/components/analytics/ticket-chart"
 import { TotalVisits } from "@/components/analytics/total-visits"
 
 export const metadata: Metadata = {
@@ -14,6 +13,7 @@ export default function AnalyticsPage() {
   return (
     <>
       <TotalVisits></TotalVisits>
+      <TicketChart></TicketChart>
     </>
   )
 }
