@@ -440,7 +440,7 @@ export const eventRouter = createTRPCRouter({
     )
     .query(async ({ input, ctx }) => {
       const { eventId } = input
-      return ctx.db.event.findFirst({
+      const event = await ctx.db.event.findFirst({
         where: {
           id: eventId,
         },
@@ -448,6 +448,7 @@ export const eventRouter = createTRPCRouter({
           interested: true,
         },
       })
+      return event?.interested
     }),
 
   setInterested: publicProcedure
@@ -466,13 +467,8 @@ export const eventRouter = createTRPCRouter({
           interested: true,
         },
       })
-      if (!intrestedCount?.interested) {
-        throw new TRPCError({
-          code: "CONFLICT",
-          message: "Interested not set correctly",
-        })
-      }
-      const increased = (intrestedCount?.interested || 0) + 1
+
+      const increased = (intrestedCount?.interested ?? 0) + 1
       const increaseCount = await ctx.db.event.update({
         where: {
           id: eventId,

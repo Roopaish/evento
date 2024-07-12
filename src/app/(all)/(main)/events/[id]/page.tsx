@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
 import { EventCount } from "@/components/analytics/event-count"
+import { InterestedCount } from "@/components/analytics/interested-booked-count"
 import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
@@ -24,14 +25,6 @@ export default async function EventDetails({
 
   const data = await api.event.getEvent.query({
     id: Number(params.id),
-  })
-
-  const interested = await api.event.getInterested.query({
-    eventId: Number(params.id),
-  })
-
-  const alreadyBooked = await api.ticket.getTicketCount.query({
-    eventId: Number(params.id),
   })
 
   const isCreatedByMe = session?.user?.id === data?.createdById
@@ -158,17 +151,7 @@ export default async function EventDetails({
               </>
             )}
             {/* here */}
-            <div>
-              {" "}
-              <span>
-                <b>Interested: </b>
-                {interested?.interested}
-              </span>{" "}
-              <span>
-                <b>Already Booked:</b>
-                {alreadyBooked}{" "}
-              </span>
-            </div>
+            <InterestedCount eventId={params.id}></InterestedCount>
 
             {!isCreatedByMe && (
               <>
