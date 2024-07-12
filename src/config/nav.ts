@@ -55,6 +55,11 @@ export const userSideNavItems: SideNavItem[] = [
         label: "Applied Jobs",
         path: "/dashboard/applied-jobs",
       },
+      {
+        icon: "ShoppingCart",
+        label: "My Orders",
+        path: "/dashboard/my-orders",
+      },
     ],
   },
 ]

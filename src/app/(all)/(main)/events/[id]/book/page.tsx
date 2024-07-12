@@ -39,8 +39,8 @@ export default function TicketBookPage({ params }: { params: { id: number } }) {
 
   return (
     <div className="container">
-      <BookingHeader ticketInfo={ticketInfo!} />
-      <TicketDisplayForm ticketInfo={ticketInfo!} />
+      {ticketInfo ? <BookingHeader ticketInfo={ticketInfo} /> : null}
+      <TicketDisplayForm ticketInfo={ticketInfo!} ticketData={ticketData!} />
       {hasMap && (
         <div className="mt-6 flex items-center space-x-2">
           <Checkbox

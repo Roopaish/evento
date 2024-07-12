@@ -318,12 +318,13 @@ model EmailInvitation {
 }
 
 model TicketInfo {
-    id         Int    @id @default(autoincrement())
-    eventId    Int
-    ticketType String
-    price      Int
-    color      String
-    totalSeats Int
+    id            Int    @id @default(autoincrement())
+    eventId       Int
+    ticketType    String
+    price         Int
+    color         String
+    totalSeats    Int
+    reservedSeats Int
 }
 
 model Ticket {

@@ -1,6 +1,7 @@
 import { type Metadata } from "next"
 
 import { siteConfig } from "@/config/site"
+import Tickets from "@/components/ticket"
 
 export const metadata: Metadata = {
   title: "Manage Ticket | " + siteConfig.name,
@@ -8,5 +9,9 @@ export const metadata: Metadata = {
 }
 
 export default function ManageTicketPage() {
-  return <>Manage Tickets: Price, SeatMapping</>
+  return (
+    <>
+      <Tickets />
+    </>
+  )
 }

@@ -21,7 +21,7 @@ export default function Checkout({
   const [isOpen, setIsOpen] = useState(false)
   const { data: user } = api.user.getUser.useQuery()
   const { data: event } = api.event.getEvent.useQuery({
-    id: selectedTicket.eventId,
+    id: selectedTicket?.eventId,
   })
 
   function onCancel() {
