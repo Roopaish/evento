@@ -67,6 +67,7 @@ export default function TicketBookingForm({
     bookTicket(
       {
         position: bookedTicketData.map((p) => Number(p.position)),
+        label: bookedTicketData.map((p) => p.label),
         eventId: Number(bookedTicketData[0]?.eventId),
       },
       {

@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { type RouterOutputs } from "@/trpc/shared"
+import { type EventType, type Ticket } from "@prisma/client"
 import { toast } from "sonner"
 
 import { Input } from "@/components/ui/input"
@@ -14,10 +15,25 @@ import {
 
 import Checkout from "./checkout"
 
+interface TicketData extends Ticket {
+  event: {
+    title: string
+    type: EventType
+    date: Date
+    address: string
+    assets: {
+      url: string
+      thumbnailUrl: string
+    }[]
+  }
+}
+
 export default function TicketDisplayForm({
   ticketInfo,
+  ticketData,
 }: {
   ticketInfo: RouterOutputs["ticket"]["getTicketInfo"]
+  ticketData: TicketData[]
 }) {
   const [ticketType, setTicketType] = useState<string>("")
   const [seats, setSeats] = useState<number>(0)
@@ -26,7 +42,15 @@ export default function TicketDisplayForm({
     ? ticketInfo?.find((ticket) => ticket.ticketType === ticketType)
     : null
 
-  if (selectedTicketData && seats > selectedTicketData?.totalSeats) {
+  const mappedData = ticketData?.map((ticket) => ticket.position != null)
+
+  const error =
+    selectedTicketData &&
+    seats >
+      selectedTicketData?.totalSeats -
+        selectedTicketData?.reservedSeats -
+        mappedData?.length
+  if (error) {
     toast.error("Seats should be less than avaibale seats")
   }
 
@@ -66,16 +90,18 @@ export default function TicketDisplayForm({
               placeholder="Number of seats"
             />
             {selectedTicketData ? (
-              <div>Available:{selectedTicketData?.totalSeats}</div>
+              <div>
+                Available:
+                {selectedTicketData?.totalSeats -
+                  selectedTicketData?.reservedSeats -
+                  mappedData?.length}
+              </div>
             ) : null}
           </div>
         </div>
-        {ticketType &&
-          seats > 0 &&
-          selectedTicketData &&
-          seats <= selectedTicketData.totalSeats && (
-            <Checkout selectedTicket={selectedTicketData} totalSeats={seats} />
-          )}
+        {!error && (
+          <Checkout selectedTicket={selectedTicketData!} totalSeats={seats} />
+        )}
       </div>
     </div>
   )

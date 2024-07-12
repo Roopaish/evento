@@ -42,8 +42,8 @@ export default function TicketBookPage({ params }: { params: { id: number } }) {
       {isTicketDataLoading || isTicketInfoLoading ? (
         <div>Loading...</div>
       ) : null}
-      {ticketData ? <BookingHeader ticketInfo={ticketInfo!} /> : null}
-      <TicketDisplayForm ticketInfo={ticketInfo!} />
+      {ticketInfo ? <BookingHeader ticketInfo={ticketInfo} /> : null}
+      <TicketDisplayForm ticketInfo={ticketInfo!} ticketData={ticketData!} />
       {hasMap && (
         <div className="flex items-center space-x-2">
           <Checkbox

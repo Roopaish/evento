@@ -238,6 +238,7 @@ Table TicketInfo {
   price Int [not null]
   color String [not null]
   totalSeats Int [not null]
+  reservedSeats Int [not null]
 }
 
 Table Ticket {
