@@ -8,7 +8,7 @@ export default function BookingHeader({
   console.log("ticketInfo", ticketInfo)
   return (
     <>
-      <div className="mx-auto mt-[150px] min-h-[80px] w-[90%] rounded-lg bg-gray-100 p-3 md:mt-[100px]">
+      <div className="container mt-[150px] min-h-[80px] rounded-lg bg-gray-100 p-3 md:mt-[100px]">
         <div className="mb-2 grid grid-cols-3 items-center gap-2">
           {ticketInfo
             ?.filter((t) => t.totalSeats != 0)
