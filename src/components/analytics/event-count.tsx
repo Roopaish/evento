@@ -4,7 +4,7 @@ import { api } from "@/trpc/react"
 
 export const EventCount = ({ eventId }: { eventId: number }) => {
   api.event.updateUniqueVisit.useQuery(
-    { eventId },
+    { eventId: Number(eventId) },
     {
       refetchInterval: false,
       refetchOnMount: false,

@@ -418,13 +418,8 @@ export const eventRouter = createTRPCRouter({
           uniqueVisit: true,
         },
       })
-      if (!getCount?.uniqueVisit) {
-        throw new TRPCError({
-          code: "UNPROCESSABLE_CONTENT",
-          message: "Event Creation has not implemented unique Visit",
-        })
-      }
-      const increment = (getCount?.uniqueVisit || 0) + 1
+
+      const increment = (getCount?.uniqueVisit ?? 0) + 1
       const event = await ctx.db.event.update({
         where: { id: eventId },
         data: { uniqueVisit: increment },
@@ -432,6 +427,23 @@ export const eventRouter = createTRPCRouter({
       return event
     }),
 
+  getUniqueVisit: protectedProcedure.query(async ({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Event Not Found",
+      })
+    }
+    return ctx.db.event.findFirst({
+      where: {
+        id: eventId,
+      },
+      select: {
+        uniqueVisit: true,
+      },
+    })
+  }),
   getInterested: publicProcedure
     .input(
       z.object({

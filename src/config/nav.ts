@@ -34,7 +34,11 @@ export const userSideNavItems: SideNavItem[] = [
       },
       { icon: "Users", label: "Team", path: "/dashboard/team" },
       { icon: "Ticket", label: "Tickets", path: "/dashboard/tickets" },
-      { icon: "Globe", label: "Marketing", path: "/dashboard/marketing" },
+      {
+        icon: "Globe",
+        label: "Emails and Domain",
+        path: "/dashboard/marketing",
+      },
       {
         icon: "BarChartBig",
         label: "Analytics",
