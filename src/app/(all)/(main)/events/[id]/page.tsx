@@ -8,9 +8,9 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
-import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
+import RecommendEvents from "@/components/event/recommend-events"
 import ShareEvent from "@/components/event/share-event"
 import JobPositionsDetail from "@/components/job/job-positions-details"
 
@@ -174,7 +174,12 @@ export default async function EventDetails({
         <Separator className="my-10" />
       </div>
 
-      <AllEvents idToRecommendFor={params.id} title="Recommended Events" />
+      <RecommendEvents
+        type="content-based"
+        pageTitle="Recommended Events"
+        idToRecommendFor={params.id}
+        titleToRecommendFor={data?.title}
+      />
     </div>
   )
 }
