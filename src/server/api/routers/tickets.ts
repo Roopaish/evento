@@ -578,6 +578,7 @@ export const ticketRouter = createTRPCRouter({
       const bookedTickets = await ctx.db.ticket.count({
         where: {
           eventId: eventId,
+          isBooked: true,
         },
       })
       return bookedTickets
@@ -608,7 +609,7 @@ export const ticketRouter = createTRPCRouter({
     })
     return sales
   }),
-                                              
+
   getMyTickets: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id
     const tickets = ctx.db.ticket.findMany({
