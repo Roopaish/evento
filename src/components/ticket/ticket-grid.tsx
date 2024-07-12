@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState, type MouseEventHandler } from "react"
 import { api } from "@/trpc/react"
-import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 import { toast } from "sonner"
 
 import { cn } from "@/lib/utils"
@@ -17,6 +16,9 @@ export default function TicketGrid({
   totalSeats,
   ticketsInfo,
 }: {
+  /**
+   * Mistake: length is width and width is height
+   */
   length: number
   width: number
   label: string
@@ -213,9 +215,10 @@ export default function TicketGrid({
   }
   return (
     <>
-      <div className="mt-8 box-border flex flex-col items-center justify-center gap-2 sm:flex-row sm:gap-5">
+      <div className="mt-8 box-border flex flex-wrap items-center gap-2">
         <Button
-          variant={mode === "remove" ? "destructive" : "default"}
+          variant={mode === "remove" ? "destructive" : "outline"}
+          size="sm"
           onClick={() => {
             if (mode === "add") {
               setMode("remove")
@@ -228,6 +231,8 @@ export default function TicketGrid({
         </Button>
 
         <Button
+          variant={"outline"}
+          size="sm"
           onClick={() => {
             setTicketPositions(
               Array.from(
@@ -248,6 +253,8 @@ export default function TicketGrid({
         </Button>
 
         <Button
+          variant={"outline"}
+          size="sm"
           onClick={() => {
             setTicketPositions([])
           }}
@@ -255,17 +262,12 @@ export default function TicketGrid({
           Deselect All
         </Button>
       </div>
+
       <div
-        style={
-          {
-            // gridTemplateColumns: `repeat(${length > 30 ? 30 : length},${
-            //   length > 20 ? "30px" : "50px"
-            // })`,
-            // gridTemplateRows: `repeat(${width},${length > 20 ? "30px" : "50px"})`,
-          }
-        }
-        className={`mb-10 mt-10 grid grid-cols-8 justify-center gap-[4px] rounded-lg  sm:grid-cols-10g md:grid-cols-20g lg:grid-cols-30
-          `}
+        style={{
+          gridTemplateColumns: `repeat(${length}, 1fr)`,
+        }}
+        className={`mb-10 mt-10 grid max-w-max gap-[4px] overflow-auto scroll-auto rounded-lg`}
         ref={gridRef}
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
@@ -283,7 +285,13 @@ export default function TicketGrid({
             )
             const isSelected = !!ticketPosition
             return (
-              <AspectRatio style={{}} ratio={1} key={containerId}>
+              <div
+                style={{
+                  width: 50,
+                  height: 50,
+                }}
+                key={containerId}
+              >
                 <div
                   style={{
                     backgroundColor: isSelected
@@ -291,7 +299,7 @@ export default function TicketGrid({
                       : undefined,
                   }}
                   className={cn(
-                    `transistion flex h-full cursor-pointer select-none flex-col items-center justify-around gap-2 rounded-[8px] bg-slate-800 text-xs text-white duration-200 ease-in-out`,
+                    `flex h-full cursor-pointer select-none flex-col items-center justify-around gap-2 rounded-[8px] bg-slate-800 text-xs text-white transition duration-200 ease-in-out`,
                     {
                       "hover:bg-red-800": !isSelected,
                       "bg-slate-800": !isSelected,
@@ -338,7 +346,7 @@ export default function TicketGrid({
                     </span>
                   )} */}
                 </div>
-              </AspectRatio>
+              </div>
             )
           }
         )}

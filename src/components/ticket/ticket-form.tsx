@@ -33,7 +33,7 @@ export default function TicketForm({ onCancel }: { onCancel: () => void }) {
     ticketInfo(values, {
       onSuccess: () => {
         toast.success("Ticket type added successfully")
-        void useUtils.ticket.getTicketInfo.refetch()
+        void useUtils.ticket.getTicketInfoBySessionEventId.refetch()
       },
     })
     onCancel()

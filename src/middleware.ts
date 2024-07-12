@@ -29,6 +29,13 @@ export async function middleware(req: NextRequest) {
 
   const host = req.headers.get("host")
   const subdomain = getValidSubdomain(host)
+  const regex = /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*[a-zA-Z0-9]$/
+  const isValidString = regex.test(subdomain ?? "")
+
+  if (!isValidString) {
+    return NextResponse.next()
+  }
+
   if (subdomain) {
     // Subdomain available, rewriting
     console.log(
