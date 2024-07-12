@@ -245,20 +245,27 @@ export const ticketRouter = createTRPCRouter({
       })
       return ticketInfo
     }),
-  getTicketAnalyticInfo: protectedProcedure.query(async ({ ctx }) => {
+
+  getTicketSalesByLabel: protectedProcedure.query(async ({ ctx }) => {
     const eventId = ctx.currentEvent
     if (!eventId) {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "None",
+        message: "Event Doesnot exist",
       })
     }
-    const ticketInfo = await ctx.db.ticketInfo.findMany({
+
+    const hello = await ctx.db.ticket.groupBy({
       where: {
-        eventId: eventId,
+        eventId: Number(eventId),
+        isBooked: true,
+      },
+      by: ["label"],
+      _count: {
+        _all: true,
       },
     })
-    return ticketInfo
+    return hello
   }),
 
   getSavedTicketInfo: protectedProcedure

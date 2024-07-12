@@ -10,8 +10,9 @@ export const TicketTypeDetails = () => {
   const { data } = api.ticket.getTicketInfo.useQuery({
     eventId: Number(eventId),
   })
-  console.log(data)
 
+  const { data: data2 } = api.ticket.getTicketSalesByLabel.useQuery()
+  console.log(data2)
   return (
     <div className="my-4 flex flex-row flex-wrap gap-4">
       {data?.map((elem) => (
@@ -22,7 +23,7 @@ export const TicketTypeDetails = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="">
-            <div className="text-md font-bold">Price: {elem.price}</div>
+            <div className="text-md font-bold">Price: Rs {elem.price}</div>
             <div className="text-md font-bold">
               Total Seats: {elem.totalSeats}
             </div>
