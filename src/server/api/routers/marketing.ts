@@ -42,7 +42,7 @@ export const marketingRouter = createTRPCRouter({
 
         let route = `${env.NEXTAUTH_URL}/events/${eventId}`
         if (subdomain) {
-          route = subdomain.route + ".localhost:3000" + "/home"
+          route = subdomain.route + ".localhost:3000"
         }
 
         await Promise.all(

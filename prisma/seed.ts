@@ -164,6 +164,9 @@ async function createProperties(
             },
           },
         },
+        participants: {
+          connect: [...users?.map((u) => ({ id: u.id }))],
+        },
       }),
         console.log(data)
     }
