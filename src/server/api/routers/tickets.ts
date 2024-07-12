@@ -1,6 +1,7 @@
+import { TRPCError } from "@trpc/server"
 import { z } from "zod"
 
-import { createTRPCRouter, protectedProcedure } from "../trpc"
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
 
 export const ticketRouter = createTRPCRouter({
   create: protectedProcedure
@@ -125,25 +126,28 @@ export const ticketRouter = createTRPCRouter({
       })
     }),
 
-  // bookTicketByEventId: protectedProcedure
-  // .input(z.object({eventId:z.number()}))
-  // .query(async ({ ctx,input}) => {
+  getTicketTypeAndSale: protectedProcedure.query(async ({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Event not Found",
+      })
+    }
+    const label = await ctx.db.ticket.groupBy({
+      by: ["label"],
+      where: {
+        eventId: eventId,
+      },
+    })
 
-  // const label= await ctx.db.ticket.groupBy({
-  //   by:['label'],
-  //   where:{
-  //     eventId:input.eventId
-  //   },
-  // })
+    // const ticketSale = await ctx.db.bookingUserInfo.findMany({
+    //   where: {
+    //     eventId: eventId,
+    //   },
 
-  // const ticket= await ctx.db.ticket.findMany({
-  //   where: {
-  //     eventId:input.eventId,
-  //   }})
-
-  //   return {label,ticket}
-
-  // }),
+    return { label }
+  }),
 
   createTicketInfo: protectedProcedure
     .input(
@@ -243,6 +247,28 @@ export const ticketRouter = createTRPCRouter({
       })
       return ticketInfo
     }),
+
+  getTicketSalesByLabel: protectedProcedure.query(async ({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Event Doesnot exist",
+      })
+    }
+
+    const hello = await ctx.db.ticket.groupBy({
+      where: {
+        eventId: Number(eventId),
+        isBooked: true,
+      },
+      by: ["label"],
+      _count: {
+        _all: true,
+      },
+    })
+    return hello
+  }),
 
   getSavedTicketInfo: protectedProcedure
     .input(z.object({ eventId: z.number() }))
@@ -540,6 +566,49 @@ export const ticketRouter = createTRPCRouter({
       })
     }),
 
+  getTicketCount: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { eventId } = input
+
+      const bookedTickets = await ctx.db.ticket.count({
+        where: {
+          eventId: eventId,
+        },
+      })
+      return bookedTickets
+    }),
+
+  getTicketSaleDate: protectedProcedure.query(({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "CONFLICT",
+        message: "Event doesnot exist",
+      })
+    }
+
+    const sales = ctx.db.bookingUserInfo.findMany({
+      where: {
+        ticket: {
+          eventId: eventId,
+        },
+      },
+      select: {
+        createdAt: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+      distinct: "createdAt",
+    })
+    return sales
+  }),
+                                              
   getMyTickets: protectedProcedure.query(async ({ ctx }) => {
     const userId = ctx.session.user.id
     const tickets = ctx.db.ticket.findMany({

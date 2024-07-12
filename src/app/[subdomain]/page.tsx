@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
+import { EventCount } from "@/components/analytics/event-count"
+import { InterestedCount } from "@/components/analytics/interested-booked-count"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
 import ShareEvent from "@/components/event/share-event"
@@ -177,6 +179,7 @@ export default async function EventDetails({
                 </div>
               </>
             )}
+            <InterestedCount eventId={event.eventId}></InterestedCount>
 
             {!isCreatedByMe && (
               <>
@@ -210,6 +213,7 @@ export default async function EventDetails({
           </div>
         </div>
       </div>
+      <EventCount eventId={event.eventId}></EventCount>
     </div>
   )
 }

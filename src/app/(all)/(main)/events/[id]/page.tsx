@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
+import { EventCount } from "@/components/analytics/event-count"
+import { InterestedCount } from "@/components/analytics/interested-booked-count"
 import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
@@ -148,6 +150,8 @@ export default async function EventDetails({
                 </div>
               </>
             )}
+            {/* here */}
+            <InterestedCount eventId={params.id}></InterestedCount>
 
             {!isCreatedByMe && (
               <>
@@ -170,7 +174,7 @@ export default async function EventDetails({
                   {data?.tags?.map((tag) => (
                     <span
                       key={tag.id}
-                      className="hover:bg-primary-100 rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600"
+                      className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600 hover:bg-primary-100"
                     >
                       {tag.name}
                     </span>
@@ -185,6 +189,7 @@ export default async function EventDetails({
       </div>
 
       <AllEvents idToRecommendFor={params.id} title="Recommended Events" />
+      <EventCount eventId={params.id}></EventCount>
     </div>
   )
 }

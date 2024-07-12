@@ -400,4 +400,131 @@ export const eventRouter = createTRPCRouter({
 
     return data
   }),
+
+  updateUniqueVisit: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { eventId } = input
+
+      const getCount = await ctx.db.event.findFirst({
+        where: {
+          id: eventId,
+        },
+        select: {
+          uniqueVisit: true,
+        },
+      })
+
+      const increment = (getCount?.uniqueVisit ?? 0) + 1
+      const event = await ctx.db.event.update({
+        where: { id: eventId },
+        data: { uniqueVisit: increment },
+      })
+      return event
+    }),
+
+  getUniqueVisit: protectedProcedure.query(async ({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Event Not Found",
+      })
+    }
+    return ctx.db.event.findFirst({
+      where: {
+        id: eventId,
+      },
+      select: {
+        uniqueVisit: true,
+      },
+    })
+  }),
+  getInterested: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { eventId } = input
+      const event = await ctx.db.event.findFirst({
+        where: {
+          id: eventId,
+        },
+        select: {
+          interested: true,
+        },
+      })
+      return event?.interested
+    }),
+  getAnalyticsInterested: protectedProcedure.query(async ({ input, ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Event Not Found",
+      })
+    }
+    const event = await ctx.db.event.findFirst({
+      where: {
+        id: eventId,
+      },
+      select: {
+        interested: true,
+      },
+    })
+    return event?.interested
+  }),
+
+  setInterested: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { eventId } = input
+      const intrestedCount = await ctx.db.event.findFirst({
+        where: {
+          id: eventId,
+        },
+        select: {
+          interested: true,
+        },
+      })
+
+      const increased = (intrestedCount?.interested ?? 0) + 1
+      const increaseCount = await ctx.db.event.update({
+        where: {
+          id: eventId,
+        },
+        data: { interested: increased },
+      })
+
+      return increaseCount
+    }),
+
+  getEventDate: protectedProcedure.query(async ({ ctx }) => {
+    const eventId = ctx.currentEvent
+    if (!eventId) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Event Not Found",
+      })
+    }
+
+    return ctx.db.event.findFirst({
+      where: {
+        id: eventId,
+      },
+      select: {
+        date: true,
+      },
+    })
+  }),
 })

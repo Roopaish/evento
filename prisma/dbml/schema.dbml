@@ -126,6 +126,8 @@ Table Event {
   SubDomain SubDomain [not null]
   EmailInvitation EmailInvitation [not null]
   Ticket Ticket [not null]
+  uniqueVisit Int [default: 0]
+  interested Int [default: 0]
 }
 
 Table Tag {
