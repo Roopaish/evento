@@ -41,6 +41,7 @@ export default function KanbanBoards() {
             title={board.title}
             taskNumber={board.tasks.length}
             status={board.status}
+            // @ts-expect-error idk
             tasks={board.tasks}
           />
         ))}

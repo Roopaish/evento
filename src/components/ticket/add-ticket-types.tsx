@@ -23,11 +23,13 @@ export default function AddTicketTypes() {
   return (
     <>
       <Dialog open={isOpen} onOpenChange={(open) => setIsOpen(open)}>
-        <DialogTrigger className="mt-5 p-2">
-          <Button size="default">
-            <Icons.Plus />
-            Add Ticket Type
-          </Button>
+        <DialogTrigger className="mt-5" asChild>
+          <div className="text-right">
+            <Button size="default" variant="outline">
+              <Icons.Plus />
+              Add Ticket Type
+            </Button>
+          </div>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
