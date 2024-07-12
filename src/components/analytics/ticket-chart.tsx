@@ -30,7 +30,8 @@ export function TicketChart() {
 
   data?.map((dataVal) => {
     const month = dataVal.createdAt.getMonth()
-    if (month) {
+    if (month < 12) {
+      //@ts-expect-error it is not actually error
       ticketChartCount[month] = ticketChartCount[month] + 1
     }
 
@@ -54,7 +55,7 @@ export function TicketChart() {
   ]
 
   return (
-    <Card className="max-w-[500px]">
+    <Card className="my-4 max-w-[500px]">
       <CardHeader>
         <CardTitle>Ticket Sales Chart</CardTitle>
         <CardDescription>Showing total sales for this year</CardDescription>
