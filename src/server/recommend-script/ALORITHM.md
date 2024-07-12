@@ -18,7 +18,6 @@ The algorithm implements a content-based recommendation system for events.
 9. Return Recommendations: The system displays the list of recommended events to the user.
 
 ```mermaid
-title Recommendation Engine
 sequenceDiagram
     participant User
     participant System
