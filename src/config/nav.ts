@@ -49,7 +49,7 @@ export const userSideNavItems: SideNavItem[] = [
   {
     title: "Account",
     data: [
-      { icon: "User", label: "Profile", path: "/dashboard/profile" },
+      // { icon: "User", label: "Profile", path: "/dashboard/profile" },
       {
         icon: "ListChecks",
         label: "Applied Jobs",

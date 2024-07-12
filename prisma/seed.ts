@@ -82,6 +82,15 @@ async function createProperties(
 
       const user = users[Math.floor(Math.random() * users.length)]
 
+      const participants: { id: string }[] = []
+      users?.forEach((u) => {
+        if (u.id !== user?.id) {
+          participants.push({
+            id: u.id,
+          })
+        }
+      })
+
       const selectedTags = tags
         .sort(() => 0.5 - Math.random())
         .slice(0, Math.floor(Math.random() * 3) + 3)
@@ -165,7 +174,7 @@ async function createProperties(
           },
         },
         participants: {
-          connect: [...users?.map((u) => ({ id: u.id }))],
+          connect: participants,
         },
       }),
         console.log(data)

@@ -462,7 +462,8 @@ export const eventRouter = createTRPCRouter({
       })
       return event?.interested
     }),
-  getAnalyticsInterested: protectedProcedure.query(async ({ input, ctx }) => {
+
+  getAnalyticsInterested: protectedProcedure.query(async ({ ctx }) => {
     const eventId = ctx.currentEvent
     if (!eventId) {
       throw new TRPCError({

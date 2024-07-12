@@ -7,7 +7,9 @@ import Reminder from "../common/reminder"
 import Board from "./board"
 
 export default function KanbanBoards() {
-  const { data: tasks } = api.kanban.getTasks.useQuery()
+  const { data: tasks } = api.kanban.getTasks.useQuery(undefined, {
+    refetchInterval: 1000,
+  })
 
   if (!tasks) {
     return <Reminder />
