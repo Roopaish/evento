@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 import { type EventType, type Ticket } from "@prisma/client"
-import { AspectRatio } from "@radix-ui/react-aspect-ratio"
 
 import { cn } from "@/lib/utils"
 
@@ -45,7 +44,10 @@ export default function TicketBookingGrid({
   return (
     <>
       <div
-        className={`mt-[100px] grid grid-cols-30 justify-center gap-[4px] rounded-lg p-4`}
+        style={{
+          gridTemplateColumns: `repeat(${length}, 1fr)`,
+        }}
+        className={`mb-10 mt-10 grid max-w-max gap-[4px] overflow-auto scroll-auto rounded-lg`}
       >
         {Array.from(
           {
@@ -72,7 +74,13 @@ export default function TicketBookingGrid({
             // console.log(isSelected)
             // console.log("user selected", containerId, isUserSelected)
             return (
-              <AspectRatio ratio={1} key={containerId}>
+              <div
+                style={{
+                  width: 50,
+                  height: 50,
+                }}
+                key={containerId}
+              >
                 <div
                   style={{
                     backgroundColor: isUserSelected
@@ -85,13 +93,14 @@ export default function TicketBookingGrid({
                         )[0]?.color,
                   }}
                   className={cn(
-                    `transistion flex h-full cursor-pointer flex-col items-center justify-around gap-2 rounded-[8px] text-white duration-200 ease-in-out selection:bg-transparent`,
+                    `flex h-full cursor-pointer flex-col items-center justify-around gap-2 rounded-[8px] text-white transition duration-200 ease-in-out selection:bg-transparent`,
                     {
                       "hover:bg-red-800": !isSelected,
                       // "bg-slate-800": !isSelected && !isBooked,
                       "bg-green-500": isSelected,
                       "hover:bg-none pointer-events-none bg-gray-500": isBooked,
-                      "pointer-events-none bg-slate-300": !isAvailable,
+                      "pointer-events-none border border-black/80 text-white":
+                        !isAvailable,
                       "pointer-events-none": isUserSelected,
                     }
                   )}
@@ -107,7 +116,7 @@ export default function TicketBookingGrid({
                 >
                   {containerId}
                 </div>
-              </AspectRatio>
+              </div>
             )
           }
         )}

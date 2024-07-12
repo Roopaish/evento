@@ -11,12 +11,12 @@ import { Icons } from "../ui/icons"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { RadioGroup, RadioGroupItem } from "../ui/radio-group"
+import { Text } from "../ui/text"
 import AddTicketTypes from "./add-ticket-types"
 import EditTicket from "./edit-tickettype"
 import TicketGrid from "./ticket-grid"
 
 export default function Tickets() {
-  const [ticketInfo, setTicketInfo] = useState<TicketInfo[]>()
   const [ticketType, setTicketType] = useState<string>("")
   const [price, setPrice] = useState<number>(0)
   const [seats, setSeats] = useState<number>(0)
@@ -54,7 +54,8 @@ export default function Tickets() {
     setWidth(Number(ticketData?.[0]?.width ?? 1))
   }, [ticketData])
 
-  const { data } = api.ticket.getTicketInfoBySessionEventId.useQuery()
+  const { data: ticketInfo } =
+    api.ticket.getTicketInfoBySessionEventId.useQuery()
 
   const { mutateAsync: deleteTicket } =
     api.ticket.deleteTicketInfo.useMutation()
@@ -69,41 +70,39 @@ export default function Tickets() {
       }
     )
   }
-
-  useEffect(() => {
-    if (data) {
-      setTicketInfo(data)
-    }
-  }, [data])
-
   // useEffect(() => {
   //   console.log(ticketType, price, color, length, width)
   // }, [ticketType, price, color, length, width])
 
   return (
     <>
-      <div className="mt-8">
+      <div className="rounded-sm border px-4 py-2">
+        <Text variant={"large"} medium className="mb-2">
+          Ticket Types
+        </Text>
         <RadioGroup>
           {ticketInfo?.map((ticket) => (
             <div
               key={ticket.id}
               onClick={() => setValues(ticket)}
               className={cn(
-                "mx-auto mt-4 flex h-9 w-full  cursor-pointer items-center gap-4 rounded-md border-2 border-gray-500 px-2 transition-all hover:border-green-500 hover:bg-gray-100",
-                {
-                  "border-green-500 bg-gray-100":
-                    ticketType === ticket.ticketType,
-                }
+                "mx-auto flex  w-full cursor-pointer items-center gap-4 rounded-md transition-all"
               )}
             >
               <RadioGroupItem
-                style={{ backgroundColor: ticket.color }}
                 className="h-5 w-5"
                 value={ticket.id.toString()}
                 id={ticket.id.toString()}
               />
               <div className="flex w-full justify-between">
-                <Label htmlFor={ticket.id.toString()}>
+                <Label
+                  htmlFor={ticket.id.toString()}
+                  className="flex cursor-pointer items-center capitalize"
+                >
+                  <div
+                    className="mr-2 inline-block h-4 w-4 rounded-sm"
+                    style={{ backgroundColor: ticket.color }}
+                  ></div>
                   {ticket.ticketType}, Rs {ticket.price}/per person, totalSeats:{" "}
                   {ticket.totalSeats}
                 </Label>
@@ -119,56 +118,60 @@ export default function Tickets() {
             </div>
           ))}
         </RadioGroup>
-      </div>
-      <AddTicketTypes />
 
-      <div className="flex items-center space-x-2">
-        <Checkbox
-          checked={enablemap}
-          id="mapping"
-          onClick={() => {
-            setEnableMap(!enablemap)
-          }}
-        />
-        <label
-          htmlFor="mapping"
-          className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-        >
-          Enable seat mapping
-        </label>
+        <AddTicketTypes />
       </div>
 
-      <div className="mt-4 flex gap-2">
-        <div className="flex w-[50%] flex-col gap-3">
-          <Label>Length</Label>
-          <Input
-            type="number"
-            value={length}
-            min={0}
-            onChange={(e) => setLength(Number(e.target.value))}
-          />
-        </div>
+      {ticketInfo?.length !== 0 && (
+        <>
+          <div className="mt-6 flex items-center space-x-2">
+            <Checkbox
+              checked={enablemap}
+              id="mapping"
+              onClick={() => {
+                setEnableMap(!enablemap)
+              }}
+            />
+            <label
+              htmlFor="mapping"
+              className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            >
+              Enable seat mapping
+            </label>
+          </div>
 
-        <div className="flex w-[50%] flex-col gap-3">
-          <Label>Width</Label>
-          <Input
-            type="number"
-            value={width}
-            min={0}
-            onChange={(e) => setWidth(Number(e.target.value))}
-          />
-        </div>
-      </div>
-      {enablemap && ticketsInfo && (
-        <TicketGrid
-          length={length!}
-          width={width!}
-          label={ticketType}
-          price={price}
-          color={color}
-          totalSeats={seats}
-          ticketsInfo={ticketsInfo}
-        />
+          <div className="mt-4 flex  items-center gap-2">
+            <Label>Grid Size:</Label>
+            <div className="flex w-32 flex-col gap-3">
+              <Input
+                type="number"
+                value={length}
+                min={0}
+                onChange={(e) => setLength(Number(e.target.value))}
+              />
+            </div>
+            X
+            <div className="flex w-32 flex-col gap-3">
+              <Input
+                type="number"
+                value={width}
+                min={0}
+                onChange={(e) => setWidth(Number(e.target.value))}
+              />
+            </div>
+          </div>
+          {enablemap && ticketsInfo && (
+            <TicketGrid
+              length={length!}
+              width={width!}
+              label={ticketType}
+              price={price}
+              color={color}
+              totalSeats={seats}
+              ticketsInfo={ticketsInfo}
+            />
+          )}
+        </>
       )}
     </>
   )

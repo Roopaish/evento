@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { api } from "@/trpc/react"
 
 import { Checkbox } from "@/components/ui/checkbox"
+import LineAnimation from "@/components/ui/line-animation"
 import TicketDisplayForm from "@/components/book/byform/ticket-display-form"
 import BookingHeader from "@/components/book/bymapping/booking-header"
 import TicketBookingGrid from "@/components/book/bymapping/ticket-booking-grid"
@@ -32,20 +33,16 @@ export default function TicketBookPage({ params }: { params: { id: number } }) {
     }
   }, [ticketData])
 
-  // const { data: savedTicketInfo, isLoading: isSavedTicketInfoLoading } =
-  //   api.ticket.getSavedTicketInfo.useQuery({
-  //     eventId: Number(params.id),
-  //   })
+  if (isTicketDataLoading || isTicketInfoLoading) {
+    return <LineAnimation />
+  }
 
   return (
-    <>
-      {isTicketDataLoading || isTicketInfoLoading ? (
-        <div>Loading...</div>
-      ) : null}
+    <div className="container">
       {ticketInfo ? <BookingHeader ticketInfo={ticketInfo} /> : null}
       <TicketDisplayForm ticketInfo={ticketInfo!} ticketData={ticketData!} />
       {hasMap && (
-        <div className="flex items-center space-x-2">
+        <div className="mt-6 flex items-center space-x-2">
           <Checkbox
             checked={enablemap}
             id="mapping"
@@ -55,15 +52,15 @@ export default function TicketBookPage({ params }: { params: { id: number } }) {
           />
           <label
             htmlFor="mapping"
-            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+            className="text-base font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
           >
-            Enable seat mapping
+            Select Seats?
           </label>
         </div>
       )}
       {enablemap && ticketData ? (
         <TicketBookingGrid ticketData={ticketData} />
       ) : null}
-    </>
+    </div>
   )
 }

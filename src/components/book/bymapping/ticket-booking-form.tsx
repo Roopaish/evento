@@ -55,8 +55,8 @@ export default function TicketBookingForm({
   const form = useForm<z.infer<typeof ticketBookFormSchema>>({
     resolver: zodResolver(ticketBookFormSchema),
     defaultValues: {
-      firstName: user?.name.split(" ")[0] ?? "",
-      lastName: user?.name.split(" ")[1] ?? "",
+      firstName: user?.name?.split(" ")[0] ?? "",
+      lastName: user?.name?.split(" ")[1] ?? "",
       email: user?.email ?? "",
       PhoneNumber: user?.phoneNumber[0] ?? "",
     },

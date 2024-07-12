@@ -55,8 +55,8 @@ export default function TicketDisplayForm({
   }
 
   return (
-    <div className="m-2 border-gray-400 p-2 md:border-r-2">
-      <div className="mb-3 text-2xl font-semibold">choose Ticket</div>
+    <div className="mt-5 border-gray-400">
+      <div className="mb-3 text-2xl font-semibold">Choose Ticket</div>
       <div className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
           <Label>Select Ticket Type</Label>

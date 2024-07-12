@@ -89,6 +89,12 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+
+      boxShadow: {
+        container:
+          "0px 0px 2px 0px rgba(145, 158, 171, 0.20), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
+      },
+
       keyframes: {
         "accordion-down": {
           from: { height: "0" },
@@ -98,14 +104,25 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        drawAndEraseLine: {
+          "0%": {
+            strokeDasharray: "0, 2000",
+            strokeDashoffset: "0",
+          },
+          "50%": {
+            strokeDasharray: "2000, 2000",
+            strokeDashoffset: "-1000",
+          },
+          "100%": {
+            strokeDasharray: "0, 2000",
+            strokeDashoffset: "-2000",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
-      },
-      boxShadow: {
-        container:
-          "0px 0px 2px 0px rgba(145, 158, 171, 0.20), 0px 12px 24px -4px rgba(145, 158, 171, 0.12)",
+        "line-draw-and-erase": "drawAndEraseLine 4s infinite",
       },
     },
     backgroundImage: {
