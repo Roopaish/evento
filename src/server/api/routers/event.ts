@@ -400,4 +400,86 @@ export const eventRouter = createTRPCRouter({
 
     return data
   }),
+
+  updateUniqueVisit: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { eventId } = input
+
+      const getCount = await ctx.db.event.findFirst({
+        where: {
+          id: eventId,
+        },
+        select: {
+          uniqueVisit: true,
+        },
+      })
+      if (!getCount?.uniqueVisit) {
+        throw new TRPCError({
+          code: "UNPROCESSABLE_CONTENT",
+          message: "Event Creation has not implemented unique Visit",
+        })
+      }
+      const increment = (getCount?.uniqueVisit || 0) + 1
+      const event = await ctx.db.event.update({
+        where: { id: eventId },
+        data: { uniqueVisit: increment },
+      })
+      return event
+    }),
+
+  getInterested: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { eventId } = input
+      return ctx.db.event.findFirst({
+        where: {
+          id: eventId,
+        },
+        select: {
+          interested: true,
+        },
+      })
+    }),
+
+  setInterested: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .mutation(async ({ input, ctx }) => {
+      const { eventId } = input
+      const intrestedCount = await ctx.db.event.findFirst({
+        where: {
+          id: eventId,
+        },
+        select: {
+          interested: true,
+        },
+      })
+      if (!intrestedCount?.interested) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: "Interested not set correctly",
+        })
+      }
+      const increased = (intrestedCount?.interested || 0) + 1
+      const increaseCount = await ctx.db.event.update({
+        where: {
+          id: eventId,
+        },
+        data: { interested: increased },
+      })
+
+      return increaseCount
+    }),
 })

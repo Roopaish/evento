@@ -1,6 +1,6 @@
 import { z } from "zod"
 
-import { createTRPCRouter, protectedProcedure } from "../trpc"
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc"
 
 export const ticketRouter = createTRPCRouter({
   create: protectedProcedure
@@ -492,5 +492,22 @@ export const ticketRouter = createTRPCRouter({
           },
         })
       })
+    }),
+
+  getTicketCount: publicProcedure
+    .input(
+      z.object({
+        eventId: z.number(),
+      })
+    )
+    .query(async ({ input, ctx }) => {
+      const { eventId } = input
+
+      const bookedTickets = await ctx.db.ticket.count({
+        where: {
+          eventId: eventId,
+        },
+      })
+      return bookedTickets
     }),
 })

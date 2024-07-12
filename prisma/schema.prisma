@@ -171,6 +171,9 @@ model Event {
     EmailInvitation EmailInvitation[]
     Ticket          Ticket[]
 
+    uniqueVisit Int? @default(0)
+    interested  Int? @default(0)
+
     @@index([title, address])
 }
 

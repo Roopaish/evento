@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
+import { EventCount } from "@/components/analytics/event-count"
 import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
@@ -23,6 +24,14 @@ export default async function EventDetails({
 
   const data = await api.event.getEvent.query({
     id: Number(params.id),
+  })
+
+  const interested = await api.event.getInterested.query({
+    eventId: Number(params.id),
+  })
+
+  const alreadyBooked = await api.ticket.getTicketCount.query({
+    eventId: Number(params.id),
   })
 
   const isCreatedByMe = session?.user?.id === data?.createdById
@@ -148,6 +157,18 @@ export default async function EventDetails({
                 </div>
               </>
             )}
+            {/* here */}
+            <div>
+              {" "}
+              <span>
+                <b>Interested: </b>
+                {interested?.interested}
+              </span>{" "}
+              <span>
+                <b>Already Booked:</b>
+                {alreadyBooked}{" "}
+              </span>
+            </div>
 
             {!isCreatedByMe && (
               <>
@@ -170,7 +191,7 @@ export default async function EventDetails({
                   {data?.tags?.map((tag) => (
                     <span
                       key={tag.id}
-                      className="hover:bg-primary-100 rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600"
+                      className="rounded-md bg-gray-100 px-2 py-1 text-sm text-gray-600 hover:bg-primary-100"
                     >
                       {tag.name}
                     </span>
@@ -185,6 +206,7 @@ export default async function EventDetails({
       </div>
 
       <AllEvents idToRecommendFor={params.id} title="Recommended Events" />
+      <EventCount eventId={params.id}></EventCount>
     </div>
   )
 }
