@@ -17,14 +17,6 @@ import {
   type ChartConfig,
 } from "../ui/chart"
 
-const chartData = [
-  { month: "January", sold: 186, mobile: 80 },
-  { month: "February", sold: 305, mobile: 200 },
-  { month: "March", desktop: 237, mobile: 120 },
-  { month: "April", desktop: 73, mobile: 190 },
-  { month: "May", desktop: 209, mobile: 130 },
-  { month: "June", desktop: 214, mobile: 140 },
-]
 const chartConfig = {
   sold: {
     label: "Sold",
@@ -32,8 +24,35 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 export function TicketChart() {
+  const ticketChartCount = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
   const { data } = api.ticket.getTicketSaleDate.useQuery()
-  console.log(data)
+
+  data?.map((dataVal) => {
+    const month = dataVal.createdAt.getMonth()
+    if (month) {
+      ticketChartCount[month] = ticketChartCount[month] + 1
+    }
+
+    return console.log(month)
+  })
+  console.log(ticketChartCount)
+
+  const chartData = [
+    { month: "January", sold: ticketChartCount[0] },
+    { month: "Feb", sold: ticketChartCount[1] },
+    { month: "Mar", sold: ticketChartCount[2] },
+    { month: "Apr", sold: ticketChartCount[3] },
+    { month: "May", sold: ticketChartCount[4] },
+    { month: "Jun", sold: ticketChartCount[5] },
+    { month: "Jul", sold: ticketChartCount[6] },
+    { month: "Aug", sold: ticketChartCount[7] },
+    { month: "Sept", sold: ticketChartCount[8] },
+    { month: "Oct", sold: ticketChartCount[9] },
+    { month: "Nov", sold: ticketChartCount[10] },
+    { month: "Dec", sold: ticketChartCount[11] },
+  ]
+
   return (
     <Card className="max-w-[500px]">
       <CardHeader>
