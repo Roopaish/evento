@@ -83,7 +83,7 @@ export default function ChatHeader({
             </div>
 
             <div className="flex h-8 w-8 items-center justify-center rounded-md border-[1px] border-[rgb(22,163,74)] font-semibold ring-slate-100">
-              {chatGroup?.event.participants.length + 1}
+              {Number(chatGroup?.event.participants.length) + 1}
             </div>
           </div>
         </DialogTrigger>

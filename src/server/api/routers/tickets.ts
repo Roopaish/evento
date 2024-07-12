@@ -163,6 +163,7 @@ export const ticketRouter = createTRPCRouter({
           price: input.price,
           color: input.color,
           totalSeats: input.totalSeats,
+          reservedSeats: 0,
         },
       })
     }),
@@ -173,6 +174,7 @@ export const ticketRouter = createTRPCRouter({
         type: z.string(),
         price: z.number(),
         color: z.string(),
+        totalSeats: z.number(),
         ticketId: z.number(),
       })
     )
@@ -285,7 +287,13 @@ export const ticketRouter = createTRPCRouter({
     }),
 
   bookTicket: protectedProcedure
-    .input(z.object({ position: z.number().array(), eventId: z.number() }))
+    .input(
+      z.object({
+        position: z.number().array(),
+        label: z.string().array(),
+        eventId: z.number(),
+      })
+    )
     .mutation(async ({ ctx, input }) => {
       const userId = ctx.session.user.id
       input.position.map(async (position) => {
@@ -303,6 +311,19 @@ export const ticketRouter = createTRPCRouter({
           data: {
             isBooked: true,
             bookedByID: userId,
+          },
+        })
+      })
+
+      input.label.map(async (l) => {
+        await ctx.db.ticketInfo.updateMany({
+          where: {
+            ticketType: l,
+          },
+          data: {
+            reservedSeats: {
+              increment: 1,
+            },
           },
         })
       })
@@ -343,7 +364,9 @@ export const ticketRouter = createTRPCRouter({
           id: input.id,
         },
         data: {
-          totalSeats: input.totalSeats - input.seats,
+          reservedSeats: {
+            increment: input.seats,
+          },
         },
       })
 
@@ -352,7 +375,7 @@ export const ticketRouter = createTRPCRouter({
 
   getBookedTickets: protectedProcedure.query(async ({ ctx }) => {
     const eventId = ctx.currentEvent
-    return await ctx.db.ticket.findMany({
+    const bookedTickets = await ctx.db.ticket.findMany({
       where: {
         AND: [
           {
@@ -368,6 +391,29 @@ export const ticketRouter = createTRPCRouter({
         event: true,
       },
     })
+    console.log(bookedTickets)
+
+    const ticketInfo = await ctx.db.ticketInfo.findMany()
+
+    let totalTickets = 0
+    let reserved = 0
+
+    ticketInfo.map((ticket) => {
+      totalTickets += ticket.totalSeats
+    })
+
+    ticketInfo.map((ticket) => {
+      reserved += ticket.reservedSeats
+    })
+
+    const remainingTickets = totalTickets - reserved
+
+    let totalSales = 0
+    bookedTickets.map((ticket) => {
+      totalSales += Number(ticket.price)
+    })
+
+    return { bookedTickets, remainingTickets, totalSales }
   }),
   selectTicket: protectedProcedure
     .input(z.object({ position: z.string().array(), eventId: z.number() }))
@@ -493,4 +539,20 @@ export const ticketRouter = createTRPCRouter({
         })
       })
     }),
+
+  getMyTickets: protectedProcedure.query(async ({ ctx }) => {
+    const userId = ctx.session.user.id
+    const tickets = ctx.db.ticket.findMany({
+      where: {
+        bookedByID: userId,
+      },
+      include: {
+        user: true,
+        bookingUser: true,
+        event: true,
+      },
+    })
+    console.log(tickets)
+    return tickets
+  }),
 })
