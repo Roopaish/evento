@@ -5,7 +5,7 @@ import { eventTags } from "@/config/constants"
 
 const prisma = new PrismaClient()
 
-const shouldSeed = false
+const shouldSeed = true
 async function main() {
   if (!shouldSeed) return
 

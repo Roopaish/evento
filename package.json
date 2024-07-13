@@ -11,7 +11,7 @@
     "dev:next": "next dev",
     "db-up": "sudo docker compose up -d",
     "db-migrate-dev": "prisma migrate dev",
-    "dev": "run-p dev:*",
+    "dev": "pnpm migrate-dev && run-p dev:*",
     "dx": "run-s db-up db-migrate-dev dev",
     "prepare": "husky install",
     "db:push": "prisma db push",

@@ -2,7 +2,7 @@ version: "3.8"
 services:
   postgres:
     image: postgres:14
-    container_name: dev_db
+    container_name: evento_db
     ports:
       - 5432:5432
     volumes:
@@ -14,4 +14,4 @@ services:
 
 volumes:
   postgres:
-    name: dev
+    name: evento
