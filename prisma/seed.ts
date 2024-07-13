@@ -5,7 +5,10 @@ import { eventTags } from "@/config/constants"
 
 const prisma = new PrismaClient()
 
+const shouldSeed = false
 async function main() {
+  if (!shouldSeed) return
+
   const users = await createUsers()
 
   if (users) {

@@ -42,14 +42,18 @@ export default function TicketDisplayForm({
     ? ticketInfo?.find((ticket) => ticket.ticketType === ticketType)
     : null
 
-  const mappedData = ticketData?.map((ticket) => ticket.position != null)
+  const mappedData = ticketData?.find(
+    (ticket) => ticket.position != null && ticket.label === ticketType
+  )
+
+  console.log(mappedData)
 
   const error =
     selectedTicketData &&
     seats >
       selectedTicketData?.totalSeats -
         selectedTicketData?.reservedSeats -
-        mappedData?.length
+        Number(mappedData?.length)
   if (error) {
     toast.error("Seats should be less than avaibale seats")
   }
@@ -94,7 +98,7 @@ export default function TicketDisplayForm({
                 Available:
                 {selectedTicketData?.totalSeats -
                   selectedTicketData?.reservedSeats -
-                  mappedData?.length}
+                  Number(mappedData?.length)}
               </div>
             ) : null}
           </div>

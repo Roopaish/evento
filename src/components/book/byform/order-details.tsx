@@ -37,20 +37,20 @@ export default function OrderDetails({
           </div>
 
           <div className="flex items-center justify-center gap-2">
-            <div>{bookedTicketData.ticketType}</div>
-            <div>Rs. {bookedTicketData.price}</div>
+            <div>{bookedTicketData?.ticketType}</div>
+            <div>Rs. {bookedTicketData?.price}</div>
             <div className="flex w-[80px] flex-wrap items-center justify-center gap-2">
               {totalSeats}
             </div>
           </div>
-          <div>Rs. {bookedTicketData.price * totalSeats}</div>
+          <div>Rs. {bookedTicketData?.price * totalSeats}</div>
         </div>
         <Separator className="mt-5" />
         <div className="mt-5 flex justify-around gap-2">
           <div className="text-xl font-semibold text-gray-900"> Total</div>
           <div></div>
           <div className="font-medium text-gray-900">
-            Rs. {bookedTicketData.price * totalSeats}
+            Rs. {bookedTicketData?.price * totalSeats}
           </div>
         </div>
       </div>

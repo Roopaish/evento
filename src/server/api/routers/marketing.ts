@@ -3,6 +3,7 @@ import emailTemplates from "@/server/email-templates"
 import { TRPCError } from "@trpc/server"
 
 import { env } from "@/env"
+import { URL_ORIGIN, URL_PREFIX } from "@/config/constants"
 import { InvitationSchema } from "@/lib/validations/invitation-validation"
 
 import { createTRPCRouter, protectedProcedure } from "../trpc"
@@ -42,7 +43,7 @@ export const marketingRouter = createTRPCRouter({
 
         let route = `${env.NEXTAUTH_URL}/events/${eventId}`
         if (subdomain) {
-          route = subdomain.route + ".localhost:3000"
+          route = URL_PREFIX + "//" + subdomain.route + "." + URL_ORIGIN
         }
 
         await Promise.all(
