@@ -30,6 +30,29 @@
 - `pnpm dev` to run both at once
 - `npx prisma db seed` to seed the database
 
+> For event on click show recommendation which is written in python scripts. So, you must have python installed
+
+> Then, follow the step to run from virtual environment in python
+
+- python -m venv /path/to/new/virtual/environment
+
+> for windows
+
+- python -m venv venv
+- venv/Scripts/pip install -r requirements.txt
+
+> for linux
+
+- python3 -m venv venv
+- venv/bin/pip3 install -r requirements.txt
+
+> for mac
+
+- python -m venv venv
+- venv/bin/pip install -r requirements.txt
+
+> if path: venv/directory is mistake then check by yourself and correct it
+
 ## Database - Postgresql
 
 Ways to create prostgres database to work on
