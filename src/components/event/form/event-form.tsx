@@ -101,6 +101,7 @@ export default function EventForm({ id }: { id?: number }) {
   const { mutate, isLoading } = api.event.addEvent.useMutation({
     onSuccess: (data) => {
       toast.success("Event has been created")
+      router.push(`/api/trpc/exportEvents`)
       router.push(`/events/${data.id}`)
     },
     onError: (e) => {
@@ -211,7 +212,7 @@ export default function EventForm({ id }: { id?: number }) {
       </Text>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="shadow-container space-y-8 rounded-2xl bg-background px-6 py-8 transition-all"
+        className="space-y-8 rounded-2xl bg-background px-6 py-8 shadow-container transition-all"
       >
         <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           <FormField

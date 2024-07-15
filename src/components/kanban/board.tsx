@@ -40,7 +40,7 @@ export default function Board({
                 <Text variant="small" semibold>
                   {title}
                 </Text>
-                <div className="bg-primary- text-primary-500 ml-2 h-5 w-5 items-center justify-center rounded">
+                <div className="bg-primary- ml-2 h-5 w-5 items-center justify-center rounded text-primary-500">
                   <Text variant="small" semibold>
                     ({taskNumber})
                   </Text>

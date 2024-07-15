@@ -10,9 +10,9 @@ import { Separator } from "@/components/ui/separator"
 import { Text } from "@/components/ui/text"
 import { EventCount } from "@/components/analytics/event-count"
 import { InterestedCount } from "@/components/analytics/interested-booked-count"
-import AllEvents from "@/components/event/all-events"
 import EventCarousel from "@/components/event/event-carousel"
 import InviteMembersButton from "@/components/event/invite-members"
+import RecommendEvents from "@/components/event/recommend-events"
 import ShareEvent from "@/components/event/share-event"
 import JobPositionsDetail from "@/components/job/job-positions-details"
 
@@ -188,7 +188,12 @@ export default async function EventDetails({
         <Separator className="my-10" />
       </div>
 
-      <AllEvents idToRecommendFor={params.id} title="Recommended Events" />
+      <RecommendEvents
+        type="content-based"
+        pageTitle="Recommended Events"
+        idToRecommendFor={params.id}
+        titleToRecommendFor={data?.title}
+      />
       <EventCount eventId={params.id}></EventCount>
     </div>
   )

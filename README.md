@@ -9,12 +9,12 @@
 - [x] Event creator can create and assign tasks to the team memebers in boards and cards
 - [x] Event creator can create job/gigs posting for event
 - [x] Job seeker can apply for the job/gigs listed in each event, event creator can view and select or reject them
-- [X] Event creator can create a seat mapping with labels and prices
-- [X] Buy tickets for a paid event with seat selection
-- [X] Event recommendation system based on current viewing event
-- [X] Publish separate website with new subdomain for each event
-- [X] Email Compagins
-- [X] Analytics of event, how many people visited, are interested, paid for tickets etc.
+- [x] Event creator can create a seat mapping with labels and prices
+- [x] Buy tickets for a paid event with seat selection
+- [x] Event recommendation system based on current viewing event
+- [x] Publish separate website with new subdomain for each event
+- [x] Email Compagins
+- [x] Analytics of event, how many people visited, are interested, paid for tickets etc.
 
 ## How to run
 

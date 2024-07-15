@@ -119,7 +119,7 @@ export default function UserNav({ session }: { session: Session | null }) {
                   setOpen(false)
                 }}
                 className={cn(
-                  "hover:bg-primary-50 focus:bg-primary-50 flex cursor-pointer items-center gap-2 rounded-sm px-4 py-2 hover:scale-105 hover:text-primary focus:text-primary active:scale-100",
+                  "flex cursor-pointer items-center gap-2 rounded-sm px-4 py-2 hover:scale-105 hover:bg-primary-50 hover:text-primary focus:bg-primary-50 focus:text-primary active:scale-100",
                   pathname === path ? "bg-primary-50 text-primary" : ""
                 )}
               >

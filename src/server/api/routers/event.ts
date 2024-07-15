@@ -401,6 +401,36 @@ export const eventRouter = createTRPCRouter({
     return data
   }),
 
+  getEventByIds: publicProcedure
+    .input(z.coerce.number().array())
+    .query(async ({ ctx, input }) => {
+      const events = await ctx.db.event.findMany({
+        where: {
+          id: {
+            in: input,
+          },
+        },
+        include: {
+          assets: true,
+          jobPositions: true,
+          managerImage: true,
+          createdBy: true,
+          tags: true,
+        },
+      })
+      if (!events) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Events not found",
+        })
+      }
+      // Sort the events based on the order of IDs in the input array
+      const sortedEvents = events.sort(
+        (a, b) => input.indexOf(a.id) - input.indexOf(b.id)
+      )
+      return sortedEvents
+    }),
+
   updateUniqueVisit: publicProcedure
     .input(
       z.object({

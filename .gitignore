@@ -2,6 +2,8 @@
 
 # dependencies
 /node_modules
+# venv - virtualenv for python code
+/venv
 /.pnp
 .pnp.js
 
@@ -43,3 +45,5 @@ yarn-error.log*
 
 prisma/migrations
 dist
+
+src/server/csv
