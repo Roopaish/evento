@@ -32,7 +32,12 @@
 
 > For event on click show recommendation which is written in python scripts. So, you must have python installed
 
-> Then, follow the step to run from virtual environment in python
+- pip install -r requirements.txt
+- then change PYTHON_EXECUTABLE_PATH="\path\to\python\executable" from env
+
+> or if want to run by creating virtual environment in python
+
+> Then, follow the step to run
 
 - python -m venv /path/to/new/virtual/environment
 
