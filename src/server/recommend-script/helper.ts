@@ -1,21 +1,25 @@
 import { exec } from "child_process"
 import path from "path"
 
+import { env } from "@/env"
+
 // console.log("Current working directory:", process.cwd());
 const directoryPath = path.join("src", "server", "recommend-script")
 const scriptPath = path.join(directoryPath, "event.py")
 // console.log("scriptPath", scriptPath)
 
 // Adjust the path as necessary where the Python executable is located
-const pythonExecutablePath = path.join("venv", "Scripts", "python")
+// const pythonExecutablePath = path.join("venv", "Scripts", "python")
 // console.log("pythonExecutablePath", pythonExecutablePath)
+
+// console.log("Python executable path:", env.PYTHON_EXECUTABLE_PATH)
 
 export async function recommendation(eventName: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     // Execute the Python script
     // Must have Python installed on the machine
     exec(
-      `${pythonExecutablePath} ${scriptPath} "${eventName}"`,
+      `${env.PYTHON_EXECUTABLE_PATH} ${scriptPath} "${eventName}"`,
       (error, stdout: string, stderr: string) => {
         //
         if (error) {

@@ -39,6 +39,7 @@ export const env = createEnv({
     IMAGEKIT_PUBLIC_KEY: z.string(),
     IMAGEKIT_PRIVATE_KEY: z.string(),
     IMAGEKIT_URL_ENDPOINT: z.string(),
+    PYTHON_EXECUTABLE_PATH: z.string(),
   },
 
   /**
@@ -71,6 +72,7 @@ export const env = createEnv({
     IMAGEKIT_PRIVATE_KEY: process.env.IMAGEKIT_PRIVATE_KEY,
     IMAGEKIT_PUBLIC_KEY: process.env.IMAGEKIT_PUBLIC_KEY,
     IMAGEKIT_URL_ENDPOINT: process.env.IMAGEKIT_URL_ENDPOINT,
+    PYTHON_EXECUTABLE_PATH: process.env.PYTHON_EXECUTABLE_PATH,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
