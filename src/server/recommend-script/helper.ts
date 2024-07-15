@@ -6,12 +6,16 @@ const directoryPath = path.join("src", "server", "recommend-script")
 const scriptPath = path.join(directoryPath, "event.py")
 // console.log("scriptPath", scriptPath)
 
+// Adjust the path as necessary where the Python executable is located
+const pythonExecutablePath = path.join("venv", "Scripts", "python")
+// console.log("pythonExecutablePath", pythonExecutablePath)
+
 export async function recommendation(eventName: string): Promise<string[]> {
   return new Promise((resolve, reject) => {
     // Execute the Python script
     // Must have Python installed on the machine
     exec(
-      `py ${scriptPath} "${eventName}"`,
+      `${pythonExecutablePath} ${scriptPath} "${eventName}"`,
       (error, stdout: string, stderr: string) => {
         //
         if (error) {
