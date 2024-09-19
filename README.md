@@ -1,5 +1,7 @@
 # Evento
 
+**Note:** This project was developed as part of a college project and is intended solely for educational purposes, and is no longer maintained.
+
 [See Screenshots ⬇️](#screenshots)
 
 ## Features
