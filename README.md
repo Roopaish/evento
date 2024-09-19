@@ -1,5 +1,7 @@
 # Evento
 
+[See Screenshots ⬇️](#screenshots)
+
 ## Features
 
 - [x] Create Events, Edit and Publish
@@ -143,3 +145,53 @@ Ways to create prostgres database to work on
 # Only in development
 npx prisma db push --force-reset && npx prisma db seed
 ```
+
+## Screenshots
+
+![Login](./screenshots/login.png)
+_Login screen for user authentication._
+
+![Home](./screenshots/home.png)
+_Home screen after successful login._
+
+![Dashboard](./screenshots/dashboard.png)
+_Main dashboard view._
+
+![Analytics](./screenshots/analytics.png)
+_Analytics page showing user and event data._
+
+![Create Event](./screenshots/create-event.png)
+_Create a new event._
+
+![Tickets Analytics](./screenshots/tickets-analytics.png)
+_Analytics related to event tickets._
+
+![Ticket Checkout](./screenshots/ticket-checkout.png)
+_Checkout screen for purchasing event tickets._
+
+![Ticket Buy](./screenshots/ticket-buy.png)
+_Tickets seat selection page._
+
+![My Orders](./screenshots/my-orders.png)
+_List of user’s past orders._
+
+![Subdomain](./screenshots/subdomain.png)
+_Custom subdomain setup for the event._
+
+![Tasks](./screenshots/tasks.png)
+_Task management section._
+
+![Team](./screenshots/team.png)
+_Team management screen._
+
+![Applied Jobs](./screenshots/applied-jobs.png)
+_List of jobs the user has applied for._
+
+![Apply for Job](./screenshots/apply-for-job.png)
+_Form for applying to a job._
+
+![Chat](./screenshots/chat.png)
+_Chat interface to communicate with team._
+
+![Email](./screenshots/email.png)
+_Email marketing screen._
